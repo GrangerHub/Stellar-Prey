@@ -1,0 +1,279 @@
+#include "gui/menudef.h"
+
+#define W         640
+#define H         480
+#define CHATMENU_HEIGHT 205
+
+{
+  menuDef
+  {
+    name "human_hud"
+    fullScreen MENU_FALSE
+    aspectBias ASPECT_NONE
+    visible MENU_TRUE
+    rect 0 0 W H
+
+#include "gui/hud/common/common.cfg"
+#include "gui/hud/common/human.cfg"
+#include "gui/hud/common/chatmenu_human.cfg"
+
+    //LEFT CIRCLE
+    itemDef
+    {
+      name "left-circle"
+      rect 35 417.5 25 25
+      visible 1
+      decoration
+      forecolor 0.0 0.8 1.0 0.25
+      style WINDOW_STYLE_SHADER
+      background "gui/assets/neutral/circle.tga"
+    }   
+
+    //LEFT ARM
+    itemDef
+    {
+      name "left-arm"
+      rect 68.25 420 94.5 35
+      visible 1
+      decoration
+      forecolor 0.0 0.8 1.0 0.25
+      style WINDOW_STYLE_SHADER
+      background "gui/assets/human/left-arm.tga"
+    }   
+
+    //CREDITS LABEL
+    itemDef
+    {
+      name "credits-label"
+      rect 508 403 7 7.5
+      visible 1
+      decoration
+      forecolor 0.0 0.8 1.0 0.5
+      style WINDOW_STYLE_SHADER
+      background "gui/assets/human/credits.tga"
+    }   
+
+    //RIGHT CIRCLE
+    itemDef
+    {
+      name "right-circle"
+      rect 580 417.5 25 25
+      visible 1
+      decoration
+      forecolor 0.0 0.8 1.0 0.25
+      style WINDOW_STYLE_SHADER
+      background "gui/assets/neutral/circle.tga"
+    }   
+
+    //RIGHT ARM
+    itemDef
+    {
+      name "right-arm"
+      rect 477.25 420 94.5 35
+      visible 1
+      decoration
+      forecolor 0.0 0.8 1.0 0.25
+      style WINDOW_STYLE_SHADER
+      background "gui/assets/human/right-arm.tga"
+    }   
+
+    //RIGHT CAP
+    itemDef
+    {
+      name "right-cap"
+      rect 500 400 80 15
+      visible 1
+      decoration
+      forecolor 0.0 0.8 1.0 0.25
+      style WINDOW_STYLE_SHADER
+      background "gui/assets/human/right-cap.tga"
+    }   
+
+    //BOLT
+    itemDef
+    {
+      name "bolt"
+      rect 40 420 15 20
+      visible 1
+      decoration
+      forecolor 0.0 0.8 1.0 0.5
+      background "gui/assets/human/bolt.tga"
+      ownerdraw CG_PLAYER_STAMINA_BOLT
+    }   
+
+    //CROSS
+    itemDef
+    {
+      name "cross"
+      rect 137.5 430 15 15
+      visible 1
+      decoration
+      forecolor 0.0 0.8 1.0 0.5
+      background "gui/assets/neutral/cross.tga"
+      ownerdraw CG_PLAYER_HEALTH_CROSS
+    }   
+
+    //STAMINA 1
+    itemDef
+    {
+      name "stamina1"
+      rect 34.5 403.5 9 11.5
+      visible 1
+      decoration
+      forecolor 0.0 0.8 1.0 0.5
+      background "gui/assets/human/stamina1.tga"
+      ownerdraw CG_PLAYER_STAMINA_1
+    }   
+
+    //STAMINA 2
+    itemDef
+    {
+      name "stamina2"
+      rect 24 410.75 11.5 10.5
+      visible 1
+      decoration
+      forecolor 0.0 0.8 1.0 0.5
+      background "gui/assets/human/stamina2.tga"
+      ownerdraw CG_PLAYER_STAMINA_2
+    }   
+
+    //STAMINA 3
+    itemDef
+    {
+      name "stamina3"
+      rect 20.75 423.5 10.5 7
+      visible 1
+      decoration
+      forecolor 0.0 0.8 1.0 0.5
+      background "gui/assets/human/stamina3.tga"
+      ownerdraw CG_PLAYER_STAMINA_3
+    }   
+
+    //STAMINA 4
+    itemDef
+    {
+      name "stamina4"
+      rect 21 402.5 54 55
+      visible 1
+      decoration
+      forecolor 0.0 0.8 1.0 0.5
+      background "gui/assets/human/stamina4.tga"
+      ownerdraw CG_PLAYER_STAMINA_4
+    }   
+
+    //RING
+    itemDef
+    {
+      name "ring"
+    //  rect 20 402.5 55 55  // Guide for Stamina alignment
+      rect 565 402.5 55 55
+      visible 1
+      decoration
+      forecolor 0.0 0.8 1.0 0.5
+      background "gui/assets/human/ring.tga"
+      ownerdraw CG_PLAYER_CLIPS_RING
+    }
+
+    //CREDITS
+    itemDef
+    {
+      name "credits"
+      rect 515 402 45 11.25
+      visible 1
+      decoration
+      forecolor 0.0 0.8 1.0 0.5
+      ownerdraw CG_PLAYER_CREDITS_VALUE
+    }   
+
+    //HEALTH
+    itemDef
+    {
+      name "health"
+      rect 67 430 60 15
+      visible 1
+      decoration
+      forecolor 0.0 0.8 1.0 .5
+      ownerdraw CG_PLAYER_HEALTH
+    }
+
+    //WEAPON ICON
+    itemDef
+    {
+      name "weapon"
+      rect 482.5 425 25 25
+      visible 1
+      decoration
+      forecolor 0.0 0.8 1.0 0.5
+      ownerdraw CG_PLAYER_WEAPONICON
+    }   
+
+    //AMMO
+    itemDef
+    {
+      name "ammo"
+      rect 494 430 60 15
+      visible 1
+      decoration
+      forecolor 0.0 0.8 1.0 .5
+      ownerdraw CG_PLAYER_AMMO_VALUE
+    }
+
+    //CLIPS
+    itemDef
+    {
+      name "clips"
+      rect 538 423 60 15
+      visible 1
+      decoration
+      forecolor 0.0 0.8 1.0 .5
+      ownerdraw CG_PLAYER_CLIPS_VALUE
+    }
+
+    //BUILD TIMER
+    itemDef
+    {
+      name "buildtimer"
+      rect 580 417.5 25 25
+      visible 1
+      decoration
+      forecolor 0.0 0.8 1.0 .5
+      ownerdraw CG_PLAYER_BUILD_TIMER
+    }
+
+    //USABLE
+    itemDef  
+    {  
+      name "usable"
+      rect 307.5 380 25 25
+      visible 1
+      decoration
+      forecolor 0.0 0.8 1.0 .5
+      background "gui/assets/neutral/use.tga"
+      ownerdraw CG_PLAYER_USABLE_BUILDABLE
+    }
+
+    //INVENTORY
+    itemDef
+    {
+      name "inventory"
+      rect 232.5 425 175 25
+      visible 1
+      decoration
+      forecolor 0.0 0.8 1.0 0.5
+      ownerdraw CG_PLAYER_SELECT
+    }
+
+    //SELECTED
+    itemDef
+    {
+      name "selected"
+      rect 306 424 27 27
+      visible 1
+      decoration
+      forecolor 0.0 0.8 1.0 0.25
+      style WINDOW_STYLE_SHADER
+      background "gui/assets/neutral/selected.tga"
+    }   
+
+  }
+}

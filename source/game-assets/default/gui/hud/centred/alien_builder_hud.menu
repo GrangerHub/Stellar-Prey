@@ -1,0 +1,42 @@
+#include "gui/menudef.h"
+
+{
+
+#define W         640
+#define H         480
+#define CROSSHAIRVISABLE 0
+
+  menuDef
+  {
+    name "alien_builder_hud"
+    fullScreen MENU_FALSE
+    aspectBias ASPECT_NONE
+    visible MENU_TRUE
+    rect 0 0 W H
+
+#include "gui/hud/centred/alien_common_hud.cfg"
+
+    //BUILD TIMER
+    itemDef
+    {
+      name "buildtimer"
+      rect 305 225 30 30
+      visible MENU_TRUE
+      decoration
+      forecolor CENTERED_DRED_R CENTERED_DRED_G CENTERED_DRED_B CENTERED_DRED_A
+      ownerdraw CG_PLAYER_BUILD_TIMER
+    }
+
+    //BUILD POINTS
+    itemDef
+    {
+      name "build-points"
+      rect 282 234 48 12
+      visible MENU_TRUE
+      decoration
+      forecolor CENTERED_GREY_R CENTERED_GREY_G CENTERED_GREY_B CENTERED_GREY_A
+      ownerdraw CG_PLAYER_AMMO_VALUE
+    }
+
+  }
+}

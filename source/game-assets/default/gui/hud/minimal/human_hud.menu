@@ -1,0 +1,198 @@
+#include "gui/menudef.h"
+
+{
+
+#define W         640
+#define H         480
+#define CHATMENU_HEIGHT 240
+
+  menuDef
+  {
+    name "human_hud"
+    fullScreen MENU_FALSE
+    aspectBias ASPECT_NONE
+    visible MENU_TRUE
+    rect 0 0 W H
+
+#include "gui/hud/common/common.cfg"
+#include "gui/hud/common/human.cfg"
+#include "gui/hud/common/chatmenu_human.cfg"
+
+    //HUD BACKSPLASH
+    itemDef
+    {
+	name "backsplash"
+	rect -2 435 270 20
+	border 0
+   	bordercolor COMMON_BLACK_R COMMON_BLACK_G COMMON_BLACK_B COMMON_BLACK_A
+	visible 1
+	decoration
+	forecolor CENTERED_DARK_R CENTERED_DARK_G CENTERED_DARK_B CENTERED_DARK_A
+	backcolor MINIMAL_DARK_R MINIMAL_DARK_G MINIMAL_DARK_B MINIMAL_DARK_A
+	style WINDOW_STYLE_FILLED
+    }
+
+    //CIRCLE
+    itemDef
+    {
+      name "stam3-circle"
+      rect 258 435 20 20
+      visible 1
+      decoration
+      forecolor MINIMAL_DARK_R MINIMAL_DARK_G MINIMAL_DARK_B MINIMAL_DARK_A
+      style WINDOW_STYLE_SHADER
+      background "gui/assets/neutral/6_0pie.tga"
+    } 
+
+    //STAMINA %
+    itemDef
+    {
+      decoration
+      name "stampercent"
+      rect 89 446 0 0
+      visible 1
+      forecolor CENTERED_GREY_R CENTERED_GREY_G CENTERED_GREY_B CENTERED_GREY_A
+      textScale 0.35
+      special 1
+      ownerdraw CG_PLAYER_STAMINA
+    }
+
+    //CROSS
+    itemDef
+    {
+      name "cross"
+      rect 5 438 15 15
+      visible 1
+      decoration
+      forecolor MINIMAL_RED_R MINIMAL_RED_G MINIMAL_RED_B MINIMAL_RED_A
+      background "gui/assets/neutral/cross.tga"
+      ownerdraw CG_PLAYER_HEALTH_CROSS
+    }   
+
+    //BOLT
+    itemDef
+    {
+      name "bolt"
+      rect 70 438 15 15
+      visible 1
+      decoration
+      forecolor MINIMAL_YELLOW_R MINIMAL_YELLOW_G MINIMAL_YELLOW_B MINIMAL_YELLOW_A
+      background "gui/assets/human/bolt.tga"
+      ownerdraw CG_PLAYER_STAMINA_4
+    }  
+
+    //CREDITS LABEL
+    itemDef
+    {
+      name "credits-label"
+      rect 121 440 9 9.5
+      visible 1
+      decoration
+      forecolor MINIMAL_GREEN_R MINIMAL_GREEN_G MINIMAL_GREEN_B MINIMAL_GREEN_A
+      style WINDOW_STYLE_SHADER
+      background "gui/assets/human/credits.tga"
+    }   
+
+    //CREDITS
+    itemDef
+    {
+      name "credits"
+      rect 131 438 49 14.25
+      visible 1
+      decoration
+      forecolor CENTERED_GREY_R CENTERED_GREY_G CENTERED_GREY_B CENTERED_GREY_A
+      ownerdraw CG_PLAYER_CREDITS_VALUE
+    }   
+
+    //HEALTH
+    itemDef
+    {
+      name "health"
+      rect 4 438 60 15
+      visible 1
+      decoration
+      forecolor CENTERED_GREY_R CENTERED_GREY_G CENTERED_GREY_B CENTERED_GREY_A
+      ownerdraw CG_PLAYER_HEALTH
+    }
+
+    //WEAPON ICON
+    itemDef
+    {
+      name "weapon"
+      rect 182 436 18 18
+      visible 1
+      decoration
+      forecolor MINIMAL_BLUE_R MINIMAL_BLUE_G MINIMAL_BLUE_B MINIMAL_BLUE_A
+      ownerdraw CG_PLAYER_WEAPONICON
+    }
+
+    //AMMO
+    itemDef
+    {
+      name "ammo"
+      rect 182 438 60 15
+      visible 1
+      decoration
+      forecolor CENTERED_GREY_R CENTERED_GREY_G CENTERED_GREY_B CENTERED_GREY_A
+      ownerdraw CG_PLAYER_AMMO_VALUE
+    }
+
+  // AMMO CLIP SLASH
+  itemDef
+    {
+      name "slash"
+      rect 247 436 60 15
+      visible 1
+      decoration
+      forecolor CENTERED_GREY_R CENTERED_GREY_G CENTERED_GREY_B CENTERED_GREY_A
+      textscale 0.3
+      text "/"
+     }
+
+    //CLIPS
+    itemDef
+    {
+      name "clips"
+      rect 206 438 60 15
+      visible 1
+      decoration
+      forecolor CENTERED_GREY_R CENTERED_GREY_G CENTERED_GREY_B CENTERED_GREY_A
+      ownerdraw CG_PLAYER_CLIPS_VALUE
+    }
+
+    //BUILD TIMER
+    itemDef 
+    {
+	name "buildtimer"
+	rect 305 225 30 30
+	visible MENU_TRUE
+	decoration
+	forecolor MINIMAL_DARK_R MINIMAL_DARK_G MINIMAL_DARK_B MINIMAL_DARK_A
+	ownerdraw CG_PLAYER_BUILD_TIMER
+    }
+
+    //SELECTED
+    itemDef
+    {
+      name "selected"
+      rect 630 230 20 20
+	  visible MENU_TRUE
+	  decoration
+	  forecolor MINIMAL_DARK_R MINIMAL_DARK_G MINIMAL_DARK_B MINIMAL_DARK_A
+	  style WINDOW_STYLE_SHADER
+	  background "gui/assets/neutral/circle.tga"
+    }
+
+    //INVENTORY
+    itemDef
+    {
+	name "inventory"
+	rect 620 152.5 19 175
+	visible MENU_TRUE
+	decoration
+	forecolor MINIMAL_BLUE_R MINIMAL_BLUE_G MINIMAL_BLUE_B MINIMAL_BLUE_A
+	ownerdraw CG_PLAYER_SELECT
+    }
+
+  }
+}

@@ -1,0 +1,75 @@
+//
+// Unvanquished particles file for the map
+// Vega industries: Research Outpust 13
+//
+
+// bubbles for the plant aquarium
+particles/vega_custom/bubbles
+{
+	ejector
+	{
+		particle
+		{
+		shader sync textures/vega_custom/water_bubble
+		displacement -4 -4 -4 ~8
+
+		velocityType		static
+		velocityDir		linear
+		velocityMagnitude	15	
+		velocity		0 0 100 ~1
+
+		accelerationType        static
+		accelerationDir         linear
+		acceleration            0 0 150 ~1
+		accelerationMagnitude   10
+
+		bounce                  0
+		// radius <delay> <initial> <final>
+		radius                  0 0.125~0.025 0.25 
+		// alpha <delay> <initial> <final>
+		alpha                   0 0.7~0.1 1.0
+//		rotation                0 ~360 -
+		lifetime                800
+		}
+
+	count infinite
+	delay 0
+	period 50 - ~10%
+	}
+	
+}
+
+// smoke for the chimney at the office exterior
+particles/vega_custom/smoke
+{
+	ejector
+	{
+		particle
+		{
+		shader sync textures/vega_custom/smoke
+		displacement -16 -16 -16 ~32
+		
+		velocityType		static
+		velocityDir		linear
+		velocityMagnitude	50	
+		velocity		0 0 50 ~10
+		
+		accelerationType        static
+                accelerationDir         linear
+                acceleration            -55 0 30 ~5
+                accelerationMagnitude   50
+                
+                bounce                  0
+		// radius <delay> <initial> <final>
+		radius                  0 24~6 128 
+		// alpha <delay> <initial> <final>
+		alpha                   0 0.3~0.1 0.0
+		rotation                0 ~360 -
+		lifetime              	10000
+		}
+	
+	count infinite
+	delay 0
+	period 80 - ~15%
+	}
+}

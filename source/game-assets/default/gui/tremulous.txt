@@ -1,0 +1,20 @@
+// menu defs
+//
+{
+  loadMenu { "gui/ingame/tremulous_teamselect.menu" }
+  loadMenu { "gui/ingame/tremulous_alienclass.menu" }
+  loadMenu { "gui/ingame/tremulous_humanitem.menu" }
+
+  loadMenu { "gui/ingame/tremulous_alienbuild.menu" }
+  loadMenu { "gui/ingame/tremulous_humanbuild.menu" }
+
+  loadMenu { "gui/ingame/tremulous_humanarmoury.menu" }
+
+  loadMenu { "gui/ingame/tremulous_humandialogs.menu" }
+  loadMenu { "gui/ingame/tremulous_aliendialogs.menu" }
+
+  loadMenu { "gui/ingame/tremulous_alienupgrade.menu" }
+
+  loadMenu { "gui/ingame/ptrc.menu" }
+  loadMenu { "gui/ingame/say.menu" }
+}

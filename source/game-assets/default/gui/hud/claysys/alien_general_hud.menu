@@ -1,0 +1,39 @@
+#include "gui/menudef.h"
+#define W         640
+#define H         480
+#define CROSSHAIRVISABLE 1
+
+{
+  menuDef
+  {
+    name "alien_general_hud"
+    fullScreen MENU_FALSE
+    aspectBias ASPECT_NONE
+    visible MENU_TRUE
+    rect 0 0 W H
+
+#include "gui/hud/claysys/alien_common_hud.cfg"
+
+    // Health Value "000"
+    itemDef
+    {
+      name "health-value"
+      rect 273 425 75 15
+      visible MENU_TRUE
+      decoration
+      forecolor CLAY_ALIEN_FORECOLOR_RED CLAY_ALIEN_FORECOLOR_GREEN CLAY_ALIEN_FORECOLOR_BLUE COMMON_FULLALPHA      
+//      addcolorrange 0 24 0.1 0.1 0.1 1
+//      addcolorrange 25 49 0.2 0.2 0.2 1
+//      addcolorrange 50 74 0.3 0.3 0.3 1
+//      addcolorrange 75 99 0.4 0.4 0.4 1
+//      addcolorrange 100 149 0.5 0.5 0.5 1
+//      addcolorrange 150 199 0.6 0.4 0.4 1
+//      addcolorrange 200 249 0.7 0.3 0.3 1
+//      addcolorrange 250 299 0.8 0.2 0.2 1
+//      addcolorrange 300 349 0.9 0.1 0.1 1
+//      addcolorrange 350 400 1 0.05 0.05 1
+      ownerdraw CG_PLAYER_HEALTH
+    }
+
+  }
+}

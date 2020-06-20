@@ -1,0 +1,128 @@
+May 24, 2011
+=============================================================================
+
+Title                   : Advanced Tremulous Combat Simulator
+
+Filename                : map-atcshd.pk3
+
+Authors                 : Nicolas "jex" Jansens (original)
+                          Superpie & Ingar (this release)
+
+Web Site(s)             : http://tremulous.net
+
+Description             : Map for the open source game Tremulous
+                          http://www.tremulous.net
+
+Credits to              : ID-Software for Quake III Arena,
+                          darklegion for Tremulous
+
+=============================================================================
+
+ADVANCED TREMULOUS COMBAT SIMULATOR
+
+	A combat training simulator pitting mercenaries against vicious aliens.
+
+	This is an updated version of the Advanced Tactical Combat Simulator
+	for Tremulous 1.1. Most of the textures were replaced with higher
+	resolution versions and locations were added.
+	
+	The original map was made by Jex, the textures were updated by Superpie,
+	the map was updated by Ingar. For the occasion, the map was renamed to
+	"Advanced Tremulous Combat Simulator".
+	
+SKYBOX
+	
+	"Wasteland" by Ingar
+	http://ingar.satgnu.net
+
+TEXTURES
+
+	The original ATCS used textures by 
+
+		Yves "evil lair" Allaire
+		http://evillair.net
+
+                Simon "sock" o'Callaghan
+		http://www.simonoc.com/
+                
+		Nicolas "jex" Jansens
+		jex@orodu.net
+
+	The original textures were replaced with the high resolution
+	texture pack by "Superpie". The replacements used the originals
+	as reference material and used the following texture set as 
+	source material
+
+		Georges "TRaK" Grondin
+		http://www.mercenariesguild.net/trak/
+	
+		trak4_tile2b_atcshd is an edited verion of the original to match
+		eq2_floor4.
+	
+	webtreats_metal_1 was created by 
+
+		Mysitemyway Design Team
+		http://webtreats.mysitemyway.com/8-tileable-metal-textures/
+
+		This resource is free for personal and commercial use ~ no attribution necessary.
+
+		I corrected the color of the original texture to match eq2_floor5.
+
+	ing1_base01a by Ingar
+
+	atcshd-pipe.jpg by Ingar, with Superie's texture set as source material.
+
+SOUNDS
+
+	firework.wav from the original ATCS
+	ing_fan02.wav and ing_noiseloop2.wav by Ingar
+
+THANKS
+
+	Jex the Master Mapper
+	Cheers to norfenstein, ravyn, timbo, who-[soup], lakitu7
+	
+OTHER NOTICES
+
+	Textures by Georges Grondin fall under this license:
+	http://creativecommons.org/licenses/by-sa/2.0/
+
+BUILDING
+
+	number of brushes		2537
+	number of patch meshes		108
+	build time			13 minutes 20 seconds (AMD Phenom II X4 955)
+
+	q3map2 -leaktest -samplesize 8 -meta atcshd.map
+	q3map2 -vis -saveprt -hint atcshd.map
+	q3map2 -light -fast -shade -dirty -patchshadows -randomsamples -samples 3 -bounce 8 -bouncegrid -cpma atcshd.map
+
+HISTORY
+
+	2011-05-24
+		ATCS HD gpp2 released.
+		Replaced the skybox, tuned sky light.
+		Added small lights to the base front entrances.
+		Replaced fan texture with real fans.
+		Tuned down the tunnel fog.
+		Corrected some ghost lights in the bunker.
+		Replaced eq2_floor_5 with webtreats_metal_1.
+		Replaced rust2 with ing1_base01a.
+		Replaced eq_floor04 with trak4_tile2b_atcshd.
+		Replaced pipe texture.
+		Added smoke machine to the tunnel midway.
+
+	2010-12-16
+		ATCS HD gpp1 released.
+		Replaced ATCS textures with Superpie's high-resolution pack.
+		Changed the texturing to match the high-res textures.
+		Added target_location entities.
+		Caulked a number of unseen brush faces.
+		Added fog to the lowest point of the tunnel.
+
+	2006-03-31
+		Tremulous 1.1 released.
+
+	2005-08-11
+		ATCS released.
+

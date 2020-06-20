@@ -1,0 +1,159 @@
+#include "gui/menudef.h"
+
+{
+
+#define W         640
+#define H         480
+#define CHATMENU_HEIGHT 262
+
+  menuDef
+  {
+    name "human_hud"
+    fullScreen MENU_FALSE
+    aspectBias ASPECT_NONE
+    visible MENU_TRUE
+    rect 0 0 W H
+
+#include "gui/hud/common/common.cfg"
+#include "gui/hud/common/human.cfg"
+#include "gui/hud/common/chatmenu_human.cfg"
+
+    //LEFT ARM
+    itemDef
+    {
+      name "left-arm"
+      rect -34 219.05 107.73 39.9
+      visible 1
+      decoration
+      forecolor CENTERED_DARK_R CENTERED_DARK_G CENTERED_DARK_B CENTERED_DARK_A
+      style WINDOW_STYLE_SHADER
+      background "gui/assets/human/right-arm.tga"
+    }   
+
+    //RIGHT ARM
+    itemDef
+    {
+      name "right-arm"
+      rect 545 220.05 107.73 39.9
+      visible 1
+      decoration
+      forecolor CENTERED_DARK_R CENTERED_DARK_G CENTERED_DARK_B CENTERED_DARK_A
+      style WINDOW_STYLE_SHADER
+      background "gui/assets/human/right-arm.tga"
+    }   
+
+    //CREDITS
+    itemDef
+    {
+      name "credits"
+      rect 297.5 448 45 11.25
+      visible 1
+      decoration
+      forecolor HIGHVIS_LGREEN_R HIGHVIS_LGREEN_G HIGHVIS_LGREEN_B HIGHVIS_LGREEN_A
+      ownerdraw CG_PLAYER_CREDITS_VALUE
+    }   
+
+    //HEALTH
+    itemDef
+    {
+      name "health"
+      rect -25 229.875 81 20.25
+      visible 1
+      decoration
+      forecolor 0.75 0.0 0.0 1.0
+      addColorRange 0 33 0.75 0.0 0.0 1
+      addColorRange 33 66 0.75 1.0 0.0 1
+      addColorRange 66 99 0.25 1.0 0.25 1
+      addColorRange 99 100 0.25 0.75 0.25 1
+      ownerdraw CG_PLAYER_HEALTH
+    }
+
+    //AMMO
+    itemDef
+    {
+      name "ammo"
+      rect 557 229.875 81 20.25
+      visible 1
+      decoration
+      forecolor HIGHVIS_LGREEN_R HIGHVIS_LGREEN_G HIGHVIS_LGREEN_B HIGHVIS_LGREEN_A
+      addColorRange 0 0 0.75 0.0 0.0 1
+      addColorRange 1 1 0.75 1.0 0.0 1
+      ownerdraw CG_PLAYER_AMMO_VALUE
+    }
+
+    //CLIPS
+    itemDef
+    {
+      name "clips"
+      rect 493 230 81 20.25
+      visible 1
+      decoration
+      forecolor HIGHVIS_LGREEN_R HIGHVIS_LGREEN_G HIGHVIS_LGREEN_B HIGHVIS_LGREEN_A
+      addColorRange 0 0 0.75 0.0 0.0 0.0
+      addColorRange 1 1 0.75 1.0 0.0 1
+      ownerdraw CG_PLAYER_CLIPS_VALUE
+    }
+
+    //BUILD TIMER
+    itemDef 
+    {
+	name "buildtimer"
+        rect 312.5 232.5 15 15
+	visible MENU_TRUE
+	decoration
+      forecolor HIGHVIS_LGREEN_R HIGHVIS_LGREEN_G HIGHVIS_LGREEN_B HIGHVIS_LGREEN_A
+	ownerdraw CG_PLAYER_BUILD_TIMER
+    }
+
+    //SELECTED
+    itemDef
+    {
+      name "selected"
+      rect 308 422 25 25
+	  visible MENU_TRUE
+	  decoration
+	  forecolor HIGHVIS_LGREEN_R HIGHVIS_LGREEN_G HIGHVIS_LGREEN_B HIGHVIS_LGREEN_A
+	  style WINDOW_STYLE_SHADER
+	  background "gfx/2d/crosshair-lcannon.tga"
+    }
+
+    //INVENTORY
+    itemDef
+    {
+	name "inventory"
+	rect 235 425 170 19
+	visible MENU_TRUE
+	decoration
+        forecolor HIGHVIS_LGREEN_R HIGHVIS_LGREEN_G HIGHVIS_LGREEN_B HIGHVIS_LGREEN_A
+	ownerdraw CG_PLAYER_SELECT
+	}
+
+    //STAMINA %
+      itemDef {
+      rect 94 234 10 10
+      visible MENU_TRUE
+      decoration
+      forecolor HIGHVIS_LGREEN_R HIGHVIS_LGREEN_G HIGHVIS_LGREEN_B HIGHVIS_LGREEN_A
+      background "gfx/2d/numbers/three_32b.tga"
+      ownerdraw CG_PLAYER_STAMINA_1
+      }
+      itemDef {
+      rect 80.5 234 10 10
+      visible MENU_TRUE
+      decoration
+      forecolor 0.0 1.0 1.0 1.0
+      forecolor HIGHVIS_LGREEN_R HIGHVIS_LGREEN_G HIGHVIS_LGREEN_B HIGHVIS_LGREEN_A
+      background "gfx/2d/numbers/two_32b.tga"
+      ownerdraw CG_PLAYER_STAMINA_2
+      }
+      itemDef {
+      rect 68 234 10 10
+      visible MENU_TRUE
+      decoration
+      forecolor HIGHVIS_LGREEN_R HIGHVIS_LGREEN_G HIGHVIS_LGREEN_B HIGHVIS_LGREEN_A
+      background "gfx/2d/numbers/one_32b.tga"
+      ownerdraw CG_PLAYER_STAMINA_3
+      }
+
+  }
+}

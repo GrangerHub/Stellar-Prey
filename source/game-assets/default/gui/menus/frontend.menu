@@ -1,0 +1,496 @@
+//includes
+#include "gui/frontend.h"
+#include "gui/menudef.h"
+#include "gui/hud/common/colours.cfg"
+
+{
+	assetGlobalDef
+	{
+		font "fonts/font" 26        					// font
+		smallFont "fonts/smallfont" 20        			// font
+		bigFont "fonts/bigfont" 34        				// font
+		cursor "gui/assets/3_cursor3"      				// cursor 
+		gradientBar "gui/assets/gradientbar2.tga"  		// gradient bar
+		itemFocusSound "gui/assets/sounds/button.ogg" 	// sound for item getting focus (via keyboard or mouse )
+		fadeClamp 1.0         							// sets the fadeup alpha
+		fadeCycle 1         							// how often fade happens in milliseconds
+		fadeAmount 0.1        					  		// amount to adjust alpha per cycle
+		shadowColor 0.1 0.1 0.1 0.25      				// shadow color
+	}
+
+	menuDef
+	{
+		name main
+		fullScreen MENU_TRUE
+		rect 0 0 W H        													// Size and position of the menu
+		visible MENU_TRUE       												// Visible on open
+		focusColor COMMON_GOLD_R COMMON_GOLD_G COMMON_GOLD_B COMMON_FULLALPHA   // Menu focus color for text and items
+		background "gui/assets/background"
+		aspectBias ASPECT_NONE
+
+		onOpen 
+		{ 
+			uiScript stopRefresh; 
+			playlooped "gui/assets/sounds/Menu Music.ogg" 
+
+			//see if there is an update available
+			conditionalscript cl_autoupdate 1
+			( "checkautoupdate" )
+			( "clearFocus" )
+			
+			transition playmainmenu 10 10 10 10 10 5 65 60 20 20
+			transition modsmenu 10 10 10 10 90 5 65 60 20 20
+			transition optionsmenu 10 10 10 10 165 5 65 60 20 20
+			transition demomenu 10 10 10 10 245 5 65 60 20 20
+			transition screenshotsmenu 10 10 10 10 325 5 65 60 20 20
+			transition creditsmenu 10 10 10 10 405 5 65 60 20 20
+			transition profilesmenu 10 10 10 10 90 5 65 60 20 20
+			transition quitmenu 10 10 10 10 570 5 65 60 20 20
+		}
+		
+		itemDef
+		{
+			name playmainmenu
+			text "Play Online"
+			rect BUTT_BAR_X BUTT_BAR_Y BUTT_W BUTT_H
+			type ITEM_TYPE_BUTTON
+			style WINDOW_STYLE_EMPTY
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			textalign ALIGN_CENTER
+			textvalign VALIGN_CENTER
+			textscale .4
+			forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA
+			visible MENU_TRUE
+			mouseEnter 
+			{ 
+				fadein playmsg;
+			}
+			mouseExit 
+			{ 
+				fadeout playmsg;
+			}
+			action
+			{
+				play "sound/misc/menu1.wav"; 
+				hide underline;
+				show playline;
+				open joinserver;
+			}
+		}
+
+		itemDef
+		{
+			name playline
+			group underline
+			rect BUTT_BAR_X (BUTT_BAR_H+10) BUTT_W 0.5
+			style WINDOW_STYLE_SHADER
+			backcolor 0 0 0 1
+			visible MENU_FALSE
+			decoration
+			background "gui/assets/gradientbar2.tga"
+		}
+
+		itemDef
+		{
+			name playmsg
+			text "Join a Server"
+			style WINDOW_STYLE_EMPTY
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			textscale .25
+			rect BUTT_BAR_X (BUTT_BAR_Y+25) BUTT_W BUTT_H
+			textalign ALIGN_CENTER
+			textvalign VALIGN_CENTER
+			forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B 0
+			visible MENU_FALSE
+			decoration
+		}
+
+		itemDef
+		{
+			name modsmenu
+			text "Mods"
+			rect (BUTT_BAR_X+BUTT_W) BUTT_BAR_Y BUTT_W BUTT_H
+			type ITEM_TYPE_BUTTON
+			style WINDOW_STYLE_EMPTY
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			textvalign VALIGN_CENTER
+			textscale .4
+			textalign ALIGN_CENTER
+			forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA
+			visible MENU_TRUE
+			mouseEnter 
+			{ 
+				fadein modmsg 
+			}
+			mouseExit 
+			{ 
+				fadeout modmsg 
+			}
+			action
+			{
+				play "sound/misc/menu1.wav"; 
+				hide underline;
+				show modline;
+				open modmenu;
+			}
+		}
+
+		itemDef
+		{
+			name modline
+			group underline
+			rect (BUTT_BAR_X+BUTT_W) (BUTT_BAR_H+10) BUTT_W 0.5
+			style WINDOW_STYLE_SHADER
+			backcolor 0 0 0 1
+			visible MENU_FALSE
+			decoration
+			background "gui/assets/gradientbar2.tga"
+		}
+
+		itemDef
+		{
+			name modmsg
+			text "Load a Downloaded Mod"
+			style WINDOW_STYLE_EMPTY
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			textscale .25
+			rect (BUTT_BAR_X+BUTT_W) (BUTT_BAR_Y+25) BUTT_W BUTT_H
+			textalign ALIGN_CENTER
+			textvalign VALIGN_CENTER
+			forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B 0
+			visible MENU_FALSE
+			decoration
+		}
+
+		itemDef
+		{
+			name optionsmenu
+			text "Options"
+			rect (BUTT_BAR_X+(2*BUTT_W)) BUTT_BAR_Y BUTT_W BUTT_H
+			type ITEM_TYPE_BUTTON
+			style WINDOW_STYLE_EMPTY
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			textalign ALIGN_CENTER
+			textvalign VALIGN_CENTER
+			textscale .4
+			forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA
+			visible MENU_TRUE
+			mouseEnter 
+			{ 
+				fadein optionsmsg 
+			}
+			mouseExit 
+			{ 
+				fadeout optionsmsg 
+			}
+			action
+			{
+				play "sound/misc/menu1.wav";
+				hide underline;
+				show optionline;
+				open main_options;
+			}
+		}
+
+		itemDef
+		{
+			name optionline
+			group underline
+			rect (BUTT_BAR_X+(2*BUTT_W)) (BUTT_BAR_H+10) BUTT_W 0.5
+			style WINDOW_STYLE_SHADER
+			backcolor 0 0 0 1
+			visible MENU_FALSE
+			background "gui/assets/gradientbar2.tga"
+		}
+
+		itemDef
+		{
+			name optionsmsg
+			text "Change Game Settings"
+			style WINDOW_STYLE_EMPTY
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			textscale .25
+			rect (BUTT_BAR_X+(2*BUTT_W)) (BUTT_BAR_Y+25) BUTT_W BUTT_H
+			textalign ALIGN_CENTER
+			textvalign VALIGN_CENTER
+			forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B 0
+			visible MENU_FALSE
+			decoration
+		}
+
+		itemDef
+		{
+			name demomenu
+			text "Demos"
+			rect (BUTT_BAR_X+(3*BUTT_W)) BUTT_BAR_Y BUTT_W BUTT_H
+			type ITEM_TYPE_BUTTON
+			style WINDOW_STYLE_EMPTY
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			textalign ALIGN_CENTER
+			textvalign VALIGN_CENTER
+			textscale .4
+			forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA
+			visible MENU_TRUE
+			mouseEnter 
+			{ 
+				fadein demomsg 
+			}
+			mouseExit 
+			{ 
+				fadeout demomsg 
+			}
+			action
+			{
+				play "sound/misc/menu1.wav"; 
+				hide underline;
+				show demoline;
+				open demo;
+			}
+		}
+
+		itemDef
+		{
+			name demoline
+			group underline
+			rect (BUTT_BAR_X+(3*BUTT_W)) (BUTT_BAR_H+10) BUTT_W 0.5
+			style WINDOW_STYLE_SHADER
+			backcolor 0 0 0 1
+			visible MENU_FALSE
+			decoration
+			background "gui/assets/gradientbar2.tga"
+		}
+
+		itemDef
+		{
+			name demomsg
+			text "Watch Recorded Games"
+			style WINDOW_STYLE_EMPTY
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			textscale .25
+			rect (BUTT_BAR_X+(3*BUTT_W)) (BUTT_BAR_Y+25) BUTT_W BUTT_H
+			textalign ALIGN_CENTER
+			textvalign VALIGN_CENTER
+			forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B 0
+			visible MENU_FALSE
+			decoration
+		}
+
+		itemDef
+		{
+			name screenshotsmenu
+			text "Screenshots"
+			rect (BUTT_BAR_X+(4*BUTT_W)) BUTT_BAR_Y BUTT_W BUTT_H
+			type ITEM_TYPE_BUTTON
+			style WINDOW_STYLE_EMPTY
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			textalign ALIGN_CENTER
+			textvalign VALIGN_CENTER
+			textscale .4
+			forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA
+			visible MENU_TRUE
+			mouseEnter 
+			{ 
+				fadein screenmsg 
+			}
+			mouseExit 
+			{ 
+				fadeout screenmsg 
+			}
+			action
+			{
+				play "sound/misc/menu1.wav";
+				hide underline;
+				show screenline;
+				open shots;
+			}
+		}
+
+		itemDef
+		{
+			name screenline
+			group underline
+			rect (BUTT_BAR_X+(4*BUTT_W)) (BUTT_BAR_H+10) BUTT_W 0.5
+			style WINDOW_STYLE_SHADER
+			backcolor 0 0 0 1
+			visible MENU_FALSE
+			background "gui/assets/gradientbar2.tga"
+		}
+
+		itemDef
+		{
+			name screenmsg
+			text "View Saved Screenshots"
+			style WINDOW_STYLE_EMPTY
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			textscale .25
+			rect (BUTT_BAR_X+(4*BUTT_W)) (BUTT_BAR_Y+25) BUTT_W BUTT_H
+			textalign ALIGN_CENTER
+			textvalign VALIGN_CENTER
+			forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B 0
+			visible MENU_FALSE
+			decoration
+		}
+
+		itemDef
+		{
+			name creditsmenu
+			text "Credits"
+			rect (BUTT_BAR_X+(5*BUTT_W)) BUTT_BAR_Y BUTT_W BUTT_H
+			type ITEM_TYPE_BUTTON
+			style WINDOW_STYLE_EMPTY
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			textalign ALIGN_CENTER
+			textvalign VALIGN_CENTER
+			textscale .4
+			forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA
+			visible MENU_TRUE
+			mouseEnter 
+			{ 
+				fadein creditmsg 
+			}
+			mouseExit 
+			{ 
+				fadeout creditmsg 
+			}
+			action
+			{
+				play "sound/misc/menu1.wav";
+				hide underline;
+				show creditline;
+				open credits;
+			}
+		}
+
+		itemDef
+		{
+			name creditline
+			group underline
+			rect (BUTT_BAR_X+(5*BUTT_W)) (BUTT_BAR_H+10) BUTT_W 0.5
+			style WINDOW_STYLE_SHADER
+			backcolor 0 0 0 1
+			visible MENU_FALSE
+			decoration
+			background "gui/assets/gradientbar2.tga"
+		}
+
+		itemDef
+		{
+			name creditmsg
+			text "Game Credits and Special Thanks"
+			style WINDOW_STYLE_EMPTY
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			textscale .25
+			rect (BUTT_BAR_X+(5*BUTT_W)) (BUTT_BAR_Y+25) BUTT_W BUTT_H
+			textalign ALIGN_CENTER
+			textvalign VALIGN_CENTER
+			forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B 0
+			visible MENU_FALSE
+			decoration
+		}
+
+		itemDef
+		{
+			name quitmenu
+			text "Quit"
+			rect (BUTT_BAR_X+(7*BUTT_W)) BUTT_BAR_Y BUTT_W BUTT_H
+			type ITEM_TYPE_BUTTON
+			style WINDOW_STYLE_EMPTY
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			textalign ALIGN_CENTER
+			textvalign VALIGN_CENTER
+			textscale .4
+			forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA
+			visible MENU_TRUE
+			mouseEnter 
+			{ 
+				fadein quitmsg 
+			}
+			mouseExit 
+			{ 
+				fadeout quitmsg 
+			}
+			action
+			{
+				play "sound/misc/menu1.wav"; 
+				uiScript "quit"
+			}
+		}
+
+		itemDef
+		{
+			name quitmsg
+			text "Are You Sure?"
+			style WINDOW_STYLE_EMPTY
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			textscale .25
+			rect (BUTT_BAR_X+(7*BUTT_W)) (BUTT_BAR_Y+25) BUTT_W BUTT_H
+			textalign ALIGN_CENTER
+			textvalign VALIGN_CENTER
+			forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B 0
+			visible MENU_FALSE
+			decoration
+		}
+
+		itemDef
+		{
+			name playername
+			type ITEM_TYPE_EDITFIELD
+			text "Name:"
+			cvar "name"
+			rect 20 (H-60) 200 10
+			maxchars 40
+			textalign ALIGN_LEFT
+			textvalign VALIGN_CENTER
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			textscale 0.25
+			forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA
+			visible MENU_TRUE
+		}
+
+		itemDef
+		{
+			name refreshdate
+			ownerdraw UI_SERVERREFRESHDATE
+			textscale .25
+			rect 20 (H-30) 200 10
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			textalign ALIGN_LEFT
+			textvalign VALIGN_CENTER
+			forecolor 1 1 1 1
+			visible 1
+			decoration 
+		}
+
+		itemDef
+		{
+			name testingbuild
+			text "Testing Build Version 0.1.2"
+			rect (W-60) (H-60) 40 10
+			style WINDOW_STYLE_EMPTY
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			textscale .25
+			textalign ALIGN_RIGHT
+			textvalign VALIGN_CENTER
+			forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA
+			visible MENU_TRUE
+			decoration
+		}
+
+
+		itemDef
+		{
+			name copyright
+			text "TremZ : Resurrection (C) 2019"
+			rect (W-60) (H-30) 40 10
+			style WINDOW_STYLE_EMPTY
+			textstyle ITEM_TEXTSTYLE_SHADOWED
+			textscale .25
+			textalign ALIGN_RIGHT
+			textvalign VALIGN_CENTER
+			forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA
+			visible MENU_TRUE
+			decoration
+		}
+
+	}
+}

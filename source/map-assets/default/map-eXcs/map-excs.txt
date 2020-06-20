@@ -1,0 +1,3 @@
+eX Combat Simulator - By Mega, aka Odin
+
+ATCS with eX texture set, based off the work of Ingar, who made ATCSHD. This map requires the eX texture pack to function correctly.

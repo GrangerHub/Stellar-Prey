@@ -1,0 +1,293 @@
+eXcs/firework_red
+{
+	ejector
+	{
+		particle
+		{
+		shader sync textures/eXcs/burst_red_s
+		displacement 0 0 0 ~5
+
+		velocityType		static
+	
+		velocityDir			linear
+	
+		velocityMagnitude		700
+		velocity			0 0 1 ~10
+
+		accelerationType		static
+		accelerationDir		linear
+		acceleration		0 0 -1 ~35
+		accelerationMagnitude	500
+
+		radius		100 2 22
+		alpha			250 0 1
+		rotation		0 ~360 ~360
+		bounce		0.0
+
+		lifeTime 1200
+
+		overdrawProtection
+		}
+
+		particle
+		{
+		shader sync textures/eXcs/burst_red_s
+		displacement 0 0 0 ~5
+
+		velocityType		static
+	
+		velocityDir			linear
+	
+		velocityMagnitude		750
+		velocity			0 0 1 ~10
+
+		accelerationType		static
+		accelerationDir		linear
+		acceleration		0 0 -1 ~35
+		accelerationMagnitude	500
+
+		radius		100 2 22
+		alpha			450 0 1
+		rotation		0 ~360 ~360
+		bounce		0.0
+
+		lifeTime 1300
+
+		overdrawProtection
+		}
+
+		particle
+		{
+		shader sync textures/eXcs/burst_red_s
+		displacement 0 0 0 ~5
+
+		velocityType		static
+	
+		velocityDir			linear
+	
+		velocityMagnitude		600
+		velocity			0 0 1 ~10
+
+		accelerationType		static
+		accelerationDir		linear
+		acceleration		0 0 -1 ~35
+		accelerationMagnitude	500
+
+		radius		100 2 22
+		alpha			250 0 1
+		rotation		0 ~360 ~360
+		bounce		0.0
+
+		lifeTime 1400
+
+		overdrawProtection
+		}
+
+		particle
+		{
+		shader sync textures/eXcs/burst_red_s
+		displacement 0 0 0 ~5
+
+		velocityType		static
+	
+		velocityDir			linear
+	
+		velocityMagnitude		650
+		velocity			0 0 1 ~10
+
+		accelerationType		static
+		accelerationDir		linear
+		acceleration		0 0 -1 ~35
+		accelerationMagnitude	500
+
+		radius		100 2 22
+		alpha			450 0 1
+		rotation		0 ~360 ~360
+		bounce		0.0
+
+		lifeTime 1500
+
+		overdrawProtection
+		}
+	count infinite
+	delay 0
+	period 1 - ~0%
+	}
+
+	ejector
+	{
+		particle
+		{
+		dynamiclight 0 1000 0 { 1 0.5 0.5 }
+		lifeTime 1000
+		}
+	count 1
+	delay 0
+	period 1 - ~0%
+	}
+}
+
+
+eXcs/firework_blue
+{
+	ejector
+	{
+		particle
+		{
+		shader sync textures/eXcs/burst_blue_s
+		displacement 0 0 0 ~5
+
+		velocityType		static
+	
+		velocityDir			linear
+	
+		velocityMagnitude		700
+		velocity			0 0 1 ~10
+
+		accelerationType		static
+		accelerationDir		linear
+		acceleration		0 0 -1 ~35
+		accelerationMagnitude	500
+
+		radius		100 2 22
+		alpha			250 0 1
+		rotation		0 ~360 ~360
+		bounce		0.0
+
+		lifeTime 1200
+
+		overdrawProtection
+		}
+
+		particle
+		{
+		shader sync textures/eXcs/burst_blue_s
+		displacement 0 0 0 ~5
+
+		velocityType		static
+	
+		velocityDir			linear
+	
+		velocityMagnitude		750
+		velocity			0 0 1 ~10
+
+		accelerationType		static
+		accelerationDir		linear
+		acceleration		0 0 -1 ~35
+		accelerationMagnitude	500
+
+		radius		100 2 22
+		alpha			450 0 1
+		rotation		0 ~360 ~360
+		bounce		0.0
+
+		lifeTime 1300
+
+		overdrawProtection
+		}
+
+		particle
+		{
+		shader sync textures/eXcs/burst_blue_s
+		displacement 0 0 0 ~5
+
+		velocityType		static
+	
+		velocityDir			linear
+	
+		velocityMagnitude		600
+		velocity			0 0 1 ~10
+
+		accelerationType		static
+		accelerationDir		linear
+		acceleration		0 0 -1 ~35
+		accelerationMagnitude	500
+
+		radius		100 2 22
+		alpha			250 0 1
+		rotation		0 ~360 ~360
+		bounce		0.0
+
+		lifeTime 1400
+
+		overdrawProtection
+		}
+
+		particle
+		{
+		shader sync textures/eXcs/burst_blue_s
+		displacement 0 0 0 ~5
+
+		velocityType		static
+	
+		velocityDir			linear
+	
+		velocityMagnitude		650
+		velocity			0 0 1 ~10
+
+		accelerationType		static
+		accelerationDir		linear
+		acceleration		0 0 -1 ~35
+		accelerationMagnitude	500
+
+		radius		100 2 22
+		alpha			450 0 1
+		rotation		0 ~360 ~360
+		bounce		0.0
+
+		lifeTime 1500
+
+		overdrawProtection
+		}
+	count infinite
+	delay 0
+	period 1 - ~0%
+	}
+
+	ejector
+	{
+		particle
+		{
+		dynamiclight 0 1000 0 { 0.5 0.5 1 }
+		lifeTime 1000
+		}
+	count 1
+	delay 0
+	period 1 - ~0%
+	}
+}
+
+// original steam particle system, from karith
+// steam by jex - edited by godmil
+eXcs/steam
+{
+  ejector
+  {
+    particle
+    {
+      shader sync textures/eXcs/steam_s
+      displacement 0 -8 0 0
+
+      velocityType		static
+      velocityDir		linear
+      velocityMagnitude	150
+      velocity		0 -1 0 ~20
+
+      accelerationType	static
+      accelerationDir		linear
+      acceleration		0 0 1 ~5
+      accelerationMagnitude	25
+
+      radius		0 5 50
+      alpha		250 .5 0
+      rotation	0 ~360 ~360
+      bounce		0.0
+
+      lifeTime 1000
+    }
+
+    count infinite
+    delay 0
+    period 45 - ~0%
+  }
+}

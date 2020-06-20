@@ -1,0 +1,24 @@
+﻿TITLE			: U.T.C.S UD
+FILENAME		: map-utcsud_1.3_v1.1.pk3
+AUTHOR			: Matth (yalt) (matth2040@gmail.com)
+DATE			: 15.10.2016
+GAME			: Quake 3/Tremulous
+
+General license:
+Everyone is allowed to play this map on their pc or host it on their server/ provide a download link
+
+Textures by: 
+Name: evillair's Quake4 eX Texture Set
+Short Name: eX
+Author: Yves Allaire aka "evillair"
+Email: admin@evillair.net
+URL: http://evillair.net
+*All textures are edited by Matth 2016
+
+additional textures by:
+Matth
+GrangerHub ad texture based of material from www.grangerhub.com
+
+Sky graphics (SkyBox) by:
+Stijn "Ingar" Buys <ingar@osirion.org>
+

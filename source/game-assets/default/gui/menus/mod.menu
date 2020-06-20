@@ -1,0 +1,67 @@
+#include "gui/menudef.h"
+#include "gui/hud/common/colours.cfg"
+{
+  \\ MOD \\
+
+#define W           642
+#define H           320
+#define X           -2
+#define Y           80
+#define BORDER      30
+
+  menuDef
+  {
+    name "modmenu"
+    visible MENU_FALSE
+    aspectBias ASPECT_NONE
+    fullscreen MENU_FALSE
+    rect X Y W H
+    focusColor COMMON_GOLD_R COMMON_GOLD_G COMMON_GOLD_B COMMON_FULLALPHA
+    onOpen
+    {
+      uiScript loadMods;
+    }
+	onESC
+	{ 
+		close mod;
+		open main; 
+	}
+	
+    itemDef
+    {
+      name window
+      rect 0 0 W H
+      style WINDOW_STYLE_FILLED
+      backcolor 0 0 0 0.8
+      visible MENU_TRUE
+      decoration
+      border WINDOW_BORDER_KCGRADIENT
+      borderSize 1.0
+      borderColor 0.5 0.5 0.5 1
+    }
+
+    itemDef
+    {
+      name modlist
+      rect BORDER BORDER (W-(2*BORDER)) (H-(2*BORDER))
+      type ITEM_TYPE_LISTBOX
+      style WINDOW_STYLE_EMPTY
+      elementwidth 120
+      elementheight 20
+      textscale .25
+      elementtype LISTBOX_TEXT
+      feeder FEEDER_MODS
+      textalign 3
+      textaligny 14
+      forecolor     1   1   1   1
+      backcolor     0.2 0.2 0.2 1
+      outlinecolor  0.1 0.1 0.1 0.5
+      visible MENU_TRUE
+      doubleClick
+      {
+        play "sound/misc/menu1.wav"; 
+        uiScript RunMod
+      }
+    }
+  }
+}

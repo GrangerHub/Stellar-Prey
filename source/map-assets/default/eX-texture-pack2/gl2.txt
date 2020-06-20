@@ -1,0 +1,1 @@
+This pack is for the opengl2 renderer. It requires the opengl1 pack to function correctly. This pack stores eX.shader in order to trigger client download.

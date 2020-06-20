@@ -1,0 +1,22 @@
+// menu defs
+// 
+{ 
+  loadMenu { "gui/menus/frontend.menu" }
+  loadMenu { "gui/menus/connect.menu" }
+  loadMenu { "gui/menus/createfavorite.menu" }
+  loadMenu { "gui/menus/credit.menu" }
+  loadMenu { "gui/menus/demo.menu" }
+  loadMenu { "gui/menus/drop.menu" }
+  loadMenu { "gui/menus/error.menu" }
+  loadMenu { "gui/menus/findplayer.menu" }
+  loadMenu { "gui/menus/joinserver.menu" }
+  loadMenu { "gui/menus/mod.menu" }
+  loadMenu { "gui/menus/options.menu" }
+  loadMenu { "gui/menus/password.menu" }
+  loadMenu { "gui/menus/screenshots.menu" }
+  loadMenu { "gui/menus/serverinfo.menu" }
+  loadMenu { "gui/menus/loading.menu" }
+  loadMenu { "gui/menus/autoupdate.menu" }
+ loadMenu { "gui/menus/profilefirstrun.menu" }
+
+}

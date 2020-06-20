@@ -1,0 +1,55 @@
+#include "gui/menudef.h"
+#define W         640
+#define H         480
+#define CROSSHAIRVISABLE 1
+
+{
+  menuDef
+  {
+    name "alien_builder_hud"
+    fullScreen MENU_FALSE
+    aspectBias ASPECT_NONE
+    visible MENU_TRUE
+    rect 0 0 W H
+
+#include "gui/hud/claysys/alien_common_hud.cfg"
+
+    //Build Timer
+    itemDef
+    {
+      name "buildtimer"
+      rect 442 427.5 25 25
+      visible MENU_TRUE
+      decoration
+      forecolor CLAY_ALIEN_FORECOLOR_RED CLAY_ALIEN_FORECOLOR_GREEN CLAY_ALIEN_FORECOLOR_BLUE COMMON_FULLALPHA
+      ownerdraw CG_PLAYER_BUILD_TIMER
+    }
+
+    //Build Points
+    itemDef
+    {
+      name "build-points"
+      rect 364 431 60 15
+      visible MENU_TRUE
+      decoration
+      forecolor CLAY_ALIEN_FORECOLOR_RED CLAY_ALIEN_FORECOLOR_GREEN CLAY_ALIEN_FORECOLOR_BLUE COMMON_FULLALPHA
+      ownerdraw CG_PLAYER_AMMO_VALUE
+    }
+
+    // Health Value "00"
+    itemDef
+    {
+      name "health-value"
+      rect 264.5 425 75 15
+      visible MENU_TRUE
+      decoration
+      forecolor CLAY_ALIEN_FORECOLOR_RED CLAY_ALIEN_FORECOLOR_GREEN CLAY_ALIEN_FORECOLOR_BLUE COMMON_FULLALPHA
+//      addcolorrange 0 24 0.1 0.1 0.1 1
+//      addcolorrange 25 49 0.2 0.2 0.2 1
+//      addcolorrange 50 74 0.3 0.3 0.3 1
+//      addcolorrange 75 99 0.4 0.4 0.4 1
+      ownerdraw CG_PLAYER_HEALTH
+    } 
+
+  }
+}

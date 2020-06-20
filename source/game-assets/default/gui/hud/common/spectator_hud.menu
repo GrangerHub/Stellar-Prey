@@ -1,0 +1,20 @@
+#include "gui/menudef.h"
+#define CHATMENU_HEIGHT 262
+
+{
+#define W         640
+#define H         480
+
+  menuDef
+  {
+    name "default_hud"
+    fullScreen MENU_FALSE
+    visible MENU_TRUE
+    rect 0 0 W H
+    aspectBias ASPECT_NONE
+ 
+#include "gui/hud/common/common.cfg"
+#include "gui/hud/common/chatmenu_spec.cfg"
+
+  }
+}

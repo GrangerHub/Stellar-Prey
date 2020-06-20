@@ -1,0 +1,815 @@
+#include "gui/menudef.h"
+#include "gui/hud/common/colours.cfg"
+
+{
+
+#define W           642
+#define H           320
+#define X           -2
+#define Y           80
+#define BORDER      10
+
+#define SIDE_W       LIST_X
+#define SIDE_H       H
+#define SIDE_X       BORDER
+#define SIDE_Y       62
+#define SIDEBUTT_W   16
+#define SIDEBUTT_H   16
+
+#define BOT_W       W
+#define BOT_H       25
+#define BOT_X       -10
+#define BOT_Y       (H-BOT_H)
+#define BOTBUTT_W   (BOT_W/3)
+#define BOTBUTT_H   BOT_H
+
+#define SERVER_C    0.6
+#define MAP_C       0.2
+#define PLAYERS_C   0.1
+#define PING_C      0.1
+#define LIST_W      (W-(4*BORDER))
+#define LIST_H      H
+#define LIST_X      (3*BORDER)
+#define LIST_Y      -2
+#define LIST_TOFF   5
+#define HEADFOOT_H  25
+
+	menuDef
+	{
+		name "joinserver"
+		visible MENU_FALSE
+		aspectBias ASPECT_NONE
+		fullscreen MENU_FALSE
+		rect X Y W H
+		focusColor COMMON_GOLD_R COMMON_GOLD_G COMMON_GOLD_B COMMON_FULLALPHA
+		onOpen
+		{
+			uiScript InitServerList 3;
+			hide grpmessage;
+			uiScript UpdateFilter;
+		}
+		onESC 
+		{ 
+			open main; 
+		}
+
+		itemDef
+		{
+			name window
+			rect 0 0 W H
+			style WINDOW_STYLE_FILLED
+			backcolor 0 0 0 0.8
+			visible MENU_TRUE
+			decoration
+			border WINDOW_BORDER_KCGRADIENT
+			borderSize 1.0
+			borderColor 0.5 0.5 0.5 1
+		}
+
+		//BUTTONS//
+		itemDef
+		{
+			name refreshSource
+			rect SIDE_X SIDE_Y SIDEBUTT_W SIDEBUTT_H
+			type ITEM_TYPE_BUTTON
+			style WINDOW_STYLE_SHADER
+			background "gui/assets/getnewlist.tga"
+			forecolor 1 1 1 1
+			visible MENU_TRUE
+			mouseEnter 
+			{ 
+				show refreshSource2; 
+				fadeout botbar; 
+				fadein refreshSourcemsg;
+			}
+			mouseExit 
+			{ 
+				hide refreshSource2; 
+				fadeout refreshSourcemsg; 
+				fadein botbar;
+			}
+			action
+			{
+				play "sound/misc/menu1.wav";
+				uiScript RefreshServers;
+			}
+		}
+
+		itemDef
+		{
+			name refreshSource2
+			rect SIDE_X SIDE_Y SIDEBUTT_W SIDEBUTT_H
+			type ITEM_TYPE_BUTTON
+			style WINDOW_STYLE_SHADER
+			background "gui/assets/getnewlist2.tga"
+			forecolor 1 1 1 1
+			visible MENU_FALSE
+			action
+			{
+				play "sound/misc/menu1.wav";
+				uiScript RefreshServers;
+			}
+		}
+
+		itemDef
+		{
+			name refreshSourcemsg
+			text "Get a New Server List"
+			style WINDOW_STYLE_EMPTY
+			textscale .25
+			rect ((W/2)-(BOTBUTT_W/2)) BOT_Y BOTBUTT_W BOTBUTT_H
+			textalign ALIGN_CENTER
+			textvalign VALIGN_CENTER
+			forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B 0
+			visible MENU_FALSE
+			decoration
+		}
+
+		itemDef
+		{
+			name refreshFilter
+			type ITEM_TYPE_BUTTON
+			rect SIDE_X (SIDE_Y+(2*SIDEBUTT_H)) SIDEBUTT_W SIDEBUTT_H
+			style WINDOW_STYLE_SHADER
+			background "gui/assets/refreshlist.tga"
+			forecolor 1 1 1 1
+			visible MENU_TRUE
+			mouseEnter 
+			{ 
+				show refreshFilter2; 
+				fadeout botbar; 
+				fadein refreshFiltermsg;
+			}
+			mouseExit 
+			{ 
+				hide refreshFilter2; 
+				fadeout refreshFiltermsg; 
+				fadein botbar;
+			}
+			action
+			{
+				play "sound/misc/menu1.wav";
+				uiScript RefreshFilter;
+			}
+		}
+
+		itemDef
+		{
+			name refreshFilter2
+			type ITEM_TYPE_BUTTON
+			rect SIDE_X (SIDE_Y+(2*SIDEBUTT_H)) SIDEBUTT_W SIDEBUTT_H
+			style WINDOW_STYLE_SHADER
+			background "gui/assets/refreshlist2.tga"
+			forecolor 1 1 1 1
+			visible MENU_FALSE
+			action
+			{
+				play "sound/misc/menu1.wav";
+				uiScript RefreshFilter;
+			}
+		}
+
+		itemDef
+		{
+			name refreshFiltermsg
+			text "Refresh Server List"
+			style WINDOW_STYLE_EMPTY
+			textscale .25
+			rect ((W/2)-(BOTBUTT_W/2)) BOT_Y BOTBUTT_W BOTBUTT_H
+			textalign ALIGN_CENTER
+			textvalign VALIGN_CENTER
+			forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B 0
+			visible MENU_FALSE
+			decoration
+		}
+
+		itemDef
+		{
+			name createFavorite
+			type ITEM_TYPE_BUTTON
+			rect SIDE_X (SIDE_Y+(4*SIDEBUTT_H)) SIDEBUTT_W SIDEBUTT_H
+			style WINDOW_STYLE_SHADER
+			background "gui/assets/newfavorite.tga"
+			forecolor 1 1 1 1
+			visible MENU_TRUE
+			mouseEnter 
+			{ 
+				show createFavorite2; 
+				fadeout botbar; 
+				fadein createFavoritemsg;
+			}
+			mouseExit 
+			{ 
+				hide createFavorite2; 
+				fadeout createFavoritemsg; 
+				fadein botbar;
+			}
+			action
+			{
+				play "sound/misc/menu1.wav";
+				close joinserver;
+				open createfavorite_popmenu;
+			}
+		}
+
+		itemDef
+		{
+			name createFavorite2
+			type ITEM_TYPE_BUTTON
+			rect SIDE_X (SIDE_Y+(4*SIDEBUTT_H)) SIDEBUTT_W SIDEBUTT_H
+			style WINDOW_STYLE_SHADER
+			background "gui/assets/newfavorite2.tga"
+			forecolor 1 1 1 1
+			visible MENU_FALSE
+			action
+			{
+				play "sound/misc/menu1.wav";
+				close joinserver;
+				open createfavorite_popmenu
+			}
+		}
+
+		itemDef
+		{
+			name createFavoritemsg
+			text "Add a Server IP to Favorites"
+			style WINDOW_STYLE_EMPTY
+			textscale .25
+			rect ((W/2)-(BOTBUTT_W/2)) BOT_Y BOTBUTT_W BOTBUTT_H
+			textalign ALIGN_CENTER
+			textvalign VALIGN_CENTER
+			forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B 0
+			visible MENU_FALSE
+			decoration
+		}
+
+		itemDef
+		{
+			name addFavorite
+			type ITEM_TYPE_BUTTON
+			ownerdrawFlag UI_SHOW_NOTFAVORITESERVERS
+			rect SIDE_X (SIDE_Y+(6*SIDEBUTT_H)) SIDEBUTT_W SIDEBUTT_H
+			style WINDOW_STYLE_SHADER
+			background "gui/assets/addfavorite.tga"
+			forecolor 1 1 1 1
+			visible MENU_TRUE
+			mouseEnter 
+			{ 
+				show addFavorite2; 
+				fadeout botbar; 
+				fadein addFavoritemsg 
+			}
+			mouseExit 
+			{ 
+				hide addFavorite2; 
+				fadeout addFavoritemsg; 
+				fadein botbar;
+			}
+			action
+			{
+				play "sound/misc/menu1.wav";
+				uiScript addFavorite;
+			}
+		}
+
+		itemDef
+		{
+			name addFavorite2
+			type ITEM_TYPE_BUTTON
+			rect SIDE_X (SIDE_Y+(6*SIDEBUTT_H)) SIDEBUTT_W SIDEBUTT_H
+			style WINDOW_STYLE_SHADER
+			background "gui/assets/addfavorite2.tga"
+			forecolor 1 1 1 1
+			visible MENU_FALSE
+			action
+			{
+				play "sound/misc/menu1.wav";
+				uiScript addFavorite;
+			}
+		}
+
+		itemDef
+		{
+			name addFavoritemsg
+			text "Add Selected Server to Favorites"
+			style WINDOW_STYLE_EMPTY
+			textscale .25
+			rect ((W/2)-(BOTBUTT_W/2)) BOT_Y BOTBUTT_W BOTBUTT_H
+			textalign ALIGN_CENTER
+			textvalign VALIGN_CENTER
+			forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B 0
+			visible MENU_FALSE
+			decoration
+		}
+
+		itemDef
+		{
+			name delfavorite
+			type ITEM_TYPE_BUTTON
+			ownerdrawFlag UI_SHOW_FAVORITESERVERS
+			rect SIDE_X (SIDE_Y+(6*SIDEBUTT_H)) SIDEBUTT_W SIDEBUTT_H
+			style WINDOW_STYLE_SHADER
+			background "gui/assets/delfavorite.tga"
+			forecolor 1 1 1 1
+			visible MENU_TRUE
+			mouseEnter { show delFavorite2; fadeout botbar; fadein delFavoritemsg }
+			mouseExit { hide delFavorite2; fadeout delFavoritemsg; fadein botbar }
+			action
+			{
+				play "sound/misc/menu1.wav";
+				uiScript DeleteFavorite;
+				uiScript UpdateFilter;
+			}
+		}
+
+		itemDef
+		{
+			name delfavorite2
+			type ITEM_TYPE_BUTTON
+			rect SIDE_X (SIDE_Y+(6*SIDEBUTT_H)) SIDEBUTT_W SIDEBUTT_H
+			style WINDOW_STYLE_SHADER
+			background "gui/assets/delfavorite2.tga"
+			forecolor 1 1 1 1
+			visible MENU_FALSE
+			action
+			{
+				play "sound/misc/menu1.wav"; 
+				uiScript DeleteFavorite;
+				uiScript UpdateFilter;
+			}
+		}
+
+		itemDef
+		{
+			name delFavoritemsg
+			text "Remove Selected Server from Favorites"
+			style WINDOW_STYLE_EMPTY
+			textscale .25
+			rect ((W/2)-(BOTBUTT_W/2)) BOT_Y BOTBUTT_W BOTBUTT_H
+			textalign ALIGN_CENTER
+			textvalign VALIGN_CENTER
+			forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B 0
+			visible MENU_FALSE
+			decoration
+		}
+
+		itemDef
+		{
+			name findplayer
+			rect SIDE_X (SIDE_Y+(8*SIDEBUTT_H)) SIDEBUTT_W SIDEBUTT_H
+			type ITEM_TYPE_BUTTON
+			style WINDOW_STYLE_SHADER
+			background "gui/assets/findplayer.tga"
+			forecolor 1 1 1 1
+			visible MENU_TRUE
+			mouseEnter 
+			{ 
+				show findplayer2; 
+				fadeout botbar; 
+				fadein findplayermsg;
+			}
+			mouseExit 
+			{ 
+				hide findplayer2;
+				fadeout findplayermsg;
+				fadein botbar;
+			}
+			action
+			{
+				play "sound/misc/menu1.wav";
+				close joinserver; 
+				open findplayer_popmenu;
+			}
+		}
+
+		itemDef
+		{
+			name findplayer2
+			rect SIDE_X (SIDE_Y+(8*SIDEBUTT_H)) SIDEBUTT_W SIDEBUTT_H
+			type ITEM_TYPE_BUTTON
+			style WINDOW_STYLE_SHADER
+			background "gui/assets/findplayer2.tga"
+			forecolor 1 1 1 1
+			visible MENU_FALSE
+			action
+			{
+				play "sound/misc/menu1.wav";
+				close joinserver; 
+				open findplayer_popmenu;
+			}
+		}
+
+		itemDef
+		{
+			name findplayermsg
+			text "Find a Friend"
+			style WINDOW_STYLE_EMPTY
+			textscale .25
+			rect ((W/2)-(BOTBUTT_W/2)) BOT_Y BOTBUTT_W BOTBUTT_H
+			textalign ALIGN_CENTER
+			textvalign VALIGN_CENTER
+			forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B 0
+			visible MENU_FALSE
+			decoration
+		}
+
+		itemDef
+		{
+			name serverinfo
+			rect SIDE_X (SIDE_Y+(10*SIDEBUTT_H)) SIDEBUTT_W SIDEBUTT_H
+			type ITEM_TYPE_BUTTON
+			style WINDOW_STYLE_SHADER
+			background "gui/assets/serverinfo.tga"
+			forecolor 1 1 1 1
+			visible MENU_TRUE
+			mouseEnter 
+			{ 
+				show serverinfo2; 
+				fadeout botbar; 
+				fadein serverinfomsg;
+			}
+			mouseExit 
+			{ 
+				hide serverinfo2; 
+				fadeout serverinfomsg; 
+				fadein botbar;
+			}
+			action
+			{
+				play "sound/misc/menu1.wav";
+				close joinserver; 
+				open serverinfo_popmenu;
+			}
+		}
+
+		itemDef
+		{
+			name serverinfo2
+			rect SIDE_X (SIDE_Y+(10*SIDEBUTT_H)) SIDEBUTT_W SIDEBUTT_H
+			type ITEM_TYPE_BUTTON
+			style WINDOW_STYLE_SHADER
+			background "gui/assets/serverinfo2.tga"
+			forecolor 1 1 1 1
+			visible MENU_FALSE
+			action
+			{
+				play "sound/misc/menu1.wav";
+				close joinserver; 
+				open serverinfo_popmenu
+			}
+		}
+
+		itemDef
+		{
+			name serverinfomsg
+			text "Server Information"
+			style WINDOW_STYLE_EMPTY
+			textscale .25
+			rect ((W/2)-(BOTBUTT_W/2)) BOT_Y BOTBUTT_W BOTBUTT_H
+			textalign ALIGN_CENTER
+			textvalign VALIGN_CENTER
+			forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B 0
+			visible MENU_FALSE
+			decoration
+		}
+
+		itemDef
+		{
+			name password
+			rect SIDE_X (SIDE_Y+(12*SIDEBUTT_H)) SIDEBUTT_W SIDEBUTT_H
+			type ITEM_TYPE_BUTTON
+			style WINDOW_STYLE_SHADER
+			background "gui/assets/password.tga"
+			forecolor 1 1 1 1
+			visible MENU_TRUE
+			mouseEnter 
+			{ 
+				show password2; 
+				fadeout botbar; 
+				fadein passwordmsg;
+			}
+			mouseExit 
+			{ 
+				hide password2; 
+				fadeout passwordmsg; 
+				fadein botbar;
+			}
+			action
+			{
+				play "sound/misc/menu1.wav";
+				close joinserver; 
+				open password_popmenu;
+			}
+		}
+
+		itemDef
+		{
+			name password2
+			rect SIDE_X (SIDE_Y+(12*SIDEBUTT_H)) SIDEBUTT_W SIDEBUTT_H
+			type ITEM_TYPE_BUTTON
+			style WINDOW_STYLE_SHADER
+			background "gui/assets/password2.tga"
+			forecolor 1 1 1 1
+			visible MENU_FALSE
+			action
+			{
+				play "sound/misc/menu1.wav";
+				close joinserver; 
+				open password_popmenu;
+			}
+		}
+
+		itemDef
+		{
+			name passwordmsg
+			text "Enter Server Password"
+			style WINDOW_STYLE_EMPTY
+			textscale .25
+			rect ((W/2)-(BOTBUTT_W/2)) BOT_Y BOTBUTT_W BOTBUTT_H
+			textalign ALIGN_CENTER
+			textvalign VALIGN_CENTER
+			forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B 0
+			visible MENU_FALSE
+			decoration
+		}
+
+		itemDef
+		{
+			name gametypefield
+			group botbar
+			text "Source:"
+			style WINDOW_STYLE_EMPTY
+			ownerdraw UI_NETSOURCE
+			rect BOT_X BOT_Y BOTBUTT_W BOTBUTT_H
+			textalign ALIGN_CENTER
+			textvalign VALIGN_CENTER
+			textscale .25
+			forecolor 1 1 1 1
+			backcolor .5 .5 .5 .5
+			visible MENU_TRUE
+			action
+			{
+				play "sound/misc/menu1.wav"
+			}
+		}
+
+		itemDef
+		{
+			name viewEmpty
+			group botbar
+			style WINDOW_STYLE_EMPTY
+			type ITEM_TYPE_YESNO
+			text "View Empty:"
+			cvar "ui_browserShowEmpty"
+			textscale .25
+			rect (BOT_X+BOTBUTT_W) BOT_Y BOTBUTT_W BOTBUTT_H
+			textalign ALIGN_CENTER
+			textvalign VALIGN_CENTER
+			forecolor 1 1 1 1
+			backcolor .5 .5 .5 .5
+			visible MENU_TRUE
+			action
+			{
+				play "sound/misc/menu1.wav";
+				uiScript RefreshFilter
+			}
+		}
+    
+		itemDef
+		{
+			name viewFull
+			group botbar
+			style WINDOW_STYLE_EMPTY
+			type ITEM_TYPE_YESNO
+			text "View Full:"
+			cvar "ui_browserShowFull"
+			textscale .25
+			rect (BOT_X+(2*BOTBUTT_W)) BOT_Y BOTBUTT_W BOTBUTT_H
+			textalign ALIGN_CENTER
+			textvalign VALIGN_CENTER
+			forecolor 1 1 1 1
+			backcolor .5 .5 .5 .5
+			visible MENU_TRUE
+			action
+			{
+				play "sound/misc/menu1.wav";
+				uiScript RefreshFilter
+			}
+		}
+
+		//COLUMNS//
+		itemDef
+		{
+			name server
+			group grpTabs
+			text "Server Name"
+			type ITEM_TYPE_BUTTON
+			textscale .25
+			style WINDOW_STYLE_FILLED
+			rect LIST_X (LIST_Y+2) (SERVER_C*LIST_W) HEADFOOT_H
+			textalign ALIGN_LEFT
+			textvalign VALIGN_CENTER
+			textalignx LIST_TOFF
+			border WINDOW_BORDER_FULL
+			bordercolor 0.5 0.5 0.5 0
+			forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA
+			backcolor 0.2 0.2 0.2 0
+			outlinecolor 0.1 0.1 0.1 0.5
+			visible MENU_TRUE
+			action
+			{
+				play "sound/misc/menu1.wav";
+				uiScript ServerSort 0;
+
+				setitemcolor grpColumn backcolor 0 0 0 0;
+				setitemcolor grpTabs backcolor 0.2 0.2 0.2 0;
+				setitemcolor grpTabs forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA;
+				setitemcolor serverColumn backcolor 0.1 0.1 0.1 0.5;
+				setitemcolor server backcolor 0.1 0.1 0.1 0.5;
+				setitemcolor server forecolor 0.2 0.2 0.2 1.0;
+			}
+		}
+
+		itemDef
+		{
+			name serverColumn
+			group grpColumn
+			rect LIST_X (LIST_Y+HEADFOOT_H) (SERVER_C*LIST_W) (LIST_H-(2*HEADFOOT_H))
+			style WINDOW_STYLE_FILLED
+			border WINDOW_BORDER_FULL
+			backcolor 0 0 0 0
+			bordersize 1
+			bordercolor .5 .5 .5 0
+			visible MENU_TRUE
+			decoration
+		}
+
+		itemDef
+		{
+			name map
+			group grpTabs
+			type ITEM_TYPE_BUTTON
+			text "Map Name"
+			textscale .25
+			style WINDOW_STYLE_FILLED
+			rect (LIST_X+(SERVER_C*LIST_W)) (LIST_Y+2) (MAP_C*LIST_W) HEADFOOT_H
+			textalign ALIGN_LEFT
+			textvalign VALIGN_CENTER
+			textalignx LIST_TOFF
+			border WINDOW_BORDER_FULL
+			bordercolor 0.5 0.5 0.5 0
+			forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA
+			backcolor 0.2 0.2 0.2 0
+			outlinecolor 0.1 0.1 0.1 0.5
+			visible MENU_TRUE
+			action
+			{
+				play "sound/misc/menu1.wav";
+				uiScript ServerSort 1;
+
+				setitemcolor grpColumn backcolor 0 0 0 0;
+				setitemcolor grpTabs backcolor 0.2 0.2 0.2 0;
+				setitemcolor grpTabs forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA;
+				setitemcolor mapColumn backcolor 0.1 0.1 0.1 0.5;
+				setitemcolor map backcolor 0.1 0.1 0.1 0.5;
+				setitemcolor map forecolor 0.2 0.2 0.2 1.0;
+			}
+		}
+
+		itemDef
+		{
+			name mapColumn
+			group grpColumn
+			rect (LIST_X+(SERVER_C*LIST_W)) (LIST_Y+HEADFOOT_H) (MAP_C*LIST_W) (LIST_H-(2*HEADFOOT_H))
+			style WINDOW_STYLE_FILLED
+			border WINDOW_BORDER_FULL
+			backcolor 0 0 0 0
+			bordersize 1
+			bordercolor .5 .5 .5 0
+			visible MENU_TRUE
+			decoration
+		}
+
+		itemDef
+		{
+			name Players
+			group grpTabs
+			text "Players"
+			type ITEM_TYPE_BUTTON
+			textscale .25
+			style WINDOW_STYLE_FILLED
+			rect (LIST_X+((SERVER_C+MAP_C)*LIST_W)) (LIST_Y+2) (PLAYERS_C*LIST_W) HEADFOOT_H
+			textalign ALIGN_LEFT
+			textvalign VALIGN_CENTER
+			textalignx LIST_TOFF
+			border WINDOW_BORDER_FULL
+			bordercolor 0.5 0.5 0.5 0
+			forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA
+			backcolor 0.2 0.2 0.2 0
+			outlinecolor 0.1 0.1 0.1 0.5
+			visible MENU_TRUE
+			action
+			{
+				play "sound/misc/menu1.wav";
+				uiScript ServerSort 2;
+
+				setitemcolor grpColumn backcolor 0 0 0 0;
+				setitemcolor grpTabs backcolor 0.2 0.2 0.2 0;
+				setitemcolor grpTabs forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA;
+				setitemcolor playerColumn backcolor 0.1 0.1 0.1 0.5;
+				setitemcolor Players backcolor 0.1 0.1 0.1 0.5;
+				setitemcolor Players forecolor 0.2 0.2 0.2 1.0;
+			}
+		}
+
+		itemDef
+		{
+			name playerColumn
+			group grpColumn
+			rect (LIST_X+((SERVER_C+MAP_C)*LIST_W)) (LIST_Y+HEADFOOT_H) (PLAYERS_C*LIST_W) (LIST_H-(2*HEADFOOT_H))
+			style WINDOW_STYLE_FILLED
+			border WINDOW_BORDER_FULL
+			backcolor 0 0 0 0
+			bordersize 1
+			bordercolor .5 .5 .5 0
+			visible MENU_TRUE
+			decoration
+		}
+
+		itemDef
+		{
+			name Ping
+			group grpTabs
+			text "Ping"
+			type ITEM_TYPE_BUTTON
+			textscale .25
+			style WINDOW_STYLE_FILLED
+			rect (LIST_X+((SERVER_C+MAP_C+PLAYERS_C)*LIST_W)) (LIST_Y+2) (PING_C*LIST_W) HEADFOOT_H
+			textalign ALIGN_LEFT
+			textvalign VALIGN_CENTER
+			textalignx LIST_TOFF
+			border WINDOW_BORDER_FULL
+			bordercolor 0.5 0.5 0.5 0
+			forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA
+			backcolor 0.2 0.2 0.2 0
+			outlinecolor 0.1 0.1 0.1 0.5
+			visible MENU_TRUE
+			action
+			{
+				play "sound/misc/menu1.wav";
+				uiScript ServerSort 3;
+
+				setitemcolor grpColumn backcolor 0 0 0 0;
+				setitemcolor grpTabs backcolor 0.2 0.2 0.2 0;
+				setitemcolor grpTabs forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA;
+				setitemcolor pingColumn backcolor 0.1 0.1 0.1 0.5;
+				setitemcolor Ping backcolor 0.1 0.1 0.1 0.5;
+				setitemcolor Ping forecolor 0.2 0.2 0.2 1.0;
+			}
+		}
+
+		itemDef
+		{
+			name pingColumn
+			group grpColumn
+			rect (LIST_X+((SERVER_C+MAP_C+PLAYERS_C)*LIST_W)) (LIST_Y+HEADFOOT_H) (PING_C*LIST_W) (LIST_H-(2*HEADFOOT_H))
+			style WINDOW_STYLE_FILLED
+			border WINDOW_BORDER_FULL
+			backcolor 0 0 0 0
+			bordersize 1
+			bordercolor .5 .5 .5 0
+			visible MENU_TRUE
+			decoration
+		}
+
+		//SERVER LIST//
+		itemDef
+		{
+			name serverlist
+			rect LIST_X (LIST_Y+HEADFOOT_H) LIST_W (LIST_H-(2*HEADFOOT_H))
+			type ITEM_TYPE_LISTBOX
+			style WINDOW_STYLE_EMPTY
+			elementwidth 120
+			elementheight 20
+			textscale .25
+			elementtype LISTBOX_TEXT
+			feeder FEEDER_SERVERS
+			border WINDOW_BORDER_FULL
+			bordercolor 0.5 0.5 0.5 0
+			forecolor 1 1 1 1
+			backcolor 0.2 0.2 0.2 1
+			outlinecolor 0.1 0.1 0.1 0.5
+			visible MENU_TRUE
+			columns 4
+			LIST_TOFF ((SERVER_C*LIST_W)-(3*LIST_TOFF)) ALIGN_LEFT 
+			(LIST_TOFF+((SERVER_C)*LIST_W)) ((MAP_C*LIST_W)-(3*LIST_TOFF)) ALIGN_LEFT
+			(LIST_TOFF+((SERVER_C+MAP_C)*LIST_W)) ((PLAYERS_C*LIST_W)-(3*LIST_TOFF)) ALIGN_LEFT
+			(LIST_TOFF+((SERVER_C+MAP_C+PLAYERS_C)*LIST_W)) ((PING_C*LIST_W)-(3*LIST_TOFF)) ALIGN_LEFT
+
+			doubleClick 
+			{ 
+				uiScript JoinServer 
+			}
+		}
+	}
+}

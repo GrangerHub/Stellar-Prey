@@ -1,0 +1,1048 @@
+#include "gui/menudef.h"
+#include "gui/hud/common/colours.cfg"
+{
+  // Screenshot viewer by graph05
+
+#define W           642
+#define H           320
+#define X           -2
+#define Y           80
+#define BORDER      10
+
+  menuDef
+  {
+    name "shots"
+    visible MENU_FALSE
+    aspectBias ASPECT_NONE
+    fullscreen MENU_FALSE
+    rect X Y W H
+    focusColor COMMON_GOLD_R COMMON_GOLD_G COMMON_GOLD_B COMMON_FULLALPHA        // Menu focus color for text and items
+	onOpen
+	{
+	  show grp1;
+	  hide grp2;
+	  hide grp3;
+	  hide grp4;
+	  hide grp5;
+	  hide masque1;
+	  show masque2;
+	  show masque3;
+	  show masque4;
+	  show masque5;
+	  setitemcolor pg1 forecolor 0.2 0.2 0.2 1.0
+	}
+  
+    itemDef
+    {
+      name window
+      rect 0 0 W H
+      style WINDOW_STYLE_FILLED
+      backcolor 0 0 0 0.8
+      visible MENU_TRUE
+      decoration
+      border WINDOW_BORDER_KCGRADIENT
+      borderSize 1.0
+      borderColor 0.5 0.5 0.5 1
+    }
+
+	itemDef
+    {
+      name "pg1"
+      type ITEM_TYPE_BUTTON
+      rect 10 80 16 16
+      textalign ALIGN_LEFT
+      forecolor 1 1 1 .75
+      style WINDOW_STYLE_SHADER
+      background "gfx/2d/numbers/one_32b.tga"
+      visible 1 
+      action
+      {
+        play "sound/misc/menu1.wav"; 
+        show grp1;
+	    hide grp2;
+	    hide grp3;
+	    hide grp4;
+	    hide grp5;
+		// -----
+		hide masque1;
+		show masque2;
+		show masque3;
+		show masque4;
+		show masque5;
+		// -----
+		setitemcolor pg1 forecolor 0.2 0.2 0.2 1.0;
+		setitemcolor pg2 forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA;
+		setitemcolor pg3 forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA;
+		setitemcolor pg4 forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA;
+		setitemcolor pg5 forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA
+      }
+    }
+	itemDef
+    {
+      name "pg2"
+      background "gfx/2d/numbers/two_32b.tga"
+      type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      rect 10 120 16 16
+      textalign ALIGN_LEFT   
+      forecolor 1 1 1 .75
+      visible 1 
+      action
+      {
+        play "sound/misc/menu1.wav"; 
+	    hide grp1;
+        show grp2;
+	    hide grp3;
+	    hide grp4;
+	    hide grp5;
+		// -----
+		show masque1;
+		hide masque2;
+		show masque3;
+		show masque4;
+		show masque5;
+		// -----
+		setitemcolor pg1 forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA;
+		setitemcolor pg2 forecolor 0.2 0.2 0.2 1.0;
+		setitemcolor pg3 forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA;
+		setitemcolor pg4 forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA;
+		setitemcolor pg5 forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA
+	  }
+    }
+	itemDef
+    {
+      name "pg3"
+      background "gfx/2d/numbers/three_32b.tga"
+      type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      rect 10 160 16 16
+      textalign ALIGN_LEFT   
+      forecolor 1 1 1 .75
+      visible 1 
+      action
+      {
+        play "sound/misc/menu1.wav"; 
+	    hide grp1;
+	    hide grp2;
+        show grp3;
+	    hide grp4;
+	    hide grp5;
+		// -----
+		show masque1;
+		show masque2;
+		hide masque3;
+		show masque4;
+		show masque5;
+		// -----
+		setitemcolor pg1 forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA;
+		setitemcolor pg2 forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA;
+		setitemcolor pg3 forecolor 0.2 0.2 0.2 1.0;
+		setitemcolor pg4 forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA;
+		setitemcolor pg5 forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA
+	  }
+    }
+	itemDef
+    {
+      name "pg4"
+      background "gfx/2d/numbers/four_32b.tga"
+      type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      rect 10 200 16 16
+      textalign ALIGN_LEFT   
+      forecolor 1 1 1 .75
+      visible 1 
+      action
+      {
+        play "sound/misc/menu1.wav"; 
+	    hide grp1;
+	    hide grp2;
+	    hide grp3;
+        show grp4;
+	    hide grp5;
+		// -----
+		show masque1;
+		show masque2;
+		show masque3;
+		hide masque4;
+		show masque5;
+		// -----
+		setitemcolor pg1 forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA;
+		setitemcolor pg2 forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA;
+		setitemcolor pg3 forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA;
+		setitemcolor pg4 forecolor 0.2 0.2 0.2 1.0;
+		setitemcolor pg5 forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA
+	  }
+    }
+	itemDef
+    {
+      name "pg5"
+      background "gfx/2d/numbers/five_32b.tga"
+      type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      rect 10 240 16 16
+      textalign ALIGN_LEFT   
+      forecolor 1 1 1 .75
+      visible 1 
+      action
+      {
+        play "sound/misc/menu1.wav"; 
+	    hide grp1;
+	    hide grp2;
+	    hide grp3;
+	    hide grp4;
+        show grp5;
+		// -----
+		show masque1;
+		show masque2;
+		show masque3;
+		show masque4;
+		hide masque5;
+		// -----
+		setitemcolor pg1 forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA;
+		setitemcolor pg2 forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA;
+		setitemcolor pg3 forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA;
+		setitemcolor pg4 forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA;
+		setitemcolor pg5 forecolor 0.2 0.2 0.2 1.0
+      }
+    }
+	
+	// Pages masques
+	itemDef
+	{
+	  name "masque1"
+	  style WINDOW_STYLE_EMPTY
+	  rect 10 80 16 16
+	  backcolor 0 0 0 0
+	  visible 1
+	  mouseEnter
+	  {
+	    setitemcolor pg1 forecolor COMMON_GOLD_R COMMON_GOLD_G COMMON_GOLD_B COMMON_FULLALPHA
+	  }
+	  mouseExit
+	  {
+	    setitemcolor pg1 forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA
+	  }
+	}
+	itemDef
+	{
+	  name "masque2"
+	  style WINDOW_STYLE_EMPTY
+	  rect 10 120 16 16
+	  backcolor 0 0 0 0
+	  visible 1
+	  mouseEnter
+	  {
+	    setitemcolor pg2 forecolor COMMON_GOLD_R COMMON_GOLD_G COMMON_GOLD_B COMMON_FULLALPHA
+	  }
+	  mouseExit
+	  {
+	    setitemcolor pg2 forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA
+	  }
+	}
+	itemDef
+	{
+	  name "masque3"
+	  style WINDOW_STYLE_EMPTY
+	  rect 10 160 16 16
+	  backcolor 0 0 0 0
+	  visible 1
+	  mouseEnter
+	  {
+	    setitemcolor pg3 forecolor COMMON_GOLD_R COMMON_GOLD_G COMMON_GOLD_B COMMON_FULLALPHA
+	  }
+	  mouseExit
+	  {
+	    setitemcolor pg3 forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA
+	  }
+	}
+	itemDef
+	{
+	  name "masque4"
+	  style WINDOW_STYLE_EMPTY
+	  rect 10 200 16 16
+	  backcolor 0 0 0 0
+	  visible 1
+	  mouseEnter
+	  {
+	    setitemcolor pg4 forecolor COMMON_GOLD_R COMMON_GOLD_G COMMON_GOLD_B COMMON_FULLALPHA
+	  }
+	  mouseExit
+	  {
+	    setitemcolor pg4 forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA
+	  }
+	}
+	itemDef
+	{
+	  name "masque5"
+	  style WINDOW_STYLE_EMPTY
+	  rect 10 240 16 16
+	  backcolor 0 0 0 0
+	  visible 1
+	  mouseEnter
+	  {
+	    setitemcolor pg5 forecolor COMMON_GOLD_R COMMON_GOLD_G COMMON_GOLD_B COMMON_FULLALPHA
+	  }
+	  mouseExit
+	  {
+	    setitemcolor pg5 forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_FULLALPHA
+	  }
+	}
+
+	// Group 1 (0-6)
+	itemDef
+    {
+      name img
+	  group grp1
+      rect 65 37 160 120
+	  type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      backcolor 1 1 1 1
+      visible 1
+      decoration
+      background "screenshots/shot0000.jpg"
+      mouseEnter { fadein shot0;hide grp1 }
+    }
+	itemDef
+    {
+      name shot0
+      rect 100 23 440 275
+      type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      visible MENU_FALSE
+      decoration
+      background "screenshots/shot0000.jpg"
+      mouseExit { hide shot0;show grp1 }
+    }
+	
+	itemDef
+    {
+      name img
+      group grp1
+      rect 245 37 160 120
+      type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      backcolor 1 1 1 1
+      visible 1
+      decoration
+      background "screenshots/shot0001.jpg"
+      mouseEnter { fadein shot1;hide grp1 }
+    }
+	itemDef
+    {
+      name shot1
+      rect 100 23 440 275
+      type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      visible MENU_FALSE
+      decoration
+      background "screenshots/shot0001.jpg"	
+      mouseExit { hide shot1;show grp1 }
+    }
+	
+	itemDef
+    {
+      name img
+	  group grp1
+      rect 425 37 160 120
+	  type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      backcolor 1 1 1 1
+      visible 1
+      decoration
+      background "screenshots/shot0002.jpg"
+      mouseEnter { fadein shot2;hide grp1 }
+    }
+	itemDef
+    {
+      name shot2
+      rect 100 23 440 275
+      type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      visible MENU_FALSE
+      decoration
+      background "screenshots/shot0002.jpg"	
+      mouseExit { hide shot2;show grp1 }
+    }
+
+	itemDef
+    {
+      name img
+	  group grp1
+      rect 65 167 160 120
+	  type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      backcolor 1 1 1 1
+      visible 1
+      decoration
+      background "screenshots/shot0003.jpg"
+      mouseEnter { fadein shot3;hide grp1 }
+    }
+	itemDef
+    {
+      name shot3
+      rect 100 23 440 275
+      type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      visible MENU_FALSE
+      decoration
+      background "screenshots/shot0003.jpg"	
+      mouseExit { hide shot3;show grp1 }
+    }
+	
+	itemDef
+    {
+      name img
+	  group grp1
+      rect 245 167 160 120
+	  type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      backcolor 1 1 1 1
+      visible 1
+      decoration
+      background "screenshots/shot0004.jpg"
+      mouseEnter { fadein shot4;hide grp1 }
+    }
+	itemDef
+    {
+      name shot4
+      rect 100 23 440 275
+      type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      visible MENU_FALSE
+      decoration
+      background "screenshots/shot0004.jpg"	
+      mouseExit { hide shot4;show grp1 }
+    }
+
+	itemDef
+    {
+      name img
+	  group grp1
+      rect 425 167 160 120
+	  type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      backcolor 1 1 1 1
+      visible 1
+      decoration
+      background "screenshots/shot0005.jpg"
+      mouseEnter { fadein shot5;hide grp1 }
+    }
+	itemDef
+    {
+      name shot5
+      rect 100 23 440 275
+      type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      visible MENU_FALSE
+      decoration
+      background "screenshots/shot0005.jpg"	
+      mouseExit { hide shot5;show grp1 }
+    }
+
+	
+	// Group 2 (6-12)
+	itemDef
+    {
+      name img
+	  group grp2
+      rect 65 37 160 120
+	  type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      backcolor 1 1 1 1
+      visible 1
+      decoration
+      background "screenshots/shot0006.jpg"
+      mouseEnter { fadein shot6;hide grp2 }
+    }
+	itemDef
+    {
+      name shot6
+      rect 100 23 440 275
+      type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      visible MENU_FALSE
+      decoration
+      background "screenshots/shot0006.jpg"	
+      mouseExit { hide shot6;show grp2 }
+    }
+
+	itemDef
+    {
+      name img
+	  group grp2
+      rect 245 37 160 120
+	  type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      backcolor 1 1 1 1
+      visible 1
+      decoration
+      background "screenshots/shot0007.jpg"
+      mouseEnter { fadein shot7;hide grp2 }
+    }
+	itemDef
+    {
+      name shot7
+      rect 100 23 440 275
+      type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      visible MENU_FALSE
+      decoration
+      background "screenshots/shot0007.jpg"	
+      mouseExit { hide shot7;show grp2 }
+    }
+
+	itemDef
+    {
+      name img
+	  group grp2
+      rect 425 37 160 120
+	  type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      backcolor 1 1 1 1
+      visible 1
+      decoration
+      background "screenshots/shot0008.jpg"
+      mouseEnter { fadein shot8;hide grp2 }
+    }
+	itemDef
+    {
+      name shot8
+      rect 100 23 440 275
+      type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      visible MENU_FALSE
+      decoration
+      background "screenshots/shot0008.jpg"	
+      mouseExit { hide shot8;show grp2 }
+    }
+	
+	itemDef
+    {
+      name img
+	  group grp2
+      rect 65 167 160 120
+	  type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      backcolor 1 1 1 1
+      visible 1
+      decoration
+      background "screenshots/shot0009.jpg"
+      mouseEnter { fadein shot9;hide grp2 }
+    }
+	itemDef
+    {
+      name shot9
+      rect 100 23 440 275
+      type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      visible MENU_FALSE
+      decoration
+      background "screenshots/shot0009.jpg"	
+      mouseExit { hide shot9;show grp2 }
+    }
+
+	itemDef
+    {
+      name img
+	  group grp2
+      rect 245 167 160 120
+	  type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      backcolor 1 1 1 1
+      visible 1
+      decoration
+      background "screenshots/shot0010.jpg"
+      mouseEnter { fadein shot10;hide grp2 }
+    }
+	itemDef
+    {
+      name shot10
+      rect 100 23 440 275
+      type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      visible MENU_FALSE
+      decoration
+      background "screenshots/shot0010.jpg"	
+      mouseExit { hide shot10;show grp2 }
+    }
+
+	itemDef
+    {
+      name img
+	  group grp2
+      rect 425 167 160 120
+	  type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      backcolor 1 1 1 1
+      visible 1
+      decoration
+      background "screenshots/shot0011.jpg"
+      mouseEnter { fadein shot11;hide grp2 }
+    }
+	itemDef
+    {
+      name shot11
+      rect 100 23 440 275
+      type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      visible MENU_FALSE
+      decoration
+      background "screenshots/shot0011.jpg"	
+      mouseExit { hide shot11;show grp2 }
+    }
+
+	
+	// Group 3 (12-18)
+	itemDef
+    {
+      name img
+	  group grp3
+      rect 65 37 160 120
+	  type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      backcolor 1 1 1 1
+      visible 1
+      decoration
+      background "screenshots/shot0012.jpg"
+      mouseEnter { fadein shot12;hide grp3 }
+    }
+	itemDef
+    {
+      name shot12
+      rect 100 23 440 275
+      type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      visible MENU_FALSE
+      decoration
+      background "screenshots/shot0012.jpg"	
+      mouseExit { hide shot12;show grp3 }
+    }
+
+	itemDef
+    {
+      name img
+	  group grp3
+      rect 245 37 160 120
+	  type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      backcolor 1 1 1 1
+      visible 1
+      decoration
+      background "screenshots/shot0013.jpg"
+      mouseEnter { fadein shot13;hide grp3 }
+    }
+	itemDef
+    {
+      name shot13
+      rect 100 23 440 275
+      type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      visible MENU_FALSE
+      decoration
+      background "screenshots/shot0013.jpg"	
+      mouseExit { hide shot13;show grp3 }
+    }
+
+	itemDef
+    {
+      name img
+	  group grp3
+      rect 425 37 160 120
+	  type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      backcolor 1 1 1 1
+      visible 1
+      decoration
+      background "screenshots/shot0014.jpg"
+      mouseEnter { fadein shot14;hide grp3 }
+    }
+	itemDef
+    {
+      name shot14
+      rect 100 23 440 275
+      type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      visible MENU_FALSE
+      decoration
+      background "screenshots/shot0014.jpg"	
+      mouseExit { hide shot14;show grp3 }
+    }
+
+	itemDef
+    {
+      name img
+	  group grp3
+      rect 65 167 160 120
+	  type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      backcolor 1 1 1 1
+      visible 1
+      decoration
+      background "screenshots/shot0015.jpg"
+      mouseEnter { fadein shot15;hide grp3 }
+    }
+	itemDef
+    {
+      name shot15
+      rect 100 23 440 275
+      type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      visible MENU_FALSE
+      decoration
+      background "screenshots/shot0015.jpg"	
+      mouseExit { hide shot15;show grp3 }
+    }
+	
+	itemDef
+    {
+      name img
+	  group grp3
+      rect 245 167 160 120
+	  type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      backcolor 1 1 1 1
+      visible 1
+      decoration
+      background "screenshots/shot0016.jpg"
+      mouseEnter { fadein shot16;hide grp3 }
+    }
+	itemDef
+    {
+      name shot16
+      rect 100 23 440 275
+      type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      visible MENU_FALSE
+      decoration
+      background "screenshots/shot0016.jpg"	
+      mouseExit { hide shot16;show grp3 }
+    }
+
+	itemDef
+    {
+      name img
+	  group grp3
+      rect 425 167 160 120
+	  type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      backcolor 1 1 1 1
+      visible 1
+      decoration
+      background "screenshots/shot0017.jpg"
+      mouseEnter { fadein shot17;hide grp3 }
+    }
+	itemDef
+    {
+      name shot17
+      rect 100 23 440 275
+      type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      visible MENU_FALSE
+      decoration
+      background "screenshots/shot0017.jpg"	
+      mouseExit { hide shot17;show grp3 }
+    }
+
+	// Group 4 (18-24)
+	itemDef
+    {
+      name img
+	  group grp4
+      rect 65 37 160 120
+	  type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      backcolor 1 1 1 1
+      visible 1
+      decoration
+      background "screenshots/shot0018.jpg"
+      mouseEnter { fadein shot18;hide grp4 }
+    }
+	itemDef
+    {
+      name shot18
+      rect 100 23 440 275
+      type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      visible MENU_FALSE
+      decoration
+      background "screenshots/shot0018.jpg"	
+      mouseExit { hide shot18;show grp4 }
+    }
+	
+	itemDef
+    {
+      name img
+	  group grp4
+      rect 245 37 160 120
+	  type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      backcolor 1 1 1 1
+      visible 1
+      decoration
+      background "screenshots/shot0019.jpg"
+      mouseEnter { fadein shot19;hide grp4 }
+    }
+	itemDef
+    {
+      name shot19
+      rect 100 23 440 275
+      type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      visible MENU_FALSE
+      decoration
+      background "screenshots/shot0019.jpg"	
+      mouseExit { hide shot19;show grp4 }
+    }
+	
+	itemDef
+    {
+      name img
+	  group grp4
+      rect 425 37 160 120
+	  type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      backcolor 1 1 1 1
+      visible 1
+      decoration
+      background "screenshots/shot0020.jpg"
+      mouseEnter { fadein shot20;hide grp4 }
+    }
+	itemDef
+    {
+      name shot20
+      rect 100 23 440 275
+      type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      visible MENU_FALSE
+      decoration
+      background "screenshots/shot0020.jpg"	
+      mouseExit { hide shot20;show grp4 }
+    }
+
+	itemDef
+    {
+      name img
+	  group grp4
+      rect 65 167 160 120
+	  type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      backcolor 1 1 1 1
+      visible 1
+      decoration
+      background "screenshots/shot0021.jpg"
+      mouseEnter { fadein shot21;hide grp4 }
+    }
+	itemDef
+    {
+      name shot21
+      rect 100 23 440 275
+      type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      visible MENU_FALSE
+      decoration
+      background "screenshots/shot0021.jpg"	
+      mouseExit { hide shot21;show grp4 }
+    }
+
+	itemDef
+    {
+      name img
+	  group grp4
+      rect 245 167 160 120
+	  type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      backcolor 1 1 1 1
+      visible 1
+      decoration
+      background "screenshots/shot0022.jpg"
+      mouseEnter { fadein shot22;hide grp4 }
+    }
+	itemDef
+    {
+      name shot22
+      rect 100 23 440 275
+      type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      visible MENU_FALSE
+      decoration
+      background "screenshots/shot0022.jpg"	
+      mouseExit { hide shot22;show grp4 }
+    }
+
+	itemDef
+    {
+      name img
+	  group grp4
+      rect 425 167 160 120
+	  type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      backcolor 1 1 1 1
+      visible 1
+      decoration
+      background "screenshots/shot0023.jpg"
+      mouseEnter { fadein shot23;hide grp4 }
+    }
+	itemDef
+    {
+      name shot23
+      rect 100 23 440 275
+      type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      visible MENU_FALSE
+      decoration
+      background "screenshots/shot0023.jpg"	
+      mouseExit { hide shot23;show grp4 }
+    }
+
+	// Group 5 (24-30)
+	itemDef
+    {
+      name img
+	  group grp5
+      rect 65 37 160 120
+	  type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      backcolor 1 1 1 1
+      visible 1
+      decoration
+      background "screenshots/shot0024.jpg"
+      mouseEnter { fadein shot24;hide grp5 }
+    }
+	itemDef
+    {
+      name shot24
+      rect 100 23 440 275
+      type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      visible MENU_FALSE
+      decoration
+      background "screenshots/shot0024.jpg"	
+      mouseExit { hide shot24;show grp5 }
+    }
+
+	itemDef
+    {
+      name img
+	  group grp5
+      rect 245 37 160 120
+	  type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      backcolor 1 1 1 1
+      visible 1
+      decoration
+      background "screenshots/shot0025.jpg"
+      mouseEnter { fadein shot25;hide grp5 }
+    }
+	itemDef
+    {
+      name shot25
+      rect 100 23 440 275
+      type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      visible MENU_FALSE
+      decoration
+      background "screenshots/shot0025.jpg"	
+      mouseExit { hide shot25;show grp5 }
+    }
+
+	itemDef
+    {
+      name img
+	  group grp5
+      rect 425 37 160 120
+	  type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      backcolor 1 1 1 1
+      visible 1
+      decoration
+      background "screenshots/shot0026.jpg"
+      mouseEnter { fadein shot26;hide grp5 }
+    }
+	itemDef
+    {
+      name shot26
+      rect 100 23 440 275
+      type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      visible MENU_FALSE
+      decoration
+      background "screenshots/shot0026.jpg"
+      mouseExit { hide shot26;show grp5 }
+    }
+
+	itemDef
+    {
+      name img
+	  group grp5
+      rect 65 167 160 120
+	  type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      backcolor 1 1 1 1
+      visible 1
+      decoration
+      background "screenshots/shot0027.jpg"
+      mouseEnter { fadein shot27;hide grp5 }
+    }
+	itemDef
+    {
+      name shot27
+      rect 100 23 440 275
+      type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      visible MENU_FALSE
+      decoration
+      background "screenshots/shot0027.jpg"
+      mouseExit { hide shot27;show grp5 }
+    }
+
+	itemDef
+    {
+      name img
+	  group grp5
+      rect 245 167 160 120
+	  type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      backcolor 1 1 1 1
+      visible 1
+      decoration
+      background "screenshots/shot0028.jpg"
+      mouseEnter { fadein shot28;hide grp5 }
+    }
+	itemDef
+    {
+      name shot28
+      rect 100 23 440 275
+      type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      visible MENU_FALSE
+      decoration
+      background "screenshots/shot0028.jpg"
+      mouseExit { hide shot28;show grp5 }
+    }
+
+	itemDef
+    {
+      name img
+	  group grp5
+      rect 425 167 160 120
+	  type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      backcolor 1 1 1 1
+      visible 1
+      decoration
+      background "screenshots/shot0029.jpg"
+      mouseEnter { fadein shot29;hide grp5 }
+    }
+	itemDef
+    {
+      name shot29
+      rect 100 23 440 275
+      type ITEM_TYPE_BUTTON
+      style WINDOW_STYLE_SHADER
+      visible MENU_FALSE
+      decoration
+      background "screenshots/shot0029.jpg"
+      mouseExit { hide shot29;show grp5 }
+    }
+  }
+}

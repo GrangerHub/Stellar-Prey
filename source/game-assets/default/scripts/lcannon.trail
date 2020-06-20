@@ -1,0 +1,45 @@
+lucymuzzletrail
+{
+  beam
+  {
+    shader		gfx/weapons/lucy_fire1
+    segments		20
+    width		1 4
+    alpha 		1.0 0.0
+    segmentTime		1
+    fadeOutTime		10
+    textureType		stretch 1.0 0.0
+
+    //jitter 1 10
+  }
+}
+lucymuzzletrail2
+{
+  beam
+  {
+    shader		gfx/weapons/lucy_fire1
+    segments		2
+    width		1 8
+    alpha 		1.0 0.0
+    segmentTime		200
+    fadeOutTime		800
+    textureType		stretch 1.0 0.0
+
+    //jitter 1 10
+  }
+}
+lucymuzzletrail3
+{
+  beam
+  {
+    shader		gfx/weapons/lucy_fire1
+    segments		20
+    width		1 1
+    alpha 		1.0 0.0
+    segmentTime		1
+    fadeOutTime		10
+    textureType		stretch 1.0 0.0
+
+    //jitter 1 10
+  }
+}

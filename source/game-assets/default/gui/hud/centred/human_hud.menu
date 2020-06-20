@@ -1,0 +1,246 @@
+#include "gui/menudef.h"
+
+{
+
+#define W         640
+#define H         480
+#define CHATMENU_HEIGHT 262
+
+  menuDef
+  {
+    name "human_hud"
+    fullScreen MENU_FALSE
+    aspectBias ASPECT_NONE
+    visible MENU_TRUE
+    rect 0 0 W H
+
+#include "gui/hud/common/common.cfg"
+#include "gui/hud/common/human.cfg"
+#include "gui/hud/common/chatmenu_human.cfg"
+
+    //LEFT ARM
+    itemDef
+    {
+      name "left-arm"
+      rect 340.75 435 94.5 35
+      visible 1
+      decoration
+      forecolor CENTERED_DARK_R CENTERED_DARK_G CENTERED_DARK_B CENTERED_DARK_A
+      style WINDOW_STYLE_SHADER
+      background "gui/assets/human/left-arm.tga"
+    }   
+
+    //CREDITS LABEL
+    itemDef
+    {
+      name "credits-label"
+      rect 235 418 7 7.5
+      visible 1
+      decoration
+      forecolor COMMON_GREY_R COMMON_GREY_G COMMON_GREY_B COMMON_GREY_A
+      style WINDOW_STYLE_SHADER
+      background "gui/assets/human/credits.tga"
+    }   
+
+    //RIGHT ARM
+    itemDef
+    {
+      name "right-arm"
+      rect 205.5 435 94.5 35
+      visible 1
+      decoration
+      forecolor CENTERED_DARK_R CENTERED_DARK_G CENTERED_DARK_B CENTERED_DARK_A
+      style WINDOW_STYLE_SHADER
+      background "gui/assets/human/right-arm.tga"
+    }   
+
+    //RIGHT CAP
+    itemDef
+    {
+      name "right-cap"
+      rect 227 415 80 15
+      visible 1
+      decoration
+      forecolor CENTERED_DARK_R CENTERED_DARK_G CENTERED_DARK_B CENTERED_DARK_A
+      style WINDOW_STYLE_SHADER
+      background "gui/assets/human/right-cap.tga"
+    }   
+
+    //CROSS
+    itemDef
+    {
+      name "cross"
+      rect 215 445 15 15
+      visible 1
+      decoration
+      forecolor CENTERED_BLUE_R CENTERED_BLUE_G CENTERED_BLUE_B CENTERED_BLUE_A
+      background "gui/assets/neutral/cross.tga"
+      ownerdraw CG_PLAYER_HEALTH_CROSS
+    }   
+ 
+    //STAMINA 4
+    itemDef
+    {
+      name "stam4-circle"
+      rect 307.5 432.5 25 25
+      visible 1
+      decoration
+      forecolor CENTERED_BLUE_R CENTERED_BLUE_G CENTERED_BLUE_B 0.5
+      background "gui/assets/neutral/3_0pie.tga"
+      ownerdraw CG_PLAYER_STAMINA_BOLT
+    } 
+
+    //STAMINA 3
+    itemDef
+    {
+      name "stam3-circle"
+      rect 307.5 432.5 25 25
+      visible 1
+      decoration
+      forecolor CENTERED_BLUE_R CENTERED_BLUE_G CENTERED_BLUE_B 0.5
+      background "gui/assets/neutral/6_0pie.tga"
+      ownerdraw CG_PLAYER_STAMINA_3
+    } 
+
+    //STAMINA 2
+    itemDef
+    {
+      name "stam2-circle"
+      rect 307.5 432.5 25 25
+      visible 1
+      decoration
+      forecolor CENTERED_BLUE_R CENTERED_BLUE_G CENTERED_BLUE_B 0.5
+      background "gui/assets/neutral/9_0pie.tga"
+      ownerdraw CG_PLAYER_STAMINA_2
+    }  
+
+    //STAMINA 1
+    itemDef
+    {
+      name "stam1-circle"
+      rect 307.5 432.5 25 25
+      visible 1
+      decoration
+      forecolor CENTERED_BLUE_R CENTERED_BLUE_G CENTERED_BLUE_B 0.5
+      background "gui/assets/neutral/circle.tga"
+      ownerdraw CG_PLAYER_STAMINA_1
+    } 
+
+    //BOLT
+    itemDef
+    {
+      name "bolt"
+      rect 312.5 435 15 20
+      visible 1
+      decoration
+      forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_WHITE_A
+      background "gui/assets/human/bolt.tga"
+      ownerdraw CG_PLAYER_STAMINA_4
+    }  
+
+    //RING
+    itemDef
+    {
+      name "ring"
+      rect 292.75 417.25 55 55
+      visible 1
+      decoration
+      forecolor CENTERED_DARK_R CENTERED_DARK_G CENTERED_DARK_B CENTERED_DARK_A
+      background "gui/assets/human/ring.tga"
+      ownerdraw CG_PLAYER_CLIPS_RING
+    }
+
+    //CREDITS
+    itemDef
+    {
+      name "credits"
+      rect 242 417 45 11.25
+      visible 1
+      decoration
+      forecolor CENTERED_GREY_R CENTERED_GREY_G CENTERED_GREY_B CENTERED_GREY_A
+      ownerdraw CG_PLAYER_CREDITS_VALUE
+    }   
+
+    //HEALTH
+    itemDef
+    {
+      name "health"
+      rect 221 445 60 15
+      visible 1
+      decoration
+      forecolor CENTERED_GREY_R CENTERED_GREY_G CENTERED_GREY_B CENTERED_GREY_A
+      ownerdraw CG_PLAYER_HEALTH
+    }
+
+    //AMMO
+    itemDef
+    {
+      name "ammo"
+      rect 339.5 445 60 15
+      visible 1
+      decoration
+      forecolor CENTERED_GREY_R CENTERED_GREY_G CENTERED_GREY_B CENTERED_GREY_A
+      addColorRange 0 0 0.75 0.0 0.0 1
+      ownerdraw CG_PLAYER_AMMO_VALUE
+    }
+
+    //CLIPS
+    itemDef
+    {
+      name "clips"
+      rect 364 445 60 15
+      visible 1
+      decoration
+      forecolor CENTERED_BLUE_R CENTERED_BLUE_G CENTERED_BLUE_B CENTERED_BLUE_A
+      addColorRange 0 0 0.75 0.0 0.0 1
+      ownerdraw CG_PLAYER_CLIPS_VALUE
+    }
+
+    //BUILD TIMER
+    itemDef 
+    {
+	name "buildtimer"
+	rect 305 225 30 30
+	visible MENU_TRUE
+	decoration
+	forecolor CENTERED_BLUE_R CENTERED_BLUE_G CENTERED_BLUE_B CENTERED_BLUE_A
+	ownerdraw CG_PLAYER_BUILD_TIMER
+    }
+
+    //USABLE
+    itemDef  
+    {  
+      name "usable"
+      rect 305 225 30 30
+      visible 1
+      decoration
+      forecolor CENTERED_BLUE_R CENTERED_BLUE_G CENTERED_BLUE_B CENTERED_BLUE_A
+      background "gui/assets/neutral/use.tga"
+      ownerdraw CG_PLAYER_USABLE_BUILDABLE
+    }
+
+    //SELECTED
+    itemDef
+    {
+      name "selected"
+      rect 630 234.5 11 11
+	  visible MENU_TRUE
+	  decoration
+	  forecolor COMMON_GREY_R COMMON_GREY_G COMMON_GREY_B COMMON_GREY_A
+	  style WINDOW_STYLE_SHADER
+	  background "gui/assets/backarrow.tga"
+    }
+
+    //INVENTORY
+    itemDef
+    {
+	name "inventory"
+	rect 620 134 19 175
+	visible MENU_TRUE
+	decoration
+	forecolor CENTERED_BLUE_R CENTERED_BLUE_G CENTERED_BLUE_B CENTERED_BLUE_A
+	ownerdraw CG_PLAYER_SELECT
+    }
+
+  }
+}

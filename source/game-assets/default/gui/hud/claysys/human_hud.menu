@@ -1,0 +1,219 @@
+#include "gui/menudef.h"
+
+#define W         640
+#define H         480
+#define CHATMENU_HEIGHT 262
+{
+  menuDef
+  {
+    name "human_hud"
+    fullScreen MENU_FALSE
+    aspectBias ASPECT_NONE
+    visible MENU_TRUE
+    rect 0 0 W H
+    
+#include "gui/hud/commoncommon.cfg"
+#include "gui/hud/common/human.cfg"
+#include "gui/hud/common/chatmenu_human.cfg"
+
+    // Health Bar
+    itemDef
+    {
+      name "health-bar"
+      rect 270 420 100 25
+      visible 1
+      decoration
+      forecolor CLAY_HUMAN_BACKCOLOR_RED CLAY_HUMAN_BACKCOLOR_GREEN CLAY_HUMAN_BACKCOLOR_BLUE COMMON_ALPHA
+      textscale 0
+      special 1
+      ownerdraw CG_PLAYER_HEALTH_BAR
+    }
+
+    // Health Value "000"
+    itemDef
+    {
+      name "health-value"
+      rect 273 425 75 15
+      visible 1
+      decoration
+      forecolor CLAY_HUMAN_FORECOLOR_RED CLAY_HUMAN_FORECOLOR_GREEN CLAY_HUMAN_FORECOLOR_BLUE COMMON_FULLALPHA
+//      addcolorrange 0 10  0.5 0.1 0.1 1
+//      addcolorrange 11 19 0.5 0.2 0.2 1
+//      addcolorrange 21 29 0.5 0.3 0.3 1
+//      addcolorrange 31 39 0.5 0.4 0.4 1
+//      addcolorrange 41 49 0.5 0.5 0.5 1
+//      addcolorrange 51 50 0.6 0.6 0.6 1
+//      addcolorrange 61 60 0.7 0.7 0.7 1
+//      addcolorrange 71 70 0.8 0.8 0.8 1
+//      addcolorrange 81 80 0.9 0.9 0.9 1
+//      addcolorrange 91 100 1 1 1 1
+      ownerdraw CG_PLAYER_HEALTH
+    }
+
+    //Credit Label
+    itemDef
+    {
+      name "credits-label"
+      rect 194.55 408.34 7 7.5
+      visible 1
+      decoration
+      forecolor CLAY_HUMAN_FORECOLOR_RED CLAY_HUMAN_FORECOLOR_GREEN CLAY_HUMAN_FORECOLOR_BLUE COMMON_ALPHA
+      style WINDOW_STYLE_SHADER
+      background "gui/assets/human/credits.tga"
+    }
+    
+    //Credit Count
+    itemDef
+    {
+      name "credits"
+      rect 201.55 407.34 45 11.25
+      visible 1
+      decoration
+      forecolor CLAY_HUMAN_FORECOLOR_RED CLAY_HUMAN_FORECOLOR_GREEN CLAY_HUMAN_FORECOLOR_BLUE COMMON_ALPHA
+      ownerdraw CG_PLAYER_CREDITS_VALUE
+    }    
+
+    //Left Arm
+    itemDef
+    {
+      name "left-arm"
+      rect 166 420 94.5 35
+      visible 1
+      decoration
+      forecolor CLAY_HUMAN_BACKCOLOR_RED CLAY_HUMAN_BACKCOLOR_GREEN CLAY_HUMAN_BACKCOLOR_BLUE COMMON_HALFALPHA
+      style WINDOW_STYLE_SHADER
+      background "gui/assets/human/right-arm.tga"
+      ownerdraw CG_PLAYER_CLIPS_RING
+    }   
+
+    //Right Arm
+    itemDef
+    {
+      name "right-arm"
+      rect 379.5 420 94.5 35
+      visible 1
+      decoration
+      forecolor CLAY_HUMAN_BACKCOLOR_RED CLAY_HUMAN_BACKCOLOR_GREEN CLAY_HUMAN_BACKCOLOR_BLUE COMMON_HALFALPHA
+      style WINDOW_STYLE_SHADER
+      background "gui/assets/human/left-arm.tga"
+      ownerdraw CG_PLAYER_CLIPS_RING
+    }
+
+
+    //STAMINA 1
+    itemDef
+    {
+      name "stamina1"
+      rect 235 431 9 12
+      visible 1
+      decoration
+      forecolor CLAY_HUMAN_FORECOLOR_RED CLAY_HUMAN_FORECOLOR_GREEN CLAY_HUMAN_FORECOLOR_BLUE COMMON_ALPHA
+      background "gui/assets/human/bolt.tga"
+      ownerdraw CG_PLAYER_STAMINA_1
+    }   
+
+    //STAMINA 2
+    itemDef
+    {
+      name "stamina2"
+      rect 224 431 9 12
+      visible 1
+      decoration
+      forecolor CLAY_HUMAN_FORECOLOR_RED CLAY_HUMAN_FORECOLOR_GREEN CLAY_HUMAN_FORECOLOR_BLUE COMMON_ALPHA
+      background "gui/assets/human/bolt.tga"
+      ownerdraw CG_PLAYER_STAMINA_2
+    }   
+
+    //STAMINA 3
+    itemDef
+    {
+      name "stamina3"
+      rect 213 431 9 12
+      visible 1
+      decoration
+      forecolor CLAY_HUMAN_FORECOLOR_RED CLAY_HUMAN_FORECOLOR_GREEN CLAY_HUMAN_FORECOLOR_BLUE COMMON_ALPHA
+      background "gui/assets/human/bolt.tga"
+      ownerdraw CG_PLAYER_STAMINA_3
+    }
+    
+    //Stamina 4
+    itemDef
+    {
+      name "bolt"
+      rect 201 431 9 12
+      visible 1
+      decoration
+      forecolor CLAY_HUMAN_FORECOLOR_RED CLAY_HUMAN_FORECOLOR_GREEN CLAY_HUMAN_FORECOLOR_BLUE COMMON_ALPHA
+      background "gui/assets/human/bolt.tga"
+      ownerdraw CG_PLAYER_STAMINA_BOLT
+    }
+
+    //Stamina Gone (5)
+    itemDef
+    {
+      name "stamina4"
+      rect 176.5 427.5 15 20
+      visible 1
+      decoration
+      forecolor CLAY_HUMAN_FORECOLOR_RED CLAY_HUMAN_FORECOLOR_GREEN CLAY_HUMAN_FORECOLOR_BLUE COMMON_ALPHA
+      background "gui/assets/human/bolt.tga"
+      ownerdraw CG_PLAYER_STAMINA_4
+    }
+
+    //AMMO
+    itemDef
+    {
+      name "ammo"
+      rect 377.75 430 60 15
+      visible 1
+      decoration
+      forecolor CLAY_HUMAN_FORECOLOR_RED CLAY_HUMAN_FORECOLOR_GREEN CLAY_HUMAN_FORECOLOR_BLUE COMMON_FULLALPHA
+      ownerdraw CG_PLAYER_AMMO_VALUE
+    }
+
+    //CLIPS
+    itemDef
+    {
+      name "clips"
+      rect 402.5 430 60 15
+      visible 1
+      decoration
+      forecolor CLAY_HUMAN_FORECOLOR_RED CLAY_HUMAN_FORECOLOR_GREEN CLAY_HUMAN_FORECOLOR_BLUE COMMON_FULLALPHA
+      ownerdraw CG_PLAYER_CLIPS_VALUE
+    }
+
+    //BUILD TIMER
+    itemDef
+    {
+      name "buildtimer"
+      rect 443.8 425.3 25 25
+      visible 1
+      decoration
+      forecolor CLAY_HUMAN_FORECOLOR_RED CLAY_HUMAN_FORECOLOR_GREEN CLAY_HUMAN_FORECOLOR_BLUE COMMON_FULLALPHA
+      ownerdraw CG_PLAYER_BUILD_TIMER
+    }
+
+    //INVENTORY
+    itemDef
+    {
+      name "inventory"
+      rect 607.5 152.5 25 175
+      visible 1
+      decoration
+      forecolor CLAY_HUMAN_BACKCOLOR_RED CLAY_HUMAN_BACKCOLOR_GREEN CLAY_HUMAN_BACKCOLOR_BLUE COMMON_ALPHA
+      ownerdraw CG_PLAYER_SELECT
+    }
+
+    //SELECTED -1 73.5
+    itemDef
+    {
+      name "selected"
+      rect 606.5 226 27 27
+      visible 1
+      decoration
+      forecolor CLAY_HUMAN_BACKCOLOR_RED CLAY_HUMAN_BACKCOLOR_GREEN CLAY_HUMAN_BACKCOLOR_BLUE COMMON_ALPHA
+      style WINDOW_STYLE_SHADER
+      background "gui/assets/neutral/selected.tga"
+    }
+  }
+}

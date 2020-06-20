@@ -1,0 +1,3 @@
+[submodule "source/OpenWolf-Engine"]
+	path = source/OpenWolf-Engine
+	url = ../OpenWolf-Engine.git

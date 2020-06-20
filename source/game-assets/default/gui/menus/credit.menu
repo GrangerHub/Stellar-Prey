@@ -1,0 +1,85 @@
+#include "gui/menudef.h"
+#include "gui/hud/common/colours.cfg"
+{
+  \\ CREDITS \\
+
+#define W           642
+#define H           320
+#define X           -2
+#define Y           80
+#define BORDER      30
+
+  menuDef
+  {
+    name "credits"
+    visible MENU_FALSE
+    aspectBias ASPECT_NONE
+    fullScreen MENU_FALSE
+    rect X Y W H
+    focusColor COMMON_GOLD_R COMMON_GOLD_G COMMON_GOLD_B COMMON_FULLALPHA
+
+    itemDef
+    {
+      name window
+      rect 0 0 W H
+      style WINDOW_STYLE_FILLED
+      backcolor 0 0 0 0.8
+      visible MENU_TRUE
+      decoration
+      border WINDOW_BORDER_KCGRADIENT
+      borderSize 1.0
+      borderColor 0.5 0.5 0.5 1
+    }
+
+    itemDef
+    {
+      name        "creditleft"
+      style       WINDOW_STYLE_EMPTY
+      rect        BORDER BORDER ((W/2)-BORDER) (H-(2*BORDER))
+      textalign   ALIGN_LEFT
+      textvalign VALIGN_CENTER
+      textscale   0.25
+      textstyle   ITEM_TEXTSTYLE_NORMAL
+      text        "Tim 'Timbo' Angus - Programming and Direction\n\n"
+		"Nick 'jex' Jansens - Mapping, texturing and 2D artwork\n\n"
+		"Robin 'OverFlow' Marshall - Modelling, animation and mapping\n\n"
+		"Jan 'Stannum' van der Weg - Texturing and mapping\n\n"
+		"Mike 'Veda' Mcinnerney - Modelling, animation and texturing\n\n"
+		"Gordon 'Godmil' Miller - Mapping\n\n"
+		"'Who-[Soup]' - Mapping\n\n"
+		"Tristan 'jhrx' Blease - Mapping\n\n"
+		"Paul 'MoP' Greveson - Modelling and texturing\n\n"
+		"Chris 'Dolby' McCarthy - Sound\n"
+      forecolor   1 1 1 1
+      backcolor   1 0 0 1
+      visible MENU_TRUE
+      decoration
+      wrapped
+    }
+
+    itemDef
+    {
+      name        "creditright"
+      style       WINDOW_STYLE_EMPTY
+      rect        (W/2) BORDER ((W/2)-BORDER) (H-(2*BORDER))
+      textalign   ALIGN_RIGHT
+      textvalign VALIGN_CENTER
+      textscale   0.25
+      textstyle   ITEM_TEXTSTYLE_NORMAL
+      text        "Asa 'Norfenstein' Kravets - Manual, QA, design and balance suggestions\n\n"
+		"'Crylar' - Concept art\n\n"
+		"Yves 'evillair' Allaire - Textures\n\n"
+		"Randy 'ydnar' Reddig - Textures\n\n"
+		"Richard 'R1CH' Stanway - Server hosting\n\n"
+		"Stephane 'MEGASTeP' Peter - Early test server hosting\n\n"
+		"Sourceforge and TARDIS - Web hosting\n\n"
+		"icculus.org - Subversion hosting\n\n"
+		"The contributors to icculus.org/quake3/- Various\n"
+      forecolor   1 1 1 1
+      backcolor   1 0 0 1
+      visible MENU_TRUE
+      decoration
+      wrapped
+    }
+  }
+}

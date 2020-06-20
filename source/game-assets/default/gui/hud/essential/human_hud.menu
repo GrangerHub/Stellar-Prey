@@ -1,0 +1,261 @@
+#include "gui/menudef.h"
+
+{
+
+#define W         640
+#define H         480
+#define CHATMENU_HEIGHT 230
+
+  menuDef
+  {
+    name "human_hud"
+    fullScreen MENU_FALSE
+    aspectBias ASPECT_NONE
+    visible MENU_TRUE
+    rect 0 0 W H
+
+#include "gui/hud/common/common.cfg"
+#include "gui/hud/common/human.cfg"
+#include "gui/hud/common/chatmenu_human.cfg"
+
+	// text section
+
+		// text 'hp'
+		itemDef
+		{
+			text "hp"
+			rect 315 423 10 10
+			visible 1
+		  cvartest oticz_labels
+		  showCvar { 1 }
+			decoration
+			textalign 0
+			textscale .25
+			forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B .75
+		}
+
+		// text 'stamina'
+		itemDef
+		{
+			text "stamina"
+			rect 45 423 30 10
+			visible 1
+		  cvartest oticz_labels
+		  showCvar { 1 }
+			decoration
+			textalign 0
+			textscale .25
+			forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B .75
+		}
+		
+		// text 'weapon'
+		itemDef
+		{
+			text "weapon"
+			rect 536 423 30 10
+			visible 1
+		  cvartest oticz_labels
+		  showCvar { 1 }
+			decoration
+			textalign 0
+			textscale .25
+			forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B .75
+		}
+
+		// text 'credits'
+		itemDef
+		{
+			text "credits"
+			rect 593 423 30 10
+			visible 1
+		  cvartest oticz_labels
+		  showCvar { 1 }
+			decoration
+			textalign 0
+			textscale .25
+			forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B .75
+		}
+		
+		
+	// draw section
+    				// health bar left 
+		itemDef
+		{
+			decoration
+			rect 320 448 -150 -10 
+			visible 1
+			forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B .15
+			textScale 0
+			ownerdraw CG_PLAYER_HEALTH_BAR 
+		}
+		// health bar right
+		itemDef
+		{
+			decoration
+			rect 320 438 150 10
+			visible 1
+			forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B .15
+			textScale 0
+			ownerdraw CG_PLAYER_HEALTH_BAR 
+		}			
+			
+		// health icon
+		itemDef
+		{
+			name "health"
+			rect 297 438 30 10
+			visible 1
+			decoration
+			forecolor HIGHVIS_LGREEN_R HIGHVIS_LGREEN_G HIGHVIS_LGREEN_B HIGHVIS_LGREEN_A
+			ownerdraw CG_PLAYER_HEALTH
+		}
+
+    		// health 0% icon
+    		itemDef
+    		{
+      			name "hmarker-0"
+			rect 168 438 2 10
+      			style WINDOW_STYLE_FILLED
+      			backcolor HIGHVIS_LGREEN_R HIGHVIS_LGREEN_G HIGHVIS_LGREEN_B HIGHVIS_LGREEN_A
+      			visible 1
+      			decoration
+    		}
+
+    		// health 100% icon
+    		itemDef
+    		{
+      			name "hmarker-0"
+			rect 468 438 2 10
+      			style WINDOW_STYLE_FILLED
+      			backcolor HIGHVIS_LGREEN_R HIGHVIS_LGREEN_G HIGHVIS_LGREEN_B HIGHVIS_LGREEN_A
+      			visible 1
+      			decoration
+    		}
+
+		// stamina bar
+    		itemDef
+    		{
+      			name "stamina"
+			rect 10 438 100 10
+		        visible 1
+		        decoration
+			forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B .15
+      			textScale 0
+      			ownerdraw CG_PLAYER_STAMINA
+      			special 0.0
+		} 
+
+    		// stamina 0% icon
+    		itemDef
+    		{
+      			name "smarker-0"
+			rect 08 438 2 10
+      			style WINDOW_STYLE_FILLED
+      			backcolor HIGHVIS_LGREEN_R HIGHVIS_LGREEN_G HIGHVIS_LGREEN_B HIGHVIS_LGREEN_A
+      			visible 1
+      			decoration
+    		}
+
+    		// stamina 50% icon
+    		itemDef
+    		{
+      			name "smarker-50"
+      			rect 58 438 2 10
+      			style WINDOW_STYLE_FILLED
+      			backcolor HIGHVIS_LGREEN_R HIGHVIS_LGREEN_G HIGHVIS_LGREEN_B HIGHVIS_LGREEN_A
+      			visible 1
+      			decoration
+    		}
+    
+    		// stamina 100% icon
+    		itemDef
+    		{
+      			name "smarker-100"
+			rect 108 438 2 10
+      			style WINDOW_STYLE_FILLED
+      			backcolor HIGHVIS_LGREEN_R HIGHVIS_LGREEN_G HIGHVIS_LGREEN_B HIGHVIS_LGREEN_A
+      			visible 1
+      			decoration
+    		}
+    
+    		// ammo icon
+    		itemDef
+    		{
+      			name "ammo"
+      	  		rect 516 438 34 10
+      			visible 1
+      			decoration
+			forecolor HIGHVIS_LGREEN_R HIGHVIS_LGREEN_G HIGHVIS_LGREEN_B HIGHVIS_LGREEN_A
+      			ownerdraw CG_PLAYER_AMMO_VALUE
+    		}
+    
+    		// weapon icon
+    		itemDef
+    		{
+      			name "weapon"
+      			rect 550 438 10 10
+		        visible 1
+		        decoration
+		        forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B .75
+		        ownerdraw CG_PLAYER_WEAPONICON
+    		}
+
+    		// clips icon
+    		itemDef
+    		{
+      			name "clips"
+      	  		rect 533 438 34 10
+      			visible 1
+      			decoration
+      			forecolor HIGHVIS_LGREEN_R HIGHVIS_LGREEN_G HIGHVIS_LGREEN_B HIGHVIS_LGREEN_A
+      			ownerdraw CG_PLAYER_CLIPS_VALUE
+    		}
+
+    		// inventory bar icon
+    		itemDef
+    		{
+      			name "inventory"
+			rect 264 454 96 16
+      			visible 1
+      			decoration 
+            		forecolor HIGHVIS_LGREEN_R HIGHVIS_LGREEN_G HIGHVIS_LGREEN_B HIGHVIS_LGREEN_A
+      			ownerdraw CG_PLAYER_SELECT
+    		}
+
+    		// inventory selector icon
+    		itemDef
+    		{
+      			name "right-circle"
+			rect 312 454 16 16 
+      			visible 1
+      			decoration
+			forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B .15
+      			style WINDOW_STYLE_SHADER
+      			background "gui/assets/neutral/circle.tga"
+    		}
+
+    		// credits icon
+    		itemDef
+    		{
+      			name "credits"
+      	  		rect 585 438 40 10
+      			visible 1
+      			decoration
+      			forecolor HIGHVIS_LGREEN_R HIGHVIS_LGREEN_G HIGHVIS_LGREEN_B HIGHVIS_LGREEN_A
+      			ownerdraw CG_PLAYER_CREDITS_VALUE
+    		}
+
+    		// build timer
+    		itemDef
+    		{
+      			name "buildtimer"
+      	  		rect 312.5 232.5 15 15
+      			visible 1
+      			decoration
+      			forecolor HIGHVIS_LGREEN_R HIGHVIS_LGREEN_G HIGHVIS_LGREEN_B HIGHVIS_LGREEN_A
+      			ownerdraw CG_PLAYER_BUILD_TIMER
+    		}
+		
+
+	}
+}

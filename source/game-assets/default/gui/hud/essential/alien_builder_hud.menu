@@ -1,0 +1,56 @@
+#include "gui/menudef.h"
+
+{
+
+#define W         640
+#define H         480
+#define CROSSHAIRVISABLE 1
+
+  menuDef
+  {
+    name "alien_builder_hud"
+    fullScreen MENU_FALSE
+    aspectBias ASPECT_NONE
+    visible MENU_TRUE
+    rect 0 0 W H
+
+#include "gui/hud/essential/alien_common_hud.cfg"
+	
+	// text 'bp'
+		itemDef
+		{
+			text "bp"
+			rect 535 419 10 10
+			visible 1
+		  cvartest oticz_labels
+		  showCvar { 1 }
+			decoration
+			textalign 0
+			textscale .25
+			forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B .75
+		}
+
+		// build icon
+		itemDef
+		{
+			name "build-points"
+			rect 508 435 40 10
+			visible 1
+			decoration
+			forecolor ESSENTIAL_ALIEN_R ESSENTIAL_ALIEN_G ESSENTIAL_ALIEN_B ESSENTIAL_ALIEN_A
+			ownerdraw CG_PLAYER_AMMO_VALUE
+		}
+
+		// build timer
+    		itemDef
+    		{
+      			name "buildtimer"
+      	  		rect 312.5 232.5 15 15
+      			visible 1
+      			decoration
+      			forecolor ESSENTIAL_ALIEN_R ESSENTIAL_ALIEN_G ESSENTIAL_ALIEN_B ESSENTIAL_ALIEN_A
+      			ownerdraw CG_PLAYER_BUILD_TIMER
+    		}
+
+	}
+}

@@ -1,0 +1,34 @@
+#include "gui/menudef.h"
+
+{
+  menuDef
+  {
+    name "Connect"
+    background "gui/assets/mainmenu.jpg"
+    rect 0 0 640 480
+    fullScreen MENU_FALSE
+    aspectBias ASPECT_NONE
+    visible MENU_FALSE
+    style WINDOW_STYLE_SHADER
+  }
+    itemDef
+    {
+      name Nebulabottom
+      rect 0 360 640 300
+      style WINDOW_STYLE_SHADER
+      backcolor 0 0 0 1
+      visible 1
+      decoration
+      background "models/splash/nebula"
+    }
+    itemDef
+    {
+      name Nebulatop
+      rect 0 -180 640 300
+      style WINDOW_STYLE_SHADER
+      backcolor 0 0 0 1
+      visible 1
+      decoration
+      background "models/splash/nebula"
+    }
+}

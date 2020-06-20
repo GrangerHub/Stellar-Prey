@@ -1,0 +1,136 @@
+#include "gui/menudef.h"
+#include "gui/hud/common/colours.cfg"
+
+#define W         640
+#define H         480
+#define BORDER    10
+
+{
+  assetGlobalDef
+  {
+    cursor "gui/assets/3_cursor3"      // cursor 
+    gradientBar "gui/assets/gradientbar2.tga"  // gradient bar
+    fadeClamp 1.0         // sets the fadeup alpha
+    fadeCycle 1         // how often fade happens in milliseconds
+    fadeAmount 0.1          // amount to adjust alpha per cycle
+
+    shadowX  5          // x amount for shadow offset
+    shadowY  5          // y amount for shadow offset
+    shadowColor 0.1 0.1 0.1 0.25      // shadow color
+
+    font "fonts/font" 26        // font
+    smallFont "fonts/smallfont" 20      // font
+    bigFont "fonts/bigfont" 34      // font
+  }
+
+  menuDef
+  {
+    name "Loading"
+    rect 0 0 640 480
+    fullScreen MENU_TRUE
+    aspectBias ASPECT_NONE
+
+    itemDef
+    {
+      name background
+      rect 0 0 640 480
+      style WINDOW_STYLE_SHADER
+      backcolor COMMON_BLACK_R COMMON_BLACK_G COMMON_BLACK_B COMMON_BLACK_A
+      visible 1
+      decoration
+      background "gui/assets/mainmenu.jpg"
+    }
+
+    itemDef
+    {
+      name Nebulabottom
+      rect 0 360 640 300
+      style WINDOW_STYLE_SHADER
+      backcolor COMMON_BLACK_R COMMON_BLACK_G COMMON_BLACK_B COMMON_BLACK_A
+      visible 1
+      decoration
+      background "models/splash/nebula"
+    }
+    itemDef
+    {
+      name Nebulatop
+      rect 0 -180 640 300
+      style WINDOW_STYLE_SHADER
+      backcolor COMMON_BLACK_R COMMON_BLACK_G COMMON_BLACK_B COMMON_BLACK_A
+      visible 1
+      decoration
+      background "models/splash/nebula"
+    }
+
+    itemDef
+    {
+      name darkBackground
+      rect -2 40 642 400
+      style WINDOW_STYLE_FILLED
+      backcolor 0 0 0 .7
+      visible 1
+      decoration
+      border WINDOW_BORDER_KCGRADIENT
+      borderSize 1.0
+      borderColor 0.5 0.5 0.5 1
+    }
+
+    //SERVER NAME
+    itemDef
+    {
+      name "hostname"
+      rect 105.6 40 428.8 39.2
+      visible MENU_TRUE
+      decoration
+      forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_WHITE_A
+      textalign ALIGN_CENTER
+      textvalign VALIGN_CENTER
+      textstyle ITEM_TEXTSTYLE_NORMAL
+      textscale .5
+      ownerdraw CG_LOAD_HOSTNAME
+    }
+    
+    //MOTD
+    itemDef
+    {
+      name "motd"
+      rect 105.6 400.8 428.8 39.2
+      visible MENU_TRUE
+      decoration
+      forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_WHITE_A
+      textalign ALIGN_CENTER
+      textvalign VALIGN_CENTER
+      textstyle ITEM_TEXTSTYLE_NORMAL
+      textscale 0.25
+      ownerdraw CG_LOAD_MOTD
+    }
+
+    //MAP IMAGE
+    itemDef
+    {
+      name "levelshot"
+      rect 105.6 79.2 428.8 321.6
+      visible MENU_TRUE
+      decoration
+      forecolor COMMON_WHITE_R COMMON_WHITE_G COMMON_WHITE_B COMMON_WHITE_A
+      ownerdraw CG_LOAD_LEVELSHOT
+    }
+
+	//OVERALL BAR
+	itemDef
+	{
+	  name "overall"
+	  rect 105.6 79.2 428.8 321.6
+	  visible 1
+	  borderSize 1
+	  decoration
+	  forecolor 0.1 0.1 0.1 0.5
+	  ownerdraw CG_LOAD_OVERALL
+	  align ALIGN_CENTER
+	  textscale 0
+	  special 1
+	  backcolor 1.0 1.0 1.0 0.1
+	}
+
+  }
+}
