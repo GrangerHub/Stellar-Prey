@@ -3,9 +3,24 @@ GrangerHub's STELLAR PREY™ game is a first person strategy shooter that chroni
 
 This is the main repo for STELLAR PREY™ game and can be used to build and package releases, used as a development environment, as well as for the setup/operation of the client and/or the dedicated/master/auto-update servers.  All related code, scripts, and assets can be found through submodules in this repo.
 
-To initialize this repo and its submodules, run the init.sh script from a terminal:
+To setup this repo, execute the following commands from the root of this repo in order:
 
 ```
-./init.sh
+./sp-tools.sh default_config
 ```
+Set the values in the `config.sh` accordingly.  Then continue with the following commands:
+
+```
+./sp-tools.sh init
+./sp-tools.sh install_default_paks
+./sp-tools.sh configure_cmake both
+./sp-tools.sh build both
+```
+
+For more details on how to manage and use this repo, check:
+
+```
+./sp-tools.sh help
+```
+
 GrangerHub's STELLAR PREY™ game is originally based on darklegion development's Tremulous game.  GrangerHub's STELLAR PREY™ game is built on TheDushan's OpenWolf Engine.

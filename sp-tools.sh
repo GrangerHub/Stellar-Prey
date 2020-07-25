@@ -80,7 +80,7 @@ Set_Config_To_Defaults() {
   printf "LOGDAYS=90\n\n" >> $SCRIPTPATH/config.sh
 
   printf "#Build type options: Debug, Release, RelWithDebInfo, MinSizeRel\n" >> $SCRIPTPATH/config.sh
-  printf "CMAKE_BUILD_TYPE=\"Release\"\n\n" >> $SCRIPTPATH/config.sh
+  printf "CMAKE_BUILD_TYPE=\"Debug\"\n\n" >> $SCRIPTPATH/config.sh
 
   printf "BUILD_CLIENT=\"ON\"\n" >> $SCRIPTPATH/config.sh
   printf "BUILD_SERVER=\"ON\"\n" >> $SCRIPTPATH/config.sh
@@ -531,7 +531,7 @@ Git_Subcommand() {
       ;;
 
     default_paks)
-      cd $SCRIPTPATH/default_paks
+      cd $SCRIPTPATH/default-paks-test
       git ${@:2}
       cd $CURRENTPATH
       ;;
@@ -1238,6 +1238,13 @@ Package_Assets_Subcommand() {
   return 0
 }
 
+Install_Default_Paks() {
+  mkdir -p $BASEPATH
+  mkdir -p $BASEPATH/main
+  rsync -zarvm --include="*/" --include="*.pk3" --exclude="*" "$SCRIPTPATH/default-paks-test/" "$BASEPATH/main/"
+  return 0
+}
+
 if [ $# -eq 0 ]; then
   List_Subcommands
   exit 0
@@ -1303,6 +1310,8 @@ case $1 in
     ;;
 
   install_default_paks)
+    Install_Default_Paks
+    exit 0
     ;;
 
   sync)
