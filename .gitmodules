@@ -1,3 +1,7 @@
 [submodule "source/OpenWolf-Engine"]
 	path = source/OpenWolf-Engine
 	url = ../OpenWolf-Engine.git
+
+	[submodule "default-paks-test"]
+		path = default-paks-test
+		url = ../Stellar-Prey-Default-Paks-Test.git
