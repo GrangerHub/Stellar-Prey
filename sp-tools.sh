@@ -223,6 +223,7 @@ Help_Subcommand() {
     init)
       echo "Initializes the $GAME_APP_NAME development environment."
       echo "Use the init subcommand right after cloning this development environment repo."
+      echo "It will change the remote configurations of the submodules to original repos."
 
       printf "\n"
       echo "Usage:"
@@ -590,7 +591,7 @@ Build_game_logic() {
   fi
 
   cd $GAMELOGICPATH
-  make
+  make $MAKE_FLAGS
   mkdir -p "$BASEPATH"
   mkdir -p "$BASEPATH/$FS_GAME"
   cp -a "$GAMELOGICPATH/main/." "$BASEPATH/$FS_GAME/"
@@ -670,7 +671,7 @@ Build_engine() {
   fi
 
   cd $ENGINEPATH
-  make
+  make $MAKE_FLAGS
   mkdir -p "$BASEPATH"
   mkdir -p "$BASEPATH/bin"
   mkdir -p "$BINPATH"
