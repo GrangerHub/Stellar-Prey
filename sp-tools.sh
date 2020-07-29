@@ -357,13 +357,18 @@ Init_Subcommand() {
 
   git submodule update --init --recursive
 
+  cd $ENGINEPATH
+  ENGINE_GIT_REMOTES=$(git remote)
+  for i in $ENGINE_GIT_REMOTES
+  do
+    if [ $i = "upstream" ]; then
+      git remote remove upstream
+    fi
+  done
+
   if [[ $(git config --get remote.origin.url) == git* ]];  then
-    cd $ENGINEPATH
-    git remote remove upstream
     git remote add upstream git@github.com:TheDushan/OpenWolf-Engine.git
   else
-    cd $ENGINEPATH
-    git remote remove upstream
     git remote add upstream https://github.com/TheDushan/OpenWolf-Engine.git
   fi
 
