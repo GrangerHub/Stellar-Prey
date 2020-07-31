@@ -4,4 +4,4 @@
 
 	[submodule "default-paks-test"]
 		path = default-paks-test
-		url = ../Stellar-Prey-Default-Paks-Test.git
+	url = https://github.com/GrangerHub/Stellar-Prey-Default-Paks-Test.git
