@@ -952,16 +952,30 @@ Package_Assets_Subcommand() {
 
           if [ $# -lt 4 ]; then
             cd $SCRIPTPATH
-            if [ -z "$(git status --porcelain source/game-assets/default/)" ]; then
-              cd $ENGINEPATH
-              if [ -z "$(git status --porcelain src/engine/GPURenderer/renderProgs/)" ]; then
-                WORKING_DIRECTORY=""
-              else
+            WORKING_DIRECTORY=""
+            for i in "$(git status --porcelain source/game-assets/default/)"; do
+              if [ ! -z $i ]; then
                 WORKING_DIRECTORY="_WD"
               fi
-              cd $SCRIPTPATH
-            else
-              WORKING_DIRECTORY="_WD"
+            done
+
+            if [ -z $WORKING_DIRECTORY ]; then
+              for i in "$(git status --porcelain src/engine/GPURenderer/renderProgs/)"; do
+                if [ ! -z $i ]; then
+                  WORKING_DIRECTORY="_WD"
+                fi
+              done
+            fi
+
+            if [ -z $WORKING_DIRECTORY ]; then
+              ENGINE_HASH_PREFIXED=($(git submodule status source/OpenWolf-Engine))
+              if [[ ${ENGINE_HASH_PREFIXED[0]} = "+"* ]]; then
+                WORKING_DIRECTORY="_WD"
+              elif [[ ${ENGINE_HASH_PREFIXED[0]} = "-"* ]]; then
+                WORKING_DIRECTORY="_WD"
+              elif [[ ${ENGINE_HASH_PREFIXED[0]} = "U"* ]]; then
+                WORKING_DIRECTORY="_WD"
+              fi
             fi
 
             PAK_NAME="${3}_$(git rev-parse --short HEAD)$WORKING_DIRECTORY.pk3"
@@ -990,27 +1004,57 @@ Package_Assets_Subcommand() {
             CHANGED_RENDERPROGS_FILES=$(git diff --name-only --diff-filter=d $ENGINE_OLD_HASH src/engine/GPURenderer/renderProgs)
             cd $SCRIPTPATH
 
-            if [ -z $CHANGED_FILES ] && [ -z $CHANGED_RENDERPROGS_FILES ]; then
+            FILES_HAVE_CHANGED=""
+            for i in $CHANGED_FILES; do
+              if [ ! -z $i ]; then
+                FILES_HAVE_CHANGED="true"
+                break
+              fi
+            done
+
+            RENDERPROGS_FILES_HAVE_CHANGED=""
+            for i in $CHANGED_RENDERPROGS_FILES; do
+              if [ ! -z $i ]; then
+                RENDERPROGS_FILES_HAVE_CHANGED="true"
+                break
+              fi
+            done
+
+            if [ -z $FILES_HAVE_CHANGED ] && [ -z $RENDERPROGS_FILES_HAVE_CHANGED ]; then
               echo "Nothing new to package for the default game assets since the commit ${4}, aborting asset packaging."
               Help_Subcommand package_assets
               return 1
             fi
 
-            if [ -z "$(git status --porcelain source/game-assets/default/)" ]; then
-              cd $ENGINEPATH
-              if [ -z "$(git status --porcelain src/engine/GPURenderer/renderProgs/)" ]; then
-                WORKING_DIRECTORY=""
-              else
+            WORKING_DIRECTORY=""
+            for i in "$(git status --porcelain source/game-assets/default/)"; do
+              if [ ! -z $i ]; then
                 WORKING_DIRECTORY="_WD"
               fi
-              cd $SCRIPTPATH
-            else
-              WORKING_DIRECTORY="_WD"
+            done
+
+            if [ -z $WORKING_DIRECTORY ]; then
+              for i in "$(git status --porcelain src/engine/GPURenderer/renderProgs/)"; do
+                if [ ! -z $i ]; then
+                  WORKING_DIRECTORY="_WD"
+                fi
+              done
+            fi
+
+            if [ -z $WORKING_DIRECTORY ] && [ ! -z $RENDERPROGS_FILES_HAVE_CHANGED ]; then
+              ENGINE_HASH_PREFIXED=($(git submodule status source/OpenWolf-Engine))
+              if [[ ${ENGINE_HASH_PREFIXED[0]} = "+"* ]]; then
+                WORKING_DIRECTORY="_WD"
+              elif [[ ${ENGINE_HASH_PREFIXED[0]} = "-"* ]]; then
+                WORKING_DIRECTORY="_WD"
+              elif [[ ${ENGINE_HASH_PREFIXED[0]} = "U"* ]]; then
+                WORKING_DIRECTORY="_WD"
+              fi
             fi
 
             PAK_NAME="${3}_$(git rev-parse --short HEAD)${WORKING_DIRECTORY}_diff_$(git rev-parse --short ${4}).pk3"
 
-            if [ -n $CHANGED_RENDERPROGS_FILES ]; then
+            if [ ! -z $RENDERPROGS_FILES_HAVE_CHANGED ]; then
               cd $ENGINEPATH/src/engine/GPURenderer
               for i in $CHANGED_RENDERPROGS_FILES; do
                 j=${i#src/engine/GPURenderer/}
