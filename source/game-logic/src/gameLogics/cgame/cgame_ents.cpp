@@ -1073,29 +1073,6 @@ void idCGameEnts::CEntityPVSLeave( centity_t* cent )
 
 /*
 ===============
-idCGameEnts::InFOV
-===============
-*/
-bool idCGameEnts::InFOV( vec3_t spot, vec3_t from, vec3_t fromAngles, sint hFOV, sint vFOV )
-{
-    vec3_t	deltaVector, angles, deltaAngles;
-    
-    VectorSubtract( spot, from, deltaVector );
-    vectoangles( deltaVector, angles );
-    
-    deltaAngles[PITCH] = AngleDelta( fromAngles[PITCH], angles[PITCH] );
-    deltaAngles[YAW] = AngleDelta( fromAngles[YAW], angles[YAW] );
-    
-    if( fabs( deltaAngles[PITCH] ) <= vFOV && fabs( deltaAngles[YAW] ) <= hFOV )
-    {
-        return true;
-    }
-    
-    return false;
-}
-
-/*
-===============
 idCGameEnts::AddCEntity
 ===============
 */
@@ -1109,11 +1086,6 @@ void idCGameEnts::AddCEntity( centity_t* cent )
     
     // calculate the current origin
     CalcEntityLerpPositions( cent );
-    
-    if( Distance( cent->lerpOrigin, cg.refdef.vieworg ) > 2048 || !InFOV( cent->lerpOrigin, cg.refdef.vieworg, cg.refdefViewAngles, cg.refdef.fov_x * 1.1, cg.refdef.fov_y * 1.1 ) )
-    {
-        return;
-    }
     
     // add automatic effects
     EntityEffects( cent );

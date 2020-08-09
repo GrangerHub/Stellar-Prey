@@ -55,13 +55,7 @@ idCGameSnapshot::ResetEntity
 */
 void idCGameSnapshot::ResetEntity( centity_t* cent )
 {
-    // if the previous snapshot this entity was updated in is at least
-    // an event window back in time then we can reset the previous event
-    if( cent->snapShotTime < cg.time - EVENT_VALID_MSEC )
-    {
-        cent->previousEvent = 0;
-    }
-    
+    cent->previousEvent = 0;
     cent->trailTime = cg.snap->serverTime;
     
     VectorCopy( cent->currentState.origin, cent->lerpOrigin );
@@ -152,13 +146,6 @@ void idCGameSnapshot::SetInitialSnapshot( snapshot_t* snap )
         // check for events
         idCGameEvent::CheckEvents( cent );
     }
-
-    {
-        static valueType prevmap[64] = { 0 };
-        valueType curmap[64];
-
-        trap_Cvar_VariableStringBuffer("mapname", curmap, 64);
-    }
 }
 
 
@@ -220,24 +207,19 @@ void idCGameSnapshot::TransitionSnapshot( void )
     cg.nextSnap = nullptr;
     
     // check for playerstate transition events
-    if( oldFrame )
+    playerState_t* ops = &oldFrame->ps, * ps = &cg.snap->ps;
+    
+    // teleporting checks are irrespective of prediction
+    if( ( ps->eFlags ^ ops->eFlags ) & EF_TELEPORT_BIT )
     {
-        playerState_t* ops, *ps;
-        
-        ops = &oldFrame->ps;
-        ps = &cg.snap->ps;
-        // teleporting checks are irrespective of prediction
-        if( ( ps->eFlags ^ ops->eFlags ) & EF_TELEPORT_BIT )
-        {
-            cg.thisFrameTeleport = true; // will be cleared by prediction code
-        }
-        
-        // if we are not doing client side movement prediction for any
-        // reason, then the client events and view changes will be issued now
-        if( cg.demoPlayback || ( cg.snap->ps.pm_flags & PMF_FOLLOW ) || cg_nopredict.integer || cg_synchronousClients.integer )
-        {
-            idCGamePlayerState::TransitionPlayerState( ps, ops );
-        }
+        cg.thisFrameTeleport = true; // will be cleared by prediction code
+    }
+    
+    // if we are not doing client side movement prediction for any
+    // reason, then the client events and view changes will be issued now
+    if( cg.demoPlayback || ( cg.snap->ps.pm_flags & PMF_FOLLOW ) || cg_nopredict.integer || cg_synchronousClients.integer )
+    {
+        idCGamePlayerState::TransitionPlayerState( ps, ops );
     }
 }
 
@@ -307,6 +289,7 @@ void idCGameSnapshot::SetNextSnap( snapshot_t* snap )
     idCGamePredict::BuildSolidList( );
 }
 
+
 /*
 ========================
 idCGameSnapshot::ReadNextSnapshot
@@ -355,16 +338,12 @@ snapshot_t* idCGameSnapshot::ReadNextSnapshot( void )
         // if it succeeded, return
         if( r )
         {
-            idCGameDraw::AddLagometerSnapshotInfo(dest);
-
-            if (cg.snap && (dest->snapFlags ^ cg.snap->snapFlags) & SNAPFLAG_SERVERCOUNT) 
-            {
-                cg.damageTime = 0;
-                cg.duckTime = -1;
-                cg.landTime = -1;
-                cg.stepTime = -1;
-            }
-
+            cg.damageTime = 0;
+            cg.duckTime = -1;
+            cg.landTime = -1;
+            cg.stepTime = -1;
+            
+            idCGameDraw::AddLagometerSnapshotInfo( dest );
             return dest;
         }
         
@@ -468,7 +447,8 @@ void idCGameSnapshot::ProcessSnapshots( void )
         }
         
         // if our time is < nextFrame's, we have a nice interpolating state
-        if( cg.time >= cg.snap->serverTime && cg.time < cg.nextSnap->serverTime )
+        //if( cg.time >= cg.snap->serverTime && cg.time < cg.nextSnap->serverTime )
+        if( cg.time < cg.nextSnap->serverTime )
         {
             break;
         }

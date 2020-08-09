@@ -61,7 +61,6 @@ void idSGameMisc::SP_info_null( gentity_t* self )
     idSGameUtils::FreeEntity( self );
 }
 
-
 /*QUAKED info_notnull (0 0.5 0) (-4 -4 -4) (4 4 4)
 Used as a positional target for in-game calculation, like jumppad targets.
 target_position does the same thing
@@ -69,92 +68,6 @@ target_position does the same thing
 void idSGameMisc::SP_info_notnull( gentity_t* self )
 {
     idSGameUtils::SetOrigin( self, self->s.origin );
-}
-
-/*QUAKED light (0 1 0) (-8 -8 -8) (8 8 8) linear noIncidence START_OFF
-Non-displayed light.
-"light" overrides the default 300 intensity. - affects size
-a negative "light" will subtract the light's color
-'Linear' checkbox gives linear falloff instead of inverse square
-'noIncidence' checkbox makes lighting smoother
-Lights pointed at a target will be spotlights.
-"radius" overrides the default 64 unit radius of a spotlight at the target point.
-"scale" multiplier for the light intensity - does not affect size (default 1)
-greater than 1 is brighter, between 0 and 1 is dimmer.
-"color" sets the light's color
-"targetname" to indicate a switchable light - NOTE that all lights with the same targetname will be grouped together and act as one light (ie: don't mix colors, styles or start_off flag)
-"style" to specify a specify light style, even for switchable lights!
-"style_off" light style to use when switched off (Only for switchable lights)
-
-1 FLICKER (first variety)
-2 SLOW STRONG PULSE
-3 CANDLE (first variety)
-4 FAST STROBE
-5 GENTLE PULSE 1
-6 FLICKER (second variety)
-7 CANDLE (second variety)
-8 CANDLE (third variety)
-9 SLOW STROBE (fourth variety)
-10 FLUORESCENT FLICKER
-11 SLOW PULSE NOT FADE TO BLACK
-12 FAST PULSE FOR JEREMY
-13 Test Blending
-*/
-static void misc_lightstyle_set( gentity_t* ent )
-{
-    const sint mLightStyle = ent->count;
-    const sint mLightSwitchStyle = ent->bounceCount;
-    const sint mLightOffStyle = ent->fly_sound_debounce_time;
-    if( !ent->altFire )
-    {
-        //turn off
-        if( mLightOffStyle )	//i have a light style i'd like to use when off
-        {
-            valueType lightstyle[32];
-            trap_GetConfigstring( CS_LIGHT_STYLES + ( mLightOffStyle * 3 ) + 0, lightstyle, 32 );
-            trap_SetConfigstring( CS_LIGHT_STYLES + ( mLightStyle * 3 ) + 0, lightstyle );
-            
-            trap_GetConfigstring( CS_LIGHT_STYLES + ( mLightOffStyle * 3 ) + 1, lightstyle, 32 );
-            trap_SetConfigstring( CS_LIGHT_STYLES + ( mLightStyle * 3 ) + 1, lightstyle );
-            
-            trap_GetConfigstring( CS_LIGHT_STYLES + ( mLightOffStyle * 3 ) + 2, lightstyle, 32 );
-            trap_SetConfigstring( CS_LIGHT_STYLES + ( mLightStyle * 3 ) + 2, lightstyle );
-        }
-        else
-        {
-            trap_SetConfigstring( CS_LIGHT_STYLES + ( mLightStyle * 3 ) + 0, "a" );
-            trap_SetConfigstring( CS_LIGHT_STYLES + ( mLightStyle * 3 ) + 1, "a" );
-            trap_SetConfigstring( CS_LIGHT_STYLES + ( mLightStyle * 3 ) + 2, "a" );
-        }
-    }
-    else
-    {
-        //Turn myself on now
-        if( mLightSwitchStyle )	//i have a light style i'd like to use when on
-        {
-            valueType lightstyle[32];
-            trap_GetConfigstring( CS_LIGHT_STYLES + ( mLightSwitchStyle * 3 ) + 0, lightstyle, 32 );
-            trap_SetConfigstring( CS_LIGHT_STYLES + ( mLightStyle * 3 ) + 0, lightstyle );
-            
-            trap_GetConfigstring( CS_LIGHT_STYLES + ( mLightSwitchStyle * 3 ) + 1, lightstyle, 32 );
-            trap_SetConfigstring( CS_LIGHT_STYLES + ( mLightStyle * 3 ) + 1, lightstyle );
-            
-            trap_GetConfigstring( CS_LIGHT_STYLES + ( mLightSwitchStyle * 3 ) + 2, lightstyle, 32 );
-            trap_SetConfigstring( CS_LIGHT_STYLES + ( mLightStyle * 3 ) + 2, lightstyle );
-        }
-        else
-        {
-            trap_SetConfigstring( CS_LIGHT_STYLES + ( mLightStyle * 3 ) + 0, "z" );
-            trap_SetConfigstring( CS_LIGHT_STYLES + ( mLightStyle * 3 ) + 1, "z" );
-            trap_SetConfigstring( CS_LIGHT_STYLES + ( mLightStyle * 3 ) + 2, "z" );
-        }
-    }
-}
-
-void misc_dlight_use( gentity_t* ent, gentity_t* other, gentity_t* activator )
-{
-    ent->altFire = !ent->altFire;
-    misc_lightstyle_set( ent );
 }
 
 /*QUAKED light (0 1 0) (-8 -8 -8) (8 8 8) linear
@@ -166,73 +79,7 @@ Lights pointed at a target will be spotlights.
 */
 void idSGameMisc::SP_light( gentity_t* self )
 {
-    if( !self->targetname )
-    {
-        /*
-        "classname" "light"
-        "light" "10"
-        "origin" "1072 -368 320"
-        */
-        float32 light;
-        vec3_t color;
-        bool lightSet = idSGameSpawn::SpawnFloat( "light", "100", &light );
-        bool colorSet = idSGameSpawn::SpawnVector( "color", "1 1 1", color );
-        if( lightSet || colorSet )
-        {
-            sint r, g, b, i;
-            
-            r = color[0] * 255;
-            if( r > 255 )
-            {
-                r = 255;
-            }
-            g = color[1] * 255;
-            if( g > 255 )
-            {
-                g = 255;
-            }
-            b = color[2] * 255;
-            if( b > 255 )
-            {
-                b = 255;
-            }
-            
-            //if( light < 0 )
-            self->s.extraFlags = 1; // volume light
-            //else
-            //    self->s.extraFlags = 0; // not volume light
-            
-            i = light / 4;
-            if( i > 255 )
-            {
-                i = 255;
-            }
-            self->s.constantLight = r | ( g << 8 ) | ( b << 16 ) | ( i << 24 );
-        }
-        idSGameUtils::SetOrigin( self, self->s.origin );
-        self->s.eType = ET_GENERAL;
-        trap_LinkEntity( self );
-        return;
-    }
-    
-    idSGameSpawn::SpawnInt( "style", "0", &self->count );
-    idSGameSpawn::SpawnInt( "switch_style", "0", &self->bounceCount );
-    idSGameSpawn::SpawnInt( "style_off", "0", &self->fly_sound_debounce_time );
-    idSGameUtils::SetOrigin( self, self->s.origin );
-    trap_LinkEntity( self );
-    
-    self->use = misc_dlight_use;
-    
-    self->s.eType = ET_GENERAL;
-    self->altFire = false;
-    self->r.svFlags |= SVF_NOCLIENT;
-    
-    if( !( self->spawnflags & 4 ) )
-    {
-        //turn myself on now
-        self->altFire = true;
-    }
-    misc_lightstyle_set( self );
+    idSGameUtils::FreeEntity( self );
 }
 
 /*

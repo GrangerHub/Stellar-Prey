@@ -1362,8 +1362,20 @@ void idCGameServerCmds::PlaySound( void )
     trap_S_StartSound( origin, 0, 0, sfx );
 }
 
+/*
+=================
+idCGameServerCmds::SpawnServer
+=================
+*/
+void idCGameServerCmds::SpawnServer( void )
+{
+    cg.serverRespawning = true;
+}
+
+
 static consoleCommand_t svcommands[ ] =
 {
+    { "spawnserver", &idCGameServerCmds::SpawnServer , "description" },
     { "cp", &idCGameServerCmds::CenterPrint_f, "description" },
     { "cs", &idCGameServerCmds::ConfigStringModified, "description" },
     { "print", &idCGameServerCmds::Print_f, "description" },

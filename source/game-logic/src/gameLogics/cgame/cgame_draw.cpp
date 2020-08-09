@@ -2555,6 +2555,11 @@ void idCGameDraw::DrawDisconnect( void )
     sint w;
     vec4_t color = { 1.0f, 1.0f, 1.0f, 1.0f };
     
+    if( cg.serverRespawning )
+    {
+        return;
+    }
+    
     // draw the phone jack if we are completely past our buffers
     cmdNum = trap_GetCurrentCmdNumber( ) - CMD_BACKUP + 1;
     trap_GetUserCmd( cmdNum, &cmd );

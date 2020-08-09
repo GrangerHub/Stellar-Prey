@@ -2763,22 +2763,42 @@ void idBothGamesLocal::EvaluateTrajectory( const trajectory_t* tr, sint atTime, 
             break;
             
         case TR_SINE:
-            deltaTime = ( atTime - tr->trTime ) / ( float )tr->trDuration;
+            deltaTime = ( atTime - tr->trTime ) / ( float32 )tr->trDuration;
             phase = sin( deltaTime * M_PI * 2 );
             VectorMA( tr->trBase, phase, tr->trDelta, result );
             break;
             
         case TR_LINEAR_STOP:
             if( atTime > tr->trTime + tr->trDuration )
+            {
                 atTime = tr->trTime + tr->trDuration;
-                
-            deltaTime = ( atTime - tr->trTime ) * 0.001; // milliseconds to seconds
+            }
+            deltaTime = ( atTime - tr->trTime ) * 0.001;	// milliseconds to seconds
             if( deltaTime < 0 )
+            {
                 deltaTime = 0;
-                
+            }
             VectorMA( tr->trBase, deltaTime, tr->trDelta, result );
             break;
             
+        case TR_NONLINEAR_STOP:
+            if( atTime > tr->trTime + tr->trDuration )
+            {
+                atTime = tr->trTime + tr->trDuration;
+            }
+            
+            //new slow-down at end
+            if( atTime - tr->trTime > tr->trDuration || atTime - tr->trTime <= 0 )
+            {
+                deltaTime = 0;
+            }
+            else
+            {
+                //FIXME: maybe scale this somehow?  So that it starts out faster and stops faster?
+                deltaTime = tr->trDuration * 0.001f * ( ( float32 )cos( DEG2RAD( 90.0f - ( 90.0f * ( ( float32 )( atTime - tr->trTime ) ) / ( float32 )tr->trDuration ) ) ) );
+            }
+            VectorMA( tr->trBase, deltaTime, tr->trDelta, result );
+            break;
         case TR_GRAVITY:
             deltaTime = ( atTime - tr->trTime ) * 0.001; // milliseconds to seconds
             VectorMA( tr->trBase, deltaTime, tr->trDelta, result );
@@ -2790,9 +2810,12 @@ void idBothGamesLocal::EvaluateTrajectory( const trajectory_t* tr, sint atTime, 
             VectorMA( tr->trBase, deltaTime, tr->trDelta, result );
             result[2] += 0.5 * DEFAULT_GRAVITY * deltaTime * deltaTime;   // FIXME: local gravity...
             break;
-            
         default:
-            Com_Error( ERR_DROP, "idBothGamesLocal::EvaluateTrajectory: unknown trType: %i", tr->trTime );
+#ifdef GAMEDLL
+            Com_Error( ERR_DROP, "idBothGamesLocal::EvaluateTrajectory: [GAME SIDE] unknown trType: %i", tr->trType );
+#else
+            Com_Error( ERR_DROP, "idBothGamesLocal::EvaluateTrajectory: [CLIENTGAME SIDE] unknown trType: %i", tr->trType );
+#endif
             break;
     }
 }
@@ -2841,7 +2864,7 @@ void idBothGamesLocal::EvaluateTrajectoryDelta( const trajectory_t* tr, sint atT
                 VectorClear( result );
                 return;
             }
-            deltaTime = tr->trDuration * 0.001f * ( ( float )cos( DEG2RAD( 90.0f - ( 90.0f * ( ( float )( atTime - tr->trTime ) ) / ( float )tr->trDuration ) ) ) );
+            deltaTime = tr->trDuration * 0.001f * ( ( float32 )cos( DEG2RAD( 90.0f - ( 90.0f * ( ( float32 )( atTime - tr->trTime ) ) / ( float32 )tr->trDuration ) ) ) );
             VectorScale( tr->trDelta, deltaTime, result );
             break;
             

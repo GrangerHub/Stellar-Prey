@@ -918,6 +918,11 @@ void idCGamePredict::PredictPlayerState( void )
             cg_pmove.cmd.serverTime = ( ( cg_pmove.cmd.serverTime + pmove_msec.integer - 1 ) / pmove_msec.integer ) * pmove_msec.integer;
         }
         
+        if( cg.serverRespawning )
+        {
+            cg_pmove.ps->pm_type = PM_FREEZE;
+        }
+        
         if( !cg_optimizePrediction.integer )
         {
             bggame->Pmove( &cg_pmove );

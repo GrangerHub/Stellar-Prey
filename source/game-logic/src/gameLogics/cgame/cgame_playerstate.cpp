@@ -180,6 +180,8 @@ A respawn happened this snapshot
 */
 void idCGamePlayerState::Respawn( void )
 {
+    cg.serverRespawning = false;
+    
     // no error decay on player movement
     cg.thisFrameTeleport = true;
     

@@ -65,6 +65,7 @@ public:
     static void ServerCommand( void );
     static void ExecuteNewServerCommands( sint latestSequence );
     static void PlaySound( void );
+    static void SpawnServer( void );
 };
 
 #endif //!__CGAME_SERVERCMDS_H__

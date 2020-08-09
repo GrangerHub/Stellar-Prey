@@ -1170,6 +1170,8 @@ typedef struct
     sint nextWeaponClickTime;
     
     centity_t* locationHead;
+    
+    bool serverRespawning;
 } cg_t;
 
 

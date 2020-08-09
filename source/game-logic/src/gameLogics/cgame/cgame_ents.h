@@ -59,7 +59,6 @@ public:
     static void AddCEntity( centity_t* cent );
     static void AddPacketEntities( void );
     static void LinkLocation( centity_t* cent );
-    static bool InFOV( vec3_t spot, vec3_t from, vec3_t fromAngles, sint hFOV, sint vFOV );
 };
 
 #endif //!__CGAME_ENTS_H__

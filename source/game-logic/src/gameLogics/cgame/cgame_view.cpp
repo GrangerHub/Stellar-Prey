@@ -1582,9 +1582,12 @@ void idCGameLocal::DrawActiveFrame( sint serverTime, stereoFrame_t stereoView, b
     // are added to the render list
     trap_S_ClearLoopingSounds( false );
     
+    // clear all the render lists
+    trap_R_ClearScene( );
+    
     // set up cg.snap and possibly cg.nextSnap
-    idCGameSnapshot::ProcessSnapshots();
-
+    idCGameSnapshot::ProcessSnapshots( );
+    
     // if we haven't received any snapshots yet, all
     // we can draw is the information screen
     if( !cg.snap || ( cg.snap->snapFlags & SNAPFLAG_NOT_ACTIVE ) )
@@ -1601,9 +1604,6 @@ void idCGameLocal::DrawActiveFrame( sint serverTime, stereoFrame_t stereoView, b
     
     // update cg.predictedPlayerState
     idCGamePredict::PredictPlayerState( );
-
-    // clear all the render lists
-    trap_R_ClearScene();
     
     // cg.refdef is 100% inisialized here -> set stereo flag
     //cg.refdef.stereoFrame = stereoView;
@@ -1665,8 +1665,6 @@ void idCGameLocal::DrawActiveFrame( sint serverTime, stereoFrame_t stereoView, b
         idCGameDraw::AddLagometerFrameInfo( );
     }
     
-    trap_SetClientLerpOrigin(cg.refdef.vieworg[0], cg.refdef.vieworg[1], cg.refdef.vieworg[2]);
-
     if( cg_timescale.value != cg_timescaleFadeEnd.value )
     {
         if( cg_timescale.value < cg_timescaleFadeEnd.value )
