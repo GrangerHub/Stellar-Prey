@@ -32,21 +32,23 @@ This is the main repo for STELLAR PREY™ game and can be used to build and pack
 - [GeoIP](https://github.com/maxmind/geoip-api-c)
 - [SDL2](https://www.libsdl.org/download-2.0.php) - or simply install your OS package
 
-## Initialize
+## Building
+
+### Initialize
 
 To setup this repo, execute the following commands from the root of this repo in order:
 
-```
+```bash
 ./sp-tools.sh default_config
 ```
 which will create a local file `config.sh` with your settings.
 
-## Set up of `config.sh`
+### Set up of `config.sh`
 
 Set the values in the `config.sh` accordingly.
 
 This section in `config.sh` turns on compiling different parts:
-```
+```make
 BUILD_CLIENT="ON"
 BUILD_SERVER="ON"
 BUILD_AUTOUPDATE_SERVER="ON"
@@ -54,15 +56,29 @@ BUILD_MASTER_SERVER="ON"
 BUILD_AUTH_SERVER="ON"
 ```
 
-## Download submodules and paks
+### Download submodules and paks
 
 Then continue with the following commands:
 
-```
+```bash
 ./sp-tools.sh init
 ./sp-tools.sh install_default_paks
 ./sp-tools.sh configure_cmake both
 ./sp-tools.sh build both
+```
+
+## Running
+
+The built binaries can be run with the `run` subcommand:
+
+```bash
+./sp-tools.sh run client
+```
+
+To see other options, run:
+
+```bash
+./sp-tools.sh help run 
 ```
 
 ## More help
