@@ -3,6 +3,29 @@ GrangerHub's STELLAR PREY™ game is a first person strategy shooter that chroni
 
 This is the main repo for STELLAR PREY™ game and can be used to build and package releases, used as a development environment, as well as for the setup/operation of the client and/or the dedicated/master/auto-update servers.  All related code, scripts, and assets can be found through submodules in this repo.
 
+## Dependencies
+### Linux
+cmake
+cmake-curses-gui
+gdb
+tmux
+g++
+libglew-dev
+libjpeg-dev
+libsdl1.2-dev
+libcurl4-openssl-dev
+libncurses5-dev
+libncursesw5-dev
+libgeoip-dev
+libbz2-dev
+opencl-dev
+mysql-dev
+ncurses-dev
+mysql-client
+libmysqlclient-dev
+libfreetype6-dev
+
+## Setup
 To setup this repo, execute the following commands from the root of this repo in order:
 
 ```
