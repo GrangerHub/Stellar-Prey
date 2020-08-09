@@ -17,6 +17,5 @@
   loadMenu { "gui/menus/serverinfo.menu" }
   loadMenu { "gui/menus/loading.menu" }
   loadMenu { "gui/menus/autoupdate.menu" }
- loadMenu { "gui/menus/profilefirstrun.menu" }
-
+  loadMenu { "gui/menus/profilefirstrun.menu" }
 }
