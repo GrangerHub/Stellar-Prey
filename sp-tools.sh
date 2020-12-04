@@ -423,7 +423,7 @@ Configure_cmake_engine() {
     make clean
   fi
 
-  echo "Configuring cmake for the OpenWolf Engine." > /dev/tty
+  echo "Configuring cmake for the OpenWolf Engine."
 
   printf "\n"
 
