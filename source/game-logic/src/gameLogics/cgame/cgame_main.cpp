@@ -1,13 +1,13 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 // Copyright(C) 1999 - 2005 Id Software, Inc.
 // Copyright(C) 2000 - 2006 Tim Angus
-// Copyright(C) 2011 - 2018 Dusan Jocic <dusanjocic@msn.com>
+// Copyright(C) 2011 - 2021 Dusan Jocic <dusanjocic@msn.com>
 //
 // This file is part of OpenWolf.
 //
 // OpenWolf is free software; you can redistribute it
 // and / or modify it under the terms of the GNU General Public License as
-// published by the Free Software Foundation; either version 2 of the License,
+// published by the Free Software Foundation; either version 3 of the License,
 // or (at your option) any later version.
 //
 // OpenWolf is distributed in the hope that it will be
@@ -21,14 +21,14 @@
 //
 // -------------------------------------------------------------------------------------
 // File name:   cgame_main.cpp
-// Version:     v1.00
 // Created:
-// Compilers:   Visual Studio 2015
+// Compilers:   Microsoft (R) C/C++ Optimizing Compiler Version 19.26.28806 for x64,
+//              gcc (Ubuntu 9.3.0-10ubuntu2) 9.3.0
 // Description: initialization and primary entry point for cgame
 // -------------------------------------------------------------------------------------
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include <cgame/cgame_precompiled.h>
+#include <cgame/cgame_precompiled.hpp>
 
 // display context for new ui stuff
 displayContextDef_t cgDC;
@@ -163,7 +163,8 @@ vmConvar_t cg_hideHealthyTeamStatus;
 vmConvar_t cg_suppressWAnimWarnings;
 vmConvar_t cg_voice;
 vmConvar_t cg_emoticons;
-vmConvar_t  cg_drawAlienFeedback;
+vmConvar_t cg_drawAlienFeedback;
+vmConvar_t cg_predictItems;
 
 typedef struct
 {
@@ -300,7 +301,10 @@ static cvarTable_t cvarTable[ ] =
     { &cg_suppressWAnimWarnings, "cg_suppressWAnimWarnings", "1", CVAR_ARCHIVE},
     { &cg_voice, "voice", "default", CVAR_USERINFO | CVAR_ARCHIVE},
     { &cg_emoticons, "cg_emoticons", "0", CVAR_LATCH | CVAR_ARCHIVE},
-    { &cg_drawAlienFeedback, "cg_drawAlienFeedback", "1", 0}
+    { &cg_drawAlienFeedback, "cg_drawAlienFeedback", "1", 0},
+    
+    { &cg_predictItems, "cg_predictItems", "1", CVAR_ARCHIVE },
+    
 };
 
 static sint cvarTableSize = sizeof( cvarTable ) / sizeof( cvarTable[0] );
@@ -593,7 +597,7 @@ void idCGameLocal::Printf( pointer msg, ... )
     valueType text[ 1024 ];
     
     va_start( argptr, msg );
-    Q_vsnprintf( text, sizeof( text ), msg, argptr );
+    Q_vsprintf_s( text, sizeof( text ), msg, argptr );
     va_end( argptr );
     
     trap_Print( text );
@@ -610,7 +614,7 @@ void idCGameLocal::Error( pointer msg, ... )
     valueType text[ 1024 ];
     
     va_start( argptr, msg );
-    Q_vsnprintf( text, sizeof( text ), msg, argptr );
+    Q_vsprintf_s( text, sizeof( text ), msg, argptr );
     va_end( argptr );
     
     trap_Error( text );
@@ -627,7 +631,7 @@ void Com_Error( sint level, pointer error, ... )
     valueType text[1024];
     
     va_start( argptr, error );
-    Q_vsnprintf( text, sizeof( text ), error, argptr );
+    Q_vsprintf_s( text, sizeof( text ), error, argptr );
     va_end( argptr );
     
     cgameLocal.Error( "%s", text );
@@ -644,7 +648,7 @@ void Com_Printf( pointer msg, ... )
     valueType text[1024];
     
     va_start( argptr, msg );
-    Q_vsnprintf( text, sizeof( text ), msg, argptr );
+    Q_vsprintf_s( text, sizeof( text ), msg, argptr );
     va_end( argptr );
     
     cgameLocal.Printf( "%s", text );
@@ -730,16 +734,16 @@ void idCGameMain::RegisterSounds( void )
     
     for( i = 0; i < 4; i++ )
     {
-        Com_sprintf( name, sizeof( name ), "sound/player/footsteps/step%i.ogg", i + 1 );
+        Q_vsprintf_s( name, sizeof( name ), sizeof( name ), "sound/player/footsteps/step%i.ogg", i + 1 );
         cgs.media.footsteps[ FOOTSTEP_NORMAL ][ i ] = trap_S_RegisterSound( name );
         
-        Com_sprintf( name, sizeof( name ), "sound/player/footsteps/flesh%i.ogg", i + 1 );
+        Q_vsprintf_s( name, sizeof( name ), sizeof( name ), "sound/player/footsteps/flesh%i.ogg", i + 1 );
         cgs.media.footsteps[ FOOTSTEP_FLESH ][ i ] = trap_S_RegisterSound( name );
         
-        Com_sprintf( name, sizeof( name ), "sound/player/footsteps/splash%i.ogg", i + 1 );
+        Q_vsprintf_s( name, sizeof( name ), sizeof( name ), "sound/player/footsteps/splash%i.ogg", i + 1 );
         cgs.media.footsteps[ FOOTSTEP_SPLASH ][ i ] = trap_S_RegisterSound( name );
         
-        Com_sprintf( name, sizeof( name ), "sound/player/footsteps/clank%i.ogg", i + 1 );
+        Q_vsprintf_s( name, sizeof( name ), sizeof( name ), "sound/player/footsteps/clank%i.ogg", i + 1 );
         cgs.media.footsteps[ FOOTSTEP_METAL ][ i ] = trap_S_RegisterSound( name );
     }
     
@@ -971,7 +975,7 @@ void idCGameMain::RegisterGraphics( void )
         vec3_t  mins, maxs;
         sint j;
         
-        Com_sprintf( name, sizeof( name ), "*%i", i );
+        Q_vsprintf_s( name, sizeof( name ), sizeof( name ), "*%i", i );
         
         cgs.inlineDrawModel[ i ] = trap_R_RegisterModel( name );
         trap_R_ModelBounds( cgs.inlineDrawModel[ i ], mins, maxs );
@@ -2181,10 +2185,7 @@ void idCGameLocal::Init( sint serverMessageNum, sint serverCommandSequence, sint
     s = idCGameMain::ConfigString( CS_LEVEL_START_TIME );
     cgs.levelStartTime = atoi( s );
     
-    // get the gamestate from the client system
-    trap_GetGameState(&cgs.gameState);
-
-    idCGameServerCmds::ParseServerinfo( );
+    idCGameServerCmds::idCGameServerCmds::ParseServerinfo( );
     
     // load the new map
     trap_CM_LoadMap( cgs.mapname );

@@ -1,13 +1,13 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 // Copyright(C) 1999 - 2005 Id Software, Inc.
 // Copyright(C) 2000 - 2006 Tim Angus
-// Copyright(C) 2011 - 2018 Dusan Jocic <dusanjocic@msn.com>
+// Copyright(C) 2011 - 2021 Dusan Jocic <dusanjocic@msn.com>
 //
 // This file is part of OpenWolf.
 //
 // OpenWolf is free software; you can redistribute it
 // and / or modify it under the terms of the GNU General Public License as
-// published by the Free Software Foundation; either version 2 of the License,
+// published by the Free Software Foundation; either version 3 of the License,
 // or (at your option) any later version.
 //
 // OpenWolf is distributed in the hope that it will be
@@ -21,14 +21,14 @@
 //
 // -------------------------------------------------------------------------------------
 // File name:   cgame_weapons.cpp
-// Version:     v1.01
 // Created:
-// Compilers:   Visual Studio 2017, gcc 7.3.0
+// Compilers:   Microsoft (R) C/C++ Optimizing Compiler Version 19.26.28806 for x64,
+//              gcc (Ubuntu 9.3.0-10ubuntu2) 9.3.0
 // Description:
 // -------------------------------------------------------------------------------------
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include <cgame/cgame_precompiled.h>
+#include <cgame/cgame_precompiled.hpp>
 
 /*
 ===============
@@ -900,7 +900,7 @@ void idCGameWeapons::RegisterWeapon( sint weaponNum )
         Error( "Couldn't find weapon %i", weaponNum );
     }
     
-    Com_sprintf( path, MAX_QPATH, "models/weapons/%s/weapon.cfg", bggame->Weapon( ( weapon_t )weaponNum )->name );
+    Q_vsprintf_s( path, MAX_QPATH, MAX_QPATH, "models/weapons/%s/weapon.cfg", bggame->Weapon( ( weapon_t )weaponNum )->name );
     
     weaponInfo->humanName = bggame->Weapon( ( weapon_t )weaponNum )->humanName;
     
@@ -909,7 +909,7 @@ void idCGameWeapons::RegisterWeapon( sint weaponNum )
         Com_Printf( S_COLOR_RED "ERROR: failed to parse %s\n", path );
     }
     
-    Com_sprintf( path, MAX_QPATH, "models/weapons/%s/animation.cfg", bggame->Weapon( ( weapon_t )weaponNum )->name );
+    Q_vsprintf_s( path, MAX_QPATH, MAX_QPATH, "models/weapons/%s/animation.cfg", bggame->Weapon( ( weapon_t )weaponNum )->name );
     
     if( !cg_suppressWAnimWarnings.integer && !ParseWeaponAnimationFile( path, weaponInfo ) )
     {

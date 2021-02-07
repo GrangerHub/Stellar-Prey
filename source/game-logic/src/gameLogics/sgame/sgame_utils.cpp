@@ -1,13 +1,13 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 // Copyright(C) 1999 - 2005 Id Software, Inc.
 // Copyright(C) 2000 - 2006 Tim Angus
-// Copyright(C) 2011 - 2019 Dusan Jocic <dusanjocic@msn.com>
+// Copyright(C) 2011 - 2021 Dusan Jocic <dusanjocic@msn.com>
 //
 // This file is part of OpenWolf.
 //
 // OpenWolf is free software; you can redistribute it
 // and / or modify it under the terms of the GNU General Public License as
-// published by the Free Software Foundation; either version 2 of the License,
+// published by the Free Software Foundation; either version 3 of the License,
 // or (at your option) any later version.
 //
 // OpenWolf is distributed in the hope that it will be
@@ -21,14 +21,14 @@
 //
 // -------------------------------------------------------------------------------------
 // File name:   sgame_utils.cpp
-// Version:     v1.01
 // Created:
-// Compilers:   Visual Studio 2019, gcc 7.3.0
+// Compilers:   Microsoft (R) C/C++ Optimizing Compiler Version 19.26.28806 for x64,
+//              gcc (Ubuntu 9.3.0-10ubuntu2) 9.3.0
 // Description: misc utility functions for game module
 // -------------------------------------------------------------------------------------
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include <sgame/sgame_precompiled.h>
+#include <sgame/sgame_precompiled.hpp>
 
 /*
 ===============
@@ -92,7 +92,7 @@ pointer idSGameUtils::BuildShaderStateConfig( void )
     
     for( i = 0; i < remapCount; i++ )
     {
-        Com_sprintf( out, ( MAX_QPATH * 2 ) + 5, "%s=%s:%5.2f@", remappedShaders[ i ].oldShader, remappedShaders[ i ].newShader, remappedShaders[ i ].timeOffset );
+        Q_vsprintf_s( out, ( MAX_QPATH * 2 ) + 5, ( MAX_QPATH * 2 ) + 5, "%s=%s:%5.2f@", remappedShaders[ i ].oldShader, remappedShaders[ i ].newShader, remappedShaders[ i ].timeOffset );
         Q_strcat( buff, sizeof( buff ), out );
     }
     return buff;
@@ -383,7 +383,7 @@ valueType* idSGameUtils::vtos( const vec3_t v )
     s = str[ index ];
     index = ( index + 1 ) & 7;
     
-    Com_sprintf( s, 32, "(%i %i %i)", ( sint )v[ 0 ], ( sint )v[ 1 ], ( sint )v[ 2 ] );
+    Q_vsprintf_s( s, 32, 32, "(%i %i %i)", ( sint )v[ 0 ], ( sint )v[ 1 ], ( sint )v[ 2 ] );
     
     return s;
 }
@@ -789,7 +789,7 @@ void idSGameUtils::TriggerMenu( sint clientNum, dynMenu_t menu )
 {
     valueType buffer[ 32 ];
     
-    Com_sprintf( buffer, sizeof( buffer ), "servermenu %d", menu );
+    Q_vsprintf_s( buffer, sizeof( buffer ), sizeof( buffer ), "servermenu %d", menu );
     trap_SendServerCommand( clientNum, buffer );
 }
 
@@ -804,7 +804,7 @@ void idSGameUtils::TriggerMenu2( sint clientNum, dynMenu_t menu, sint arg )
 {
     valueType buffer[ 64 ];
     
-    Com_sprintf( buffer, sizeof( buffer ), "servermenu %d %d", menu, arg );
+    Q_vsprintf_s( buffer, sizeof( buffer ), sizeof( buffer ), "servermenu %d %d", menu, arg );
     trap_SendServerCommand( clientNum, buffer );
 }
 
@@ -819,6 +819,6 @@ void idSGameUtils::CloseMenus( sint clientNum )
 {
     valueType buffer[ 32 ];
     
-    Com_sprintf( buffer, 32, "serverclosemenus" );
+    Q_vsprintf_s( buffer, 32, 32, "serverclosemenus" );
     trap_SendServerCommand( clientNum, buffer );
 }

@@ -1,13 +1,13 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 // Copyright(C) 1999 - 2005 Id Software, Inc.
 // Copyright(C) 2000 - 2006 Tim Angus
-// Copyright(C) 2011 - 2019 Dusan Jocic <dusanjocic@msn.com>
+// Copyright(C) 2011 - 2021 Dusan Jocic <dusanjocic@msn.com>
 //
 // This file is part of OpenWolf.
 //
 // OpenWolf is free software; you can redistribute it
 // and / or modify it under the terms of the GNU General Public License as
-// published by the Free Software Foundation; either version 2 of the License,
+// published by the Free Software Foundation; either version 3 of the License,
 // or (at your option) any later version.
 //
 // OpenWolf is distributed in the hope that it will be
@@ -21,14 +21,14 @@
 //
 // -------------------------------------------------------------------------------------
 // File name:   sgame_spawn.cpp
-// Version:     v1.01
 // Created:
-// Compilers:   Visual Studio 2019, gcc 7.3.0
+// Compilers:   Microsoft (R) C/C++ Optimizing Compiler Version 19.26.28806 for x64,
+//              gcc (Ubuntu 9.3.0-10ubuntu2) 9.3.0
 // Description:
 // -------------------------------------------------------------------------------------
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include <sgame/sgame_precompiled.h>
+#include <sgame/sgame_precompiled.hpp>
 
 /*
 ===============
@@ -657,7 +657,7 @@ bool idSGameSpawn::ParseSpawnVarsFromFile( char** data )
     level.numSpawnVars = 0;
     level.numSpawnVarChars = 0;
     
-    Com_sprintf( com_token, sizeof( com_token ), "%s", COM_Parse( data ) );
+    Q_vsprintf_s( com_token, sizeof( com_token ), sizeof( com_token ), "%s", COM_Parse( data ) );
     if( com_token[0] == 0 )
     {
         return false;
@@ -671,7 +671,7 @@ bool idSGameSpawn::ParseSpawnVarsFromFile( char** data )
     
     while( 1 )
     {
-        Com_sprintf( keyname, sizeof( keyname ), "%s", COM_Parse( data ) );
+        Q_vsprintf_s( keyname, sizeof( keyname ), sizeof( keyname ), "%s", COM_Parse( data ) );
         if( !keyname[0] )
         {
             COM_ParseWarning( "EOF without closing brace" );
@@ -682,7 +682,7 @@ bool idSGameSpawn::ParseSpawnVarsFromFile( char** data )
             break;
         }
         
-        Com_sprintf( com_token, sizeof( com_token ), "%s", COM_Parse( data ) );
+        Q_vsprintf_s( com_token, sizeof( com_token ), sizeof( com_token ), "%s", COM_Parse( data ) );
         if( !com_token[0] )
         {
             COM_ParseWarning( "EOF without closing brace" );

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 // Copyright(C) 2004 - 2006 Tony J.White
-// Copyright(C) 2011 - 2019 Dusan Jocic <dusanjocic@msn.com>
+// Copyright(C) 2011 - 2021 Dusan Jocic <dusanjocic@msn.com>
 //
 // This file is part of OpenWolf.
 //
@@ -16,7 +16,7 @@
 //
 // OpenWolf is free software; you can redistribute it
 // and / or modify it under the terms of the GNU General Public License as
-// published by the Free Software Foundation; either version 2 of the License,
+// published by the Free Software Foundation; either version 3 of the License,
 // or (at your option) any later version.
 //
 // OpenWolf is distributed in the hope that it will be
@@ -29,14 +29,14 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110 - 1301  USA
 // -------------------------------------------------------------------------------------
 // File name:   sgame_admin.cpp
-// Version:     v1.01
 // Created:
-// Compilers:   Visual Studio 2019, gcc 7.3.0
+// Compilers:   Microsoft (R) C/C++ Optimizing Compiler Version 19.26.28806 for x64,
+//              gcc (Ubuntu 9.3.0-10ubuntu2) 9.3.0
 // Description:
 // -------------------------------------------------------------------------------------
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include <sgame/sgame_precompiled.h>
+#include <sgame/sgame_precompiled.hpp>
 
 idAdminLocal adminLocal;
 
@@ -365,7 +365,7 @@ bool idAdminLocal::AdminNameCheck( gentity_t* ent, valueType* name, valueType* e
         idSGameCmds::SanitiseString( client->pers.netname, testName, sizeof( testName ) );
         if( !Q_stricmp( name2, testName ) )
         {
-            Com_sprintf( err, len, "The name '%s^7' is already in use", name );
+            Q_vsprintf_s( err, len, len, "The name '%s^7' is already in use", name );
             return false;
         }
     }
@@ -386,7 +386,7 @@ bool idAdminLocal::AdminNameCheck( gentity_t* ent, valueType* name, valueType* e
         
         if( !Q_stricmp( name2, testName ) && Q_stricmp( ent->client->pers.guid, g_admin_admins[ i ]->guid ) )
         {
-            Com_sprintf( err, len, "The name '%s^7' belongs to an admin, please use another name", name );
+            Q_vsprintf_s( err, len, len, "The name '%s^7' belongs to an admin, please use another name", name );
             return false;
         }
     }
@@ -476,7 +476,7 @@ void idAdminLocal::AdminWriteConfigInt( sint v, fileHandle_t f )
 {
     valueType buf[ 32 ];
     
-    Com_sprintf( buf, sizeof( buf ), "%d", v );
+    Q_vsprintf_s( buf, sizeof( buf ), sizeof( buf ), "%d", v );
     
     trap_FS_Write( buf, strlen( buf ), f );
     trap_FS_Write( "\n", 1, f );
@@ -834,29 +834,29 @@ void idAdminLocal::AdminLog( gentity_t* admin, valueType* cmd, sint skiparg )
     
     if( victim && Q_stricmp( cmd, "attempted" ) )
     {
-        Com_sprintf( string, sizeof( string ),
-                     "%3i:%i%i: %i: %s: %s: %s: %s: %s: %s: \"%s\"\n",
-                     min, tens, sec,
-                     ( admin ) ? admin->s.clientNum : -1,
-                     ( admin ) ? admin->client->pers.guid
-                     : "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-                     ( admin ) ? admin->client->pers.netname : "console",
-                     flags, cmd,
-                     victim->client->pers.guid,
-                     victim->client->pers.netname,
-                     idSGameCmds::SayConcatArgs( 2 + skiparg ) );
+        Q_vsprintf_s( string, sizeof( string ), sizeof( string ),
+                      "%3i:%i%i: %i: %s: %s: %s: %s: %s: %s: \"%s\"\n",
+                      min, tens, sec,
+                      ( admin ) ? admin->s.clientNum : -1,
+                      ( admin ) ? admin->client->pers.guid
+                      : "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+                      ( admin ) ? admin->client->pers.netname : "console",
+                      flags, cmd,
+                      victim->client->pers.guid,
+                      victim->client->pers.netname,
+                      idSGameCmds::SayConcatArgs( 2 + skiparg ) );
     }
     else
     {
-        Com_sprintf( string, sizeof( string ),
-                     "%3i:%i%i: %i: %s: %s: %s: %s: \"%s\"\n",
-                     min, tens, sec,
-                     ( admin ) ? admin->s.clientNum : -1,
-                     ( admin ) ? admin->client->pers.guid
-                     : "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-                     ( admin ) ? admin->client->pers.netname : "console",
-                     flags, cmd,
-                     idSGameCmds::SayConcatArgs( 1 + skiparg ) );
+        Q_vsprintf_s( string, sizeof( string ), sizeof( string ),
+                      "%3i:%i%i: %i: %s: %s: %s: %s: \"%s\"\n",
+                      min, tens, sec,
+                      ( admin ) ? admin->s.clientNum : -1,
+                      ( admin ) ? admin->client->pers.guid
+                      : "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+                      ( admin ) ? admin->client->pers.netname : "console",
+                      flags, cmd,
+                      idSGameCmds::SayConcatArgs( 1 + skiparg ) );
     }
     trap_FS_Write( string, strlen( string ), f );
     trap_FS_FCloseFile( f );
@@ -920,7 +920,7 @@ sint idAdminLocal::AdminListAdmins( gentity_t* ent, sint start, valueType* searc
                         colorlen += 2;
                     }
                 }
-                Com_sprintf( lname, sizeof( lname ), "%*s", admin_level_maxname + colorlen, g_admin_levels[ j ]->name );
+                Q_vsprintf_s( lname, sizeof( lname ), sizeof( lname ), "%*s", admin_level_maxname + colorlen, g_admin_levels[ j ]->name );
                 break;
             }
         }
@@ -979,9 +979,9 @@ sint idAdminLocal::AdminListAdmins( gentity_t* ent, sint start, valueType* searc
                 for( colorlen = k = 0; g_admin_levels[ j ]->name[ k ]; k++ )
                     if( Q_IsColorString( &g_admin_levels[ j ]->name[ k ] ) )
                         colorlen += 2;
-                Com_sprintf( lname, sizeof( lname ), "%*s",
-                             admin_level_maxname + colorlen,
-                             g_admin_levels[ j ]->name );
+                Q_vsprintf_s( lname, sizeof( lname ), sizeof( lname ), "%*s",
+                              admin_level_maxname + colorlen,
+                              g_admin_levels[ j ]->name );
                 break;
             }
         }
@@ -1013,27 +1013,27 @@ void idAdminLocal::AdminDuration( sint secs, valueType* duration, sint dursize )
     }
     else if( secs >= ( 60 * 60 * 24 * 365 ) )
     {
-        Com_sprintf( duration, dursize, "%1.1f years", ( secs / ( 60 * 60 * 24 * 365.0f ) ) );
+        Q_vsprintf_s( duration, dursize, dursize, "%1.1f years", ( secs / ( 60 * 60 * 24 * 365.0f ) ) );
     }
     else if( secs >= ( 60 * 60 * 24 * 90 ) )
     {
-        Com_sprintf( duration, dursize, "%1.1f weeks", ( secs / ( 60 * 60 * 24 * 7.0f ) ) );
+        Q_vsprintf_s( duration, dursize, dursize, "%1.1f weeks", ( secs / ( 60 * 60 * 24 * 7.0f ) ) );
     }
     else if( secs >= ( 60 * 60 * 24 ) )
     {
-        Com_sprintf( duration, dursize, "%1.1f days", ( secs / ( 60 * 60 * 24.0f ) ) );
+        Q_vsprintf_s( duration, dursize, dursize, "%1.1f days", ( secs / ( 60 * 60 * 24.0f ) ) );
     }
     else if( secs >= ( 60 * 60 ) )
     {
-        Com_sprintf( duration, dursize, "%1.1f hours", ( secs / ( 60 * 60.0f ) ) );
+        Q_vsprintf_s( duration, dursize, dursize, "%1.1f hours", ( secs / ( 60 * 60.0f ) ) );
     }
     else if( secs >= 60 )
     {
-        Com_sprintf( duration, dursize, "%1.1f minutes", ( secs / 60.0f ) );
+        Q_vsprintf_s( duration, dursize, dursize, "%1.1f minutes", ( secs / 60.0f ) );
     }
     else
     {
-        Com_sprintf( duration, dursize, "%i seconds", secs );
+        Q_vsprintf_s( duration, dursize, dursize, "%i seconds", secs );
     }
 }
 
@@ -1076,7 +1076,7 @@ bool idAdminLocal::AdminBanCheck( valueType* userinfo, valueType* reason, sint r
         {
             valueType duration[ 32 ];
             AdminDuration( ( g_admin_bans[ i ]->expires - t ), duration, sizeof( duration ) );
-            Com_sprintf( reason, rlen, "You have been banned by %s^7 reason: %s^7 expires: %s", g_admin_bans[ i ]->banner, g_admin_bans[ i ]->reason, duration );
+            Q_vsprintf_s( reason, rlen, rlen, "You have been banned by %s^7 reason: %s^7 expires: %s", g_admin_bans[ i ]->banner, g_admin_bans[ i ]->reason, duration );
             
             idSGameMain::Printf( "Banned player tried to connect from IP %s\n", ip );
             
@@ -1087,7 +1087,7 @@ bool idAdminLocal::AdminBanCheck( valueType* userinfo, valueType* reason, sint r
         {
             valueType duration[ 32 ];
             AdminDuration( ( g_admin_bans[ i ]->expires - t ), duration, sizeof( duration ) );
-            Com_sprintf( reason, rlen, "You have been banned by %s^7 reason: %s^7 expires: %s", g_admin_bans[ i ]->banner, g_admin_bans[ i ]->reason, duration );
+            Q_vsprintf_s( reason, rlen, rlen, "You have been banned by %s^7 reason: %s^7 expires: %s", g_admin_bans[ i ]->banner, g_admin_bans[ i ]->reason, duration );
             idSGameMain::Printf( "Banned player tried to connect with GUID %s\n", guid );
             return true;
         }
@@ -1769,7 +1769,7 @@ bool idAdminLocal::AdminCreateBan( gentity_t* ent, valueType* netname, valueType
     Q_strncpyz( b->ip, ip, sizeof( b->ip ) );
     
     //strftime( b->made, sizeof( b->made ), "%m/%d/%y %H:%M:%S", lt );
-    Com_sprintf( b->made, sizeof( b->made ), "%02i/%02i/%02i %02i:%02i:%02i", qt.tm_mon + 1, qt.tm_mday, qt.tm_year % 100, qt.tm_hour, qt.tm_min, qt.tm_sec );
+    Q_vsprintf_s( b->made, sizeof( b->made ), sizeof( b->made ), "%02i/%02i/%02i %02i:%02i:%02i", qt.tm_mon + 1, qt.tm_mday, qt.tm_year % 100, qt.tm_hour, qt.tm_min, qt.tm_sec );
     
     if( ent )
     {
@@ -2765,7 +2765,7 @@ bool idAdminLocal::AdminListPlayers( gentity_t* ent, sint skiparg )
                         colorlen += 2;
                     }
                     
-                    Com_sprintf( lname, sizeof( lname ), "%*s", admin_level_maxname + colorlen, g_admin_levels[j]->name );
+                    Q_vsprintf_s( lname, sizeof( lname ), sizeof( lname ), "%*s", admin_level_maxname + colorlen, g_admin_levels[j]->name );
                 }
                 break;
             }
@@ -2925,7 +2925,7 @@ bool idAdminLocal::AdminShowBans( gentity_t* ent, sint skiparg )
             }
         }
         
-        Com_sprintf( n1, sizeof( n1 ), "%*s", max_name + colorlen, g_admin_bans[ i ]->name );
+        Q_vsprintf_s( n1, sizeof( n1 ), sizeof( n1 ), "%*s", max_name + colorlen, g_admin_bans[ i ]->name );
         
         for( colorlen = k = 0; g_admin_bans[i]->banner[k]; k++ )
         {
@@ -2935,7 +2935,7 @@ bool idAdminLocal::AdminShowBans( gentity_t* ent, sint skiparg )
             }
         }
         
-        Com_sprintf( n2, sizeof( n2 ), "%*s", max_banner + colorlen, g_admin_bans[ i ]->banner );
+        Q_vsprintf_s( n2, sizeof( n2 ), sizeof( n2 ), "%*s", max_banner + colorlen, g_admin_bans[ i ]->banner );
         
         adminLocal.ADMBP( va( "%4i %s^7 %-15s %-8s %s^7 %-10s\n     \\__ %s\n", ( i + 1 ), n1, g_admin_bans[ i ]->ip, date, n2, duration, g_admin_bans[ i ]->reason ) );
     }

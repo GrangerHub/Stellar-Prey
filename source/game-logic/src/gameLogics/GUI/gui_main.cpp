@@ -1,12 +1,12 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 // Copyright(C) 2000 - 2006 Tim Angus
-// Copyright(C) 2011 - 2019 Dusan Jocic <dusanjocic@msn.com>
+// Copyright(C) 2011 - 2021 Dusan Jocic <dusanjocic@msn.com>
 //
 // This file is part of OpenWolf.
 //
 // OpenWolf is free software; you can redistribute it
 // and / or modify it under the terms of the GNU General Public License as
-// published by the Free Software Foundation; either version 2 of the License,
+// published by the Free Software Foundation; either version 3 of the License,
 // or (at your option) any later version.
 //
 // OpenWolf is distributed in the hope that it will be
@@ -20,14 +20,14 @@
 //
 // -------------------------------------------------------------------------------------
 // File name:   gui_main.cpp
-// Version:     v1.02
 // Created:
-// Compilers:   Visual Studio 2019, gcc 7.3.0
+// Compilers:   Microsoft (R) C/C++ Optimizing Compiler Version 19.26.28806 for x64,
+//              gcc (Ubuntu 9.3.0-10ubuntu2) 9.3.0
 // Description:
 // -------------------------------------------------------------------------------------
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include <GUI/gui_precompiled.h>
+#include <GUI/gui_precompiled.hpp>
 
 extern bool g_waitingForKey;
 extern bool g_editingField;
@@ -535,7 +535,7 @@ static sint UI_GetServerStatusInfo( valueType* serverAddress, serverStatusInfo_t
                 
                 name = p;
                 
-                Com_sprintf( &info->pings[len], sizeof( info->pings ) - len, "%d", i );
+                Q_vsprintf_s( &info->pings[len], sizeof( info->pings ) - len, sizeof( info->pings ) - len, "%d", i );
                 
                 info->lines[info->numLines][0] = &info->pings[len];
                 
@@ -637,9 +637,9 @@ static void UI_BuildFindPlayerList( bool force )
         trap_LAN_ServerStatus( nullptr, nullptr, 0 );
         //
         uiInfo.numFoundPlayerServers = 1;
-        Com_sprintf( uiInfo.foundPlayerServerNames[uiInfo.numFoundPlayerServers - 1],
-                     sizeof( uiInfo.foundPlayerServerNames[uiInfo.numFoundPlayerServers - 1] ),
-                     "searching %d...", uiInfo.pendingServerStatus.num );
+        Q_vsprintf_s( uiInfo.foundPlayerServerNames[uiInfo.numFoundPlayerServers - 1], sizeof( uiInfo.foundPlayerServerNames[uiInfo.numFoundPlayerServers - 1] ),
+                      sizeof( uiInfo.foundPlayerServerNames[uiInfo.numFoundPlayerServers - 1] ),
+                      "searching %d...", uiInfo.pendingServerStatus.num );
         numFound = 0;
         numTimeOuts++;
     }
@@ -704,9 +704,9 @@ static void UI_BuildFindPlayerList( bool force )
                     }
                 }
                 
-                Com_sprintf( uiInfo.foundPlayerServerNames[uiInfo.numFoundPlayerServers - 1],
-                             sizeof( uiInfo.foundPlayerServerNames[uiInfo.numFoundPlayerServers - 1] ),
-                             "searching %d/%d...", numFound, uiInfo.pendingServerStatus.num );
+                Q_vsprintf_s( uiInfo.foundPlayerServerNames[uiInfo.numFoundPlayerServers - 1], sizeof( uiInfo.foundPlayerServerNames[uiInfo.numFoundPlayerServers - 1] ),
+                              sizeof( uiInfo.foundPlayerServerNames[uiInfo.numFoundPlayerServers - 1] ),
+                              "searching %d/%d...", numFound, uiInfo.pendingServerStatus.num );
                 // retrieved the server status so reuse this spot
                 uiInfo.pendingServerStatus.server[i].valid = false;
             }
@@ -744,9 +744,9 @@ static void UI_BuildFindPlayerList( bool force )
                             
                 uiInfo.pendingServerStatus.server[i].valid = true;
                 uiInfo.pendingServerStatus.num++;
-                Com_sprintf( uiInfo.foundPlayerServerNames[uiInfo.numFoundPlayerServers - 1],
-                             sizeof( uiInfo.foundPlayerServerNames[uiInfo.numFoundPlayerServers - 1] ),
-                             "searching %d/%d...", numFound, uiInfo.pendingServerStatus.num );
+                Q_vsprintf_s( uiInfo.foundPlayerServerNames[uiInfo.numFoundPlayerServers - 1], sizeof( uiInfo.foundPlayerServerNames[uiInfo.numFoundPlayerServers - 1] ),
+                              sizeof( uiInfo.foundPlayerServerNames[uiInfo.numFoundPlayerServers - 1] ),
+                              "searching %d/%d...", numFound, uiInfo.pendingServerStatus.num );
             }
         }
     }
@@ -766,15 +766,15 @@ static void UI_BuildFindPlayerList( bool force )
         
         if( !uiInfo.numFoundPlayerServers )
         {
-            Com_sprintf( uiInfo.foundPlayerServerNames[uiInfo.numFoundPlayerServers - 1],
-                         sizeof( uiInfo.foundPlayerServerAddresses[0] ), "no servers found" );
+            Q_vsprintf_s( uiInfo.foundPlayerServerNames[uiInfo.numFoundPlayerServers - 1], sizeof( uiInfo.foundPlayerServerAddresses[0] ),
+                          sizeof( uiInfo.foundPlayerServerAddresses[0] ), "no servers found" );
         }
         else
         {
-            Com_sprintf( uiInfo.foundPlayerServerNames[uiInfo.numFoundPlayerServers - 1],
-                         sizeof( uiInfo.foundPlayerServerAddresses[0] ),
-                         "%d server%s found with player %s", uiInfo.numFoundPlayerServers - 1,
-                         uiInfo.numFoundPlayerServers == 2 ? "" : "s", uiInfo.findPlayerName );
+            Q_vsprintf_s( uiInfo.foundPlayerServerNames[uiInfo.numFoundPlayerServers - 1], sizeof( uiInfo.foundPlayerServerAddresses[0] ),
+                          sizeof( uiInfo.foundPlayerServerAddresses[0] ),
+                          "%d server%s found with player %s", uiInfo.numFoundPlayerServers - 1,
+                          uiInfo.numFoundPlayerServers == 2 ? "" : "s", uiInfo.findPlayerName );
         }
         
         uiInfo.nextFindPlayerRefresh = 0;
@@ -846,7 +846,7 @@ static void UI_BuildServerDisplayList( bool force )
     len = strlen( uiInfo.serverStatus.motd );
     if( len == 0 )
     {
-        strcpy( uiInfo.serverStatus.motd, va( "%s - Version: %s", PRODUCT_NAME, PRODUCT_VERSION ) );
+        strcpy( uiInfo.serverStatus.motd, va( "Celestial Harvest - Version: %s", Q3_VERSION ) );
         len = strlen( uiInfo.serverStatus.motd );
     }
     if( len != uiInfo.serverStatus.motdLen )
@@ -1173,15 +1173,10 @@ void idUserInterfaceManagerLocal::Refresh( sint realtime )
     // draw cursor
     UI_SetColor( nullptr );
     
-    if( Menu_Count() > 0 )
+    if( Menu_Count() > 0 )  // && !trap_Cvar_VariableValue("ui_hideCursor") )
     {
-        uiClientState_t cstate;
-        trap_GetClientState( &cstate );
-        if( cstate.connState <= CA_DISCONNECTED || cstate.connState >= CA_ACTIVE )
-        {
-            UI_DrawHandlePic( uiInfo.uiDC.cursorx - ( 16.0f * uiInfo.uiDC.aspectScale ), uiInfo.uiDC.cursory - 16.0f,
-                              32.0f * uiInfo.uiDC.aspectScale, 32.0f, uiInfo.uiDC.Assets.cursor );
-        }
+        UI_DrawHandlePic( uiInfo.uiDC.cursorx - ( 16.0f * uiInfo.uiDC.aspectScale ), uiInfo.uiDC.cursory - 16.0f,
+                          32.0f * uiInfo.uiDC.aspectScale, 32.0f, uiInfo.uiDC.Assets.cursor );
     }
 }
 
@@ -1906,11 +1901,11 @@ static void UI_DrawGLInfo( rectDef_t* rect, float32 scale, sint textalign, sint 
 {
     valueType      buffer[ 4096 ];
     
-    Com_sprintf( buffer, sizeof( buffer ), "VENDOR: %s\nVERSION: %s\n"
-                 "PIXELFORMAT: color(%d-bits) Z(%d-bits) stencil(%d-bits)\n%s",
-                 uiInfo.uiDC.glconfig.vendor_string, uiInfo.uiDC.glconfig.renderer_string,
-                 uiInfo.uiDC.glconfig.colorBits, uiInfo.uiDC.glconfig.depthBits,
-                 uiInfo.uiDC.glconfig.stencilBits, uiInfo.uiDC.glconfig.extensions_string );
+    Q_vsprintf_s( buffer, sizeof( buffer ), sizeof( buffer ), "VENDOR: %s\nVERSION: %s\n"
+                  "PIXELFORMAT: color(%d-bits) Z(%d-bits) stencil(%d-bits)\n%s",
+                  uiInfo.uiDC.glconfig.vendor_string, uiInfo.uiDC.glconfig.renderer_string,
+                  uiInfo.uiDC.glconfig.colorBits, uiInfo.uiDC.glconfig.depthBits,
+                  uiInfo.uiDC.glconfig.stencilBits, uiInfo.uiDC.glconfig.extensions_string );
                  
     UI_DrawTextBlock( rect, text_x, text_y, color, scale,
                       textalign, textvalign, textStyle, buffer );
@@ -2352,12 +2347,12 @@ static void UI_LoadHumanArmouryBuys( void )
             sint price = bggame->Weapon( ( weapon_t )i )->price;
             if( uiInfo.weapon != WP_NONE && uiInfo.weapon != WP_BLASTER )
             {
-                Com_sprintf( buffer, sizeof( buffer ), "cmd sell %s;", bggame->Weapon( ( weapon_t )uiInfo.weapon )->name );
+                Q_vsprintf_s( buffer, sizeof( buffer ), sizeof( buffer ), "cmd sell %s;", bggame->Weapon( ( weapon_t )uiInfo.weapon )->name );
                 price -= bggame->Weapon( ( weapon_t )uiInfo.weapon )->price;
             }
             uiInfo.humanArmouryBuyList[ j ].text = String_Alloc( price <= uiInfo.credits ?
                                                    bggame->Weapon( ( weapon_t )i )->humanName : va( "^1%s", bggame->Weapon( ( weapon_t )i )->humanName ) );
-            Com_sprintf( buffer, sizeof( buffer ), "%scmd buy %s\n", buffer, bggame->Weapon( ( weapon_t )i )->name );
+            Q_vsprintf_s( buffer, sizeof( buffer ), sizeof( buffer ), "%scmd buy %s\n", buffer, bggame->Weapon( ( weapon_t )i )->name );
             uiInfo.humanArmouryBuyList[ j ].cmd = String_Alloc( buffer );
             uiInfo.humanArmouryBuyList[ j ].type = INFOTYPE_WEAPON;
             uiInfo.humanArmouryBuyList[ j ].v.weapon = ( weapon_t )i;
@@ -2383,13 +2378,13 @@ static void UI_LoadHumanArmouryBuys( void )
                 if( ( uiInfo.upgrades & ( 1 << i2 ) ) &&
                         ( bggame->Upgrade( ( upgrade_t )i2 )->slots & bggame->Upgrade( ( upgrade_t )i )->slots ) )
                 {
-                    Com_sprintf( buffer, sizeof( buffer ), "%scmd sell %s;", buffer, bggame->Upgrade( ( upgrade_t )i2 )->name );
+                    Q_vsprintf_s( buffer, sizeof( buffer ), sizeof( buffer ), "%scmd sell %s;", buffer, bggame->Upgrade( ( upgrade_t )i2 )->name );
                     price -= bggame->Upgrade( ( upgrade_t )i2 )->price;
                 }
             }
             uiInfo.humanArmouryBuyList[ j ].text = String_Alloc( price <= uiInfo.credits ?
                                                    bggame->Upgrade( ( upgrade_t )i )->humanName : va( "^1%s", bggame->Upgrade( ( upgrade_t )i )->humanName ) );
-            Com_sprintf( buffer, sizeof( buffer ), "%scmd buy %s\n", buffer, bggame->Upgrade( ( upgrade_t )i )->name );
+            Q_vsprintf_s( buffer, sizeof( buffer ), sizeof( buffer ), "%scmd buy %s\n", buffer, bggame->Upgrade( ( upgrade_t )i )->name );
             uiInfo.humanArmouryBuyList[ j ].cmd = String_Alloc( buffer );
             uiInfo.humanArmouryBuyList[ j ].type = INFOTYPE_UPGRADE;
             uiInfo.humanArmouryBuyList[ j ].v.upgrade = ( upgrade_t )i;
@@ -2743,11 +2738,11 @@ static void UI_LoadDemos( void )
     valueType*  demoname;
     sint   i, len;
     
-    Com_sprintf( demoExt, sizeof( demoExt ), "dm_%d", ( sint )trap_Cvar_VariableValue( "protocol" ) );
+    Q_vsprintf_s( demoExt, sizeof( demoExt ), sizeof( demoExt ), "dm_%d", ( sint )trap_Cvar_VariableValue( "protocol" ) );
     
     uiInfo.demoCount = trap_FS_GetFileList( "demos", demoExt, demolist, 4096 );
     
-    Com_sprintf( demoExt, sizeof( demoExt ), ".dm_%d", ( sint )trap_Cvar_VariableValue( "protocol" ) );
+    Q_vsprintf_s( demoExt, sizeof( demoExt ), sizeof( demoExt ), ".dm_%d", ( sint )trap_Cvar_VariableValue( "protocol" ) );
     
     if( uiInfo.demoCount )
     {
@@ -3188,7 +3183,7 @@ static void UI_RunMenuScript( valueType** args )
                 trap_FS_Read( text, len, f );
                 text[len] = 0;
                 
-                Com_sprintf( command, 32, "ptrcrestore %s", text );
+                Q_vsprintf_s( command, 32, 32, "ptrcrestore %s", text );
                 
                 trap_Cmd_ExecuteText( EXEC_APPEND, command );
             }
@@ -4024,16 +4019,16 @@ static pointer UI_FeederItemText( float32 feederID, sint index, sint column, qha
                     {
                         if( ui_netSource.integer == AS_LOCAL )
                         {
-                            Com_sprintf( hostname, sizeof( hostname ), "%s [%s]",
-                                         Info_ValueForKey( info, "hostname" ),
-                                         netnames[atoi( Info_ValueForKey( info, "nettype" ) )] );
+                            Q_vsprintf_s( hostname, sizeof( hostname ), sizeof( hostname ), "%s [%s]",
+                                          Info_ValueForKey( info, "hostname" ),
+                                          netnames[atoi( Info_ValueForKey( info, "nettype" ) )] );
                             return hostname;
                         }
                         else
                         {
                             valueType* text;
                             
-                            Com_sprintf( hostname, sizeof( hostname ), "%s", Info_ValueForKey( info, "hostname" ) );
+                            Q_vsprintf_s( hostname, sizeof( hostname ), sizeof( hostname ), "%s", Info_ValueForKey( info, "hostname" ) );
                             
                             // Strip leading whitespace
                             text = hostname;
@@ -4049,8 +4044,8 @@ static pointer UI_FeederItemText( float32 feederID, sint index, sint column, qha
                     return Info_ValueForKey( info, "mapname" );
                     
                 case SORT_CLIENTS:
-                    Com_sprintf( clientBuff, sizeof( clientBuff ), "%s (%s)",
-                                 Info_ValueForKey( info, "clients" ), Info_ValueForKey( info, "sv_maxclients" ) );
+                    Q_vsprintf_s( clientBuff, sizeof( clientBuff ), sizeof( clientBuff ), "%s (%s)",
+                                  Info_ValueForKey( info, "clients" ), Info_ValueForKey( info, "sv_maxclients" ) );
                     return clientBuff;
                     
                 case SORT_PING:
@@ -4180,15 +4175,15 @@ static pointer UI_FeederItemText( float32 feederID, sint index, sint column, qha
             sint mode = trap_Cvar_VariableValue( "r_mode" );
             if( mode < 0 || mode >= uiInfo.numResolutions )
             {
-                Com_sprintf( resolution, sizeof( resolution ), "Custom (%dx%d)",
-                             ( sint )trap_Cvar_VariableValue( "r_customWidth" ),
-                             ( sint )trap_Cvar_VariableValue( "r_customHeight" ) );
+                Q_vsprintf_s( resolution, sizeof( resolution ), sizeof( resolution ), "Custom (%dx%d)",
+                              ( sint )trap_Cvar_VariableValue( "r_customWidth" ),
+                              ( sint )trap_Cvar_VariableValue( "r_customHeight" ) );
             }
             else
             {
-                Com_sprintf( resolution, sizeof( resolution ), "%dx%d",
-                             uiInfo.resolutions[ mode ].w,
-                             uiInfo.resolutions[ mode ].h );
+                Q_vsprintf_s( resolution, sizeof( resolution ), sizeof( resolution ), "%dx%d",
+                              uiInfo.resolutions[ mode ].w,
+                              uiInfo.resolutions[ mode ].h );
             }
             return resolution;
         }
@@ -4202,12 +4197,12 @@ static pointer UI_FeederItemText( float32 feederID, sint index, sint column, qha
             {
                 if( w == uiInfo.resolutions[ i ].w && h == uiInfo.resolutions[ i ].h )
                 {
-                    Com_sprintf( resolution, sizeof( resolution ), "%dx%d", w, h );
+                    Q_vsprintf_s( resolution, sizeof( resolution ), sizeof( resolution ), "%dx%d", w, h );
                     return resolution;
                 }
             }
             
-            Com_sprintf( resolution, sizeof( resolution ), "Custom (%dx%d)", w, h );
+            Q_vsprintf_s( resolution, sizeof( resolution ), sizeof( resolution ), "Custom (%dx%d)", w, h );
             return resolution;
         }
     }
@@ -4821,26 +4816,26 @@ static void UI_ReadableSize( valueType* buf, sint bufsize, sint value )
     if( value > 1024 * 1024 * 1024 )
     {
         // gigs
-        Com_sprintf( buf, bufsize, "%d", value / ( 1024 * 1024 * 1024 ) );
-        Com_sprintf( buf + strlen( buf ), bufsize - strlen( buf ), ".%02d GB",
-                     ( value % ( 1024 * 1024 * 1024 ) ) * 100 / ( 1024 * 1024 * 1024 ) );
+        Q_vsprintf_s( buf, bufsize, bufsize, "%d", value / ( 1024 * 1024 * 1024 ) );
+        Q_vsprintf_s( buf + strlen( buf ), bufsize - strlen( buf ), bufsize - strlen( buf ), ".%02d GB",
+                      ( value % ( 1024 * 1024 * 1024 ) ) * 100 / ( 1024 * 1024 * 1024 ) );
     }
     else if( value > 1024 * 1024 )
     {
         // megs
-        Com_sprintf( buf, bufsize, "%d", value / ( 1024 * 1024 ) );
-        Com_sprintf( buf + strlen( buf ), bufsize - strlen( buf ), ".%02d MB",
-                     ( value % ( 1024 * 1024 ) ) * 100 / ( 1024 * 1024 ) );
+        Q_vsprintf_s( buf, bufsize, bufsize, "%d", value / ( 1024 * 1024 ) );
+        Q_vsprintf_s( buf + strlen( buf ), bufsize - strlen( buf ), bufsize - strlen( buf ), ".%02d MB",
+                      ( value % ( 1024 * 1024 ) ) * 100 / ( 1024 * 1024 ) );
     }
     else if( value > 1024 )
     {
         // kilos
-        Com_sprintf( buf, bufsize, "%d KB", value / 1024 );
+        Q_vsprintf_s( buf, bufsize, bufsize, "%d KB", value / 1024 );
     }
     else
     {
         // bytes
-        Com_sprintf( buf, bufsize, "%d bytes", value );
+        Q_vsprintf_s( buf, bufsize, bufsize, "%d bytes", value );
     }
 }
 
@@ -4852,17 +4847,17 @@ static void UI_PrintTime( valueType* buf, sint bufsize, sint time )
     if( time > 3600 )
     {
         // in the hours range
-        Com_sprintf( buf, bufsize, "%d hr %d min", time / 3600, ( time % 3600 ) / 60 );
+        Q_vsprintf_s( buf, bufsize, bufsize, "%d hr %d min", time / 3600, ( time % 3600 ) / 60 );
     }
     else if( time > 60 )
     {
         // mins
-        Com_sprintf( buf, bufsize, "%d min %d sec", time / 60, time % 60 );
+        Q_vsprintf_s( buf, bufsize, bufsize, "%d min %d sec", time / 60, time % 60 );
     }
     else
     {
         // secs
-        Com_sprintf( buf, bufsize, "%d sec", time );
+        Q_vsprintf_s( buf, bufsize, bufsize, "%d sec", time );
     }
 }
 
@@ -5020,117 +5015,6 @@ static void UI_DisplayDownloadInfo( pointer downloadName, float32 centerPoint, f
     }
 }
 
-#define ESTIMATES 80
-const char* UI_DownloadInfo( const char* downloadName )
-{
-    static char dlText[] = "Downloading:";
-    static char etaText[] = "Estimated time left:";
-    static char xferText[] = "Transfer rate:";
-    static int tleEstimates[ESTIMATES] = { 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60,
-                                           60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60,
-                                           60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60,
-                                           60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60
-                                         };
-    static int tleIndex = 0;
-    
-    char dlSizeBuf[64], totalSizeBuf[64], xferRateBuf[64], dlTimeBuf[64];
-    int downloadSize, downloadCount, downloadTime;
-    int xferRate;
-    const char* s, * ds;
-    
-    downloadSize = trap_Cvar_VariableValue( "cl_downloadSize" );
-    downloadCount = trap_Cvar_VariableValue( "cl_downloadCount" );
-    downloadTime = trap_Cvar_VariableValue( "cl_downloadTime" );
-    
-    if( downloadSize > 0 )
-    {
-        ds = va( "%s (%d%%)", downloadName, ( int )( ( float )downloadCount * 100.0f / ( float )downloadSize ) );
-    }
-    else
-    {
-        ds = downloadName;
-    }
-    
-    UI_ReadableSize( dlSizeBuf, sizeof dlSizeBuf, downloadCount );
-    UI_ReadableSize( totalSizeBuf, sizeof totalSizeBuf, downloadSize );
-    
-    if( downloadCount < 4096 || !downloadTime )
-    {
-        s = va( "%s\n %s\n%s\n\n%s\n estimating...\n\n%s\n\n%s copied", dlText, ds, totalSizeBuf,
-                etaText,
-                xferText,
-                dlSizeBuf );
-        return s;
-    }
-    else
-    {
-        if( ( uiInfo.uiDC.realTime - downloadTime ) / 1000 )
-        {
-            xferRate = downloadCount / ( ( uiInfo.uiDC.realTime - downloadTime ) / 1000 );
-        }
-        else
-        {
-            xferRate = 0;
-        }
-        UI_ReadableSize( xferRateBuf, sizeof xferRateBuf, xferRate );
-        
-        // Extrapolate estimated completion time
-        if( downloadSize && xferRate )
-        {
-            int n = downloadSize / xferRate; // estimated time for entire d/l in secs
-            int timeleft = 0, i;
-            
-            // We do it in K (/1024) because we'd overflow around 4MB
-            tleEstimates[tleIndex] = ( n - ( ( ( downloadCount / 1024 ) * n ) / ( downloadSize / 1024 ) ) );
-            tleIndex++;
-            if( tleIndex >= ESTIMATES )
-            {
-                tleIndex = 0;
-            }
-            
-            for( i = 0; i < ESTIMATES; i++ )
-                timeleft += tleEstimates[i];
-                
-            timeleft /= ESTIMATES;
-            
-            UI_PrintTime( dlTimeBuf, sizeof dlTimeBuf, timeleft );
-        }
-        else
-        {
-            dlTimeBuf[0] = '\0';
-        }
-        
-        if( xferRate )
-        {
-            s = va( "%s\n %s\n%s\n\n%s\n %s\n\n%s\n %s/sec\n\n%s copied", dlText, ds, totalSizeBuf,
-                    etaText, dlTimeBuf,
-                    xferText, xferRateBuf,
-                    dlSizeBuf );
-        }
-        else
-        {
-            if( downloadSize )
-            {
-                s = va( "%s\n %s\n%s\n\n%s\n estimating...\n\n%s\n\n%s copied", dlText, ds, totalSizeBuf,
-                        etaText,
-                        xferText,
-                        dlSizeBuf );
-            }
-            else
-            {
-                s = va( "%s\n %s\n\n%s\n estimating...\n\n%s\n\n%s copied", dlText, ds,
-                        etaText,
-                        xferText,
-                        dlSizeBuf );
-            }
-        }
-        
-        return s;
-    }
-    
-    return "";
-}
-
 /*
 ========================
 idUserInterfaceManagerLocal::DrawConnectScreen
@@ -5138,16 +5022,19 @@ idUserInterfaceManagerLocal::DrawConnectScreen
 */
 void idUserInterfaceManagerLocal::DrawConnectScreen( bool overlay )
 {
-    valueType* s;
+    /*	if( !overlay ) {
+        BG_DrawConnectScreen( false );
+    }*/
+    char*			s;
     uiClientState_t	cstate;
-    valueType info[MAX_INFO_VALUE];
-    valueType text[256];
-    float32 centerPoint, yStart, scale;
+    char			info[MAX_INFO_VALUE];
+    char text[256];
+    float centerPoint, yStart, scale;
     vec4_t color = { 0.3f, 0.3f, 0.3f, 0.8f };
+    //	static bool playingMusic = false;
     
-    valueType downloadName[MAX_INFO_VALUE];
-    valueType buff[2560];
-    static connstate_t lastConnState;
+    char downloadName[MAX_INFO_VALUE];
+    
     menuDef_t* menu = Menus_FindByName( "Connect" );
     
     if( !overlay && menu )
@@ -5178,10 +5065,6 @@ void idUserInterfaceManagerLocal::DrawConnectScreen( bool overlay )
     // see what information we should display
     trap_GetClientState( &cstate );
     
-    Com_sprintf( buff, sizeof( buff ), "Connecting to:\n %s^*\n\n%s", cstate.servername, Info_ValueForKey( cstate.updateInfoString, "motd" ) );
-    
-    trap_Cvar_VariableStringBuffer( "cl_downloadName", downloadName, sizeof( downloadName ) );
-    
     info[0] = '\0';
     
     if( !Q_stricmp( cstate.servername, "localhost" ) )
@@ -5192,6 +5075,53 @@ void idUserInterfaceManagerLocal::DrawConnectScreen( bool overlay )
     {
         strcpy( text, va( trap_TranslateString( "Connecting to %s" ), cstate.servername ) );
         Text_PaintCenter( centerPoint, yStart + 48, scale, colorWhite, text , ITEM_TEXTSTYLE_SHADOWEDMORE );
+    }
+    
+    // display global MOTD at bottom (don't draw during download, the space is already used)
+    // moved downloadName query up, this is used in CA_CONNECTED
+    trap_Cvar_VariableStringBuffer( "cl_downloadName", downloadName, sizeof( downloadName ) );
+    
+    if( !*downloadName )
+    {
+        Text_PaintCenter( centerPoint, 475, scale, colorWhite, Info_ValueForKey( cstate.updateInfoString, "motd" ), 0 );
+    }
+    
+    // print any server info (server full, bad version, etc)
+    // DHM - Nerve :: This now accepts strings up to 256 chars long, and will break them up into multiple lines.
+    //					They are also now printed in Yellow for readability.
+    if( cstate.connState < CA_CONNECTED )
+    {
+        char*	s;
+        char	ps[60];
+        int		i, len, index = 0, yPrint = yStart + 210;
+        bool neednewline = false;
+        
+        s = trap_TranslateString( cstate.messageString );
+        len = strlen( s );
+        
+        for( i = 0; i < len; i++, index++ )
+        {
+        
+            // copy to temp buffer
+            ps[index] = s[i];
+            
+            //if ( index > (CP_LINEWIDTH - 10) && i > 0 )
+            //    neednewline = true;
+            
+            // if out of temp buffer room OR end of string OR it is time to linebreak & we've found a space
+            if( ( index >= 58 ) || ( i == ( len - 1 ) ) || ( neednewline && s[i] == ' ' ) )
+            {
+                ps[index + 1] = '\0';
+                
+                //DC->fillRect(0, yPrint - 17, 640, 22, color);
+                //Text_PaintCenter(centerPoint, yPrint, scale, colorYellow, ps, 0);
+                
+                neednewline = false;
+                yPrint += 22;		// next line
+                index = -1;			// sigh, for loop will increment to 0
+            }
+        }
+        
     }
     
     if( lastConnState > cstate.connState )
@@ -5223,6 +5153,7 @@ void idUserInterfaceManagerLocal::DrawConnectScreen( bool overlay )
         default:
             return;
     }
+    
     
     if( Q_stricmp( cstate.servername, "localhost" ) )
     {
@@ -5279,7 +5210,7 @@ void GUI_Printf( pointer msg, ... )
     valueType text[1024];
     
     va_start( argptr, msg );
-    Q_vsnprintf( text, sizeof( text ), msg, argptr );
+    Q_vsprintf_s( text, sizeof( text ), msg, argptr );
     va_end( argptr );
     
     trap_Print( text );
@@ -5296,7 +5227,7 @@ void GUI_Error( pointer msg, ... )
     valueType text[1024];
     
     va_start( argptr, msg );
-    Q_vsnprintf( text, sizeof( text ), msg, argptr );
+    Q_vsprintf_s( text, sizeof( text ), msg, argptr );
     va_end( argptr );
     
     trap_Error( text );
@@ -5313,7 +5244,7 @@ void Com_Error( sint level, pointer error, ... )
     valueType text[1024];
     
     va_start( argptr, error );
-    Q_vsnprintf( text, sizeof( text ), error, argptr );
+    Q_vsprintf_s( text, sizeof( text ), error, argptr );
     va_end( argptr );
     
     GUI_Error( "%s", text );
@@ -5330,7 +5261,7 @@ void Com_Printf( pointer msg, ... )
     valueType text[1024];
     
     va_start( argptr, msg );
-    Q_vsnprintf( text, sizeof( text ), msg, argptr );
+    Q_vsprintf_s( text, sizeof( text ), msg, argptr );
     va_end( argptr );
     
     GUI_Printf( "%s", text );

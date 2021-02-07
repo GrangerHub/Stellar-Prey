@@ -1,13 +1,13 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 // Copyright(C) 1999 - 2005 Id Software, Inc.
 // Copyright(C) 2000 - 2006 Tim Angus
-// Copyright(C) 2011 - 2018 Dusan Jocic <dusanjocic@msn.com>
+// Copyright(C) 2011 - 2021 Dusan Jocic <dusanjocic@msn.com>
 //
 // This file is part of OpenWolf.
 //
 // OpenWolf is free software; you can redistribute it
 // and / or modify it under the terms of the GNU General Public License as
-// published by the Free Software Foundation; either version 2 of the License,
+// published by the Free Software Foundation; either version 3 of the License,
 // or (at your option) any later version.
 //
 // OpenWolf is distributed in the hope that it will be
@@ -21,9 +21,9 @@
 //
 // -------------------------------------------------------------------------------------
 // File name:   cgame_predict.cpp
-// Version:     v1.01
 // Created:
-// Compilers:   Visual Studio 2017, gcc 7.3.0
+// Compilers:   Microsoft (R) C/C++ Optimizing Compiler Version 19.26.28806 for x64,
+//              gcc (Ubuntu 9.3.0-10ubuntu2) 9.3.0
 // Description: this file generates cg.predictedPlayerState by either
 //              interpolating between snapshots from the server or locally
 //              predicting ahead the client's movement.
@@ -32,7 +32,7 @@
 // -------------------------------------------------------------------------------------
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include <cgame/cgame_precompiled.h>
+#include <cgame/cgame_precompiled.hpp>
 
 static pmove_t cg_pmove;
 
@@ -79,29 +79,25 @@ void idCGamePredict::BuildSolidList( void )
     cg_numTriggerEntities = 0;
     
     if( cg.nextSnap && !cg.nextFrameTeleport && !cg.thisFrameTeleport )
-    {
         snap = cg.nextSnap;
-    }
     else
-    {
         snap = cg.snap;
-    }
     
     for( i = 0; i < snap->numEntities; i++ )
     {
-        cent = &cg_entities[ snap->entities[ i ].number ];
+        cent = &cg_entities[snap->entities[i].number];
         ent = &cent->currentState;
         
         if( ent->eType == ET_ITEM || ent->eType == ET_PUSH_TRIGGER || ent->eType == ET_TELEPORT_TRIGGER )
         {
-            cg_triggerEntities[ cg_numTriggerEntities ] = cent;
+            cg_triggerEntities[cg_numTriggerEntities] = cent;
             cg_numTriggerEntities++;
             continue;
         }
         
         if( cent->nextState.solid && ent->eType != ET_MISSILE )
         {
-            cg_solidEntities[ cg_numSolidEntities ] = cent;
+            cg_solidEntities[cg_numSolidEntities] = cent;
             cg_numSolidEntities++;
             continue;
         }
@@ -316,7 +312,7 @@ sint idCGamePredict::PointContents( const vec3_t point, sint passEntityNum )
             continue;
         }
         
-        contents |= trap_CM_TransformedPointContents( point, cmodel, ent->origin, ent->angles );
+        contents |= trap_CM_TransformedPointContents( point, cmodel, cent->lerpOrigin, cent->lerpAngles );
     }
     
     return contents;
@@ -705,10 +701,12 @@ void idCGamePredict::PredictPlayerState( void )
     if( pmove_msec.integer < 8 )
     {
         trap_Cvar_Set( "pmove_msec", "8" );
+        trap_Cvar_Update( &pmove_msec );
     }
     else if( pmove_msec.integer > 33 )
     {
         trap_Cvar_Set( "pmove_msec", "33" );
+        trap_Cvar_Update( &pmove_msec );
     }
     
     cg_pmove.pmove_fixed = pmove_fixed.integer;// | cg_pmove_fixed.integer;

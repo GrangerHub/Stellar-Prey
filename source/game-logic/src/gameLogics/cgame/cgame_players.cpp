@@ -1,13 +1,13 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 // Copyright(C) 1999 - 2005 Id Software, Inc.
 // Copyright(C) 2000 - 2006 Tim Angus
-// Copyright(C) 2011 - 2018 Dusan Jocic <dusanjocic@msn.com>
+// Copyright(C) 2011 - 2021 Dusan Jocic <dusanjocic@msn.com>
 //
 // This file is part of OpenWolf.
 //
 // OpenWolf is free software; you can redistribute it
 // and / or modify it under the terms of the GNU General Public License as
-// published by the Free Software Foundation; either version 2 of the License,
+// published by the Free Software Foundation; either version 3 of the License,
 // or (at your option) any later version.
 //
 // OpenWolf is distributed in the hope that it will be
@@ -21,14 +21,14 @@
 //
 // -------------------------------------------------------------------------------------
 // File name:   cgame_players.cpp
-// Version:     v1.00
 // Created:
-// Compilers:   Visual Studio 2015
+// Compilers:   Microsoft (R) C/C++ Optimizing Compiler Version 19.26.28806 for x64,
+//              gcc (Ubuntu 9.3.0-10ubuntu2) 9.3.0
 // Description: handle the media and animation for player entities
 // -------------------------------------------------------------------------------------
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include <cgame/cgame_precompiled.h>
+#include <cgame/cgame_precompiled.hpp>
 
 valueType* cg_customSoundNames[ MAX_CUSTOM_SOUNDS ] =
 {
@@ -460,21 +460,21 @@ bool idCGamePlayers::RegisterClientSkin( clientInfo_t* ci, pointer modelName, po
     
     if( !ci->nonsegmented )
     {
-        Com_sprintf( filename, sizeof( filename ), "models/players/%s/lower_%s.skin", modelName, skinName );
+        Q_vsprintf_s( filename, sizeof( filename ), sizeof( filename ), "models/players/%s/lower_%s.skin", modelName, skinName );
         ci->legsSkin = trap_R_RegisterSkin( filename );
         if( !ci->legsSkin )
         {
             Com_Printf( "Leg skin load failure: %s\n", filename );
         }
         
-        Com_sprintf( filename, sizeof( filename ), "models/players/%s/upper_%s.skin", modelName, skinName );
+        Q_vsprintf_s( filename, sizeof( filename ), sizeof( filename ), "models/players/%s/upper_%s.skin", modelName, skinName );
         ci->torsoSkin = trap_R_RegisterSkin( filename );
         if( !ci->torsoSkin )
         {
             Com_Printf( "Torso skin load failure: %s\n", filename );
         }
         
-        Com_sprintf( filename, sizeof( filename ), "models/players/%s/head_%s.skin", modelName, skinName );
+        Q_vsprintf_s( filename, sizeof( filename ), sizeof( filename ), "models/players/%s/head_%s.skin", modelName, skinName );
         ci->headSkin = trap_R_RegisterSkin( filename );
         if( !ci->headSkin )
         {
@@ -488,7 +488,7 @@ bool idCGamePlayers::RegisterClientSkin( clientInfo_t* ci, pointer modelName, po
     }
     else
     {
-        Com_sprintf( filename, sizeof( filename ), "models/players/%s/nonseg_%s.skin", modelName, skinName );
+        Q_vsprintf_s( filename, sizeof( filename ), sizeof( filename ), "models/players/%s/nonseg_%s.skin", modelName, skinName );
         ci->nonSegSkin = trap_R_RegisterSkin( filename );
         if( !ci->nonSegSkin )
         {
@@ -515,7 +515,7 @@ bool idCGamePlayers::RegisterClientModelname( clientInfo_t* ci, pointer modelNam
     
     // do this first so the nonsegmented property is set
     // load the animations
-    Com_sprintf( filename, sizeof( filename ), "models/players/%s/animation.cfg", modelName );
+    Q_vsprintf_s( filename, sizeof( filename ), sizeof( filename ), "models/players/%s/animation.cfg", modelName );
     if( !ParseAnimationFile( filename, ci ) )
     {
         Com_Printf( "Failed to load animation file %s\n", filename );
@@ -526,7 +526,7 @@ bool idCGamePlayers::RegisterClientModelname( clientInfo_t* ci, pointer modelNam
     
     if( !ci->nonsegmented )
     {
-        Com_sprintf( filename, sizeof( filename ), "models/players/%s/lower.md3", modelName );
+        Q_vsprintf_s( filename, sizeof( filename ), sizeof( filename ), "models/players/%s/lower.md3", modelName );
         ci->legsModel = trap_R_RegisterModel( filename );
         if( !ci->legsModel )
         {
@@ -534,7 +534,7 @@ bool idCGamePlayers::RegisterClientModelname( clientInfo_t* ci, pointer modelNam
             return false;
         }
         
-        Com_sprintf( filename, sizeof( filename ), "models/players/%s/upper.md3", modelName );
+        Q_vsprintf_s( filename, sizeof( filename ), sizeof( filename ), "models/players/%s/upper.md3", modelName );
         ci->torsoModel = trap_R_RegisterModel( filename );
         if( !ci->torsoModel )
         {
@@ -542,7 +542,7 @@ bool idCGamePlayers::RegisterClientModelname( clientInfo_t* ci, pointer modelNam
             return false;
         }
         
-        Com_sprintf( filename, sizeof( filename ), "models/players/%s/head.md3", modelName );
+        Q_vsprintf_s( filename, sizeof( filename ), sizeof( filename ), "models/players/%s/head.md3", modelName );
         ci->headModel = trap_R_RegisterModel( filename );
         if( !ci->headModel )
         {
@@ -552,7 +552,7 @@ bool idCGamePlayers::RegisterClientModelname( clientInfo_t* ci, pointer modelNam
     }
     else
     {
-        Com_sprintf( filename, sizeof( filename ), "models/players/%s/nonseg.md3", modelName );
+        Q_vsprintf_s( filename, sizeof( filename ), sizeof( filename ), "models/players/%s/nonseg.md3", modelName );
         ci->nonSegModel = trap_R_RegisterModel( filename );
         if( !ci->nonSegModel )
         {

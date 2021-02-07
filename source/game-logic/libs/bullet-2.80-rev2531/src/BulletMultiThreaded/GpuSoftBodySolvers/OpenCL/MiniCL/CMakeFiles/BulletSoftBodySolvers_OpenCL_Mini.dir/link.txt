@@ -1,2 +1,0 @@
-/usr/bin/ar qc libBulletSoftBodySolvers_OpenCL_Mini.a  CMakeFiles/BulletSoftBodySolvers_OpenCL_Mini.dir/__/btSoftBodySolver_OpenCL.o
-/usr/bin/ranlib libBulletSoftBodySolvers_OpenCL_Mini.a

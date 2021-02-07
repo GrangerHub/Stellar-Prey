@@ -16,9 +16,6 @@ set( GAME_APP_NAME "" CACHE            STRING "The Application name")
 set( GAME_APP_VERSION "" CACHE         STRING "The Application version")
 set( GAME_APP_STAGE "" CACHE           STRING "The Application stage")
 
-string( REPLACE " " "" GAME_APP_NAME_UPPER ${GAME_APP_NAME} )
-string( TOLOWER ${GAME_APP_NAME} GAME_APP_NAME_LOWER )
-
 if("${GAME_APP_NAME}" STREQUAL "")
 	message(FATAL_ERROR "Please set GAME_APP_NAME first")
 endif()
@@ -70,8 +67,8 @@ set( MOUNT_DIR ${CMAKE_SOURCE_DIR}/../OpenWolf-Engine/src/engine )
 set( LIB_DIR ${CMAKE_SOURCE_DIR}/libs )
 set( TREMGAME_DIR ${CMAKE_SOURCE_DIR}/src/gameLogics )
 
-message(STATUS "writing ${MOUNT_DIR}/framework/appConfig.h")
-CONFIGURE_FILE("cmake/appConfig.h.in" "${MOUNT_DIR}/framework/appConfig.h" @ONLY)
+message(STATUS "writing ${MOUNT_DIR}/framework/appConfig.hpp")
+CONFIGURE_FILE("cmake/appConfig.hpp.in" "${MOUNT_DIR}/framework/appConfig.hpp" @ONLY)
 
 find_package( PkgConfig )
 
@@ -104,8 +101,8 @@ endif()
 ######################
 
 set( SHAREDLIST_HEADERS
-	${MOUNT_DIR}/qcommon/q_platform.h
-	${MOUNT_DIR}/qcommon/q_shared.h
+	${MOUNT_DIR}/qcommon/q_platform.hpp
+	${MOUNT_DIR}/qcommon/q_shared.hpp
 )
 
 set( SHAREDLIST_SOURCES
@@ -114,28 +111,28 @@ set( SHAREDLIST_SOURCES
 )
 
 set( GUI_HEADERS 
-	${MOUNT_DIR}/framework/appConfig.h
-	${MOUNT_DIR}/framework/types.h
-	${MOUNT_DIR}/API/cm_api.h
-	${MOUNT_DIR}/API/CmdBuffer_api.h
-	${MOUNT_DIR}/API/CmdSystem_api.h
-	${MOUNT_DIR}/API/system_api.h
-	${MOUNT_DIR}/API/clientLAN_api.h
-	${MOUNT_DIR}/API/clientGUI_api.h
-	${MOUNT_DIR}/API/renderer_api.h
-	${MOUNT_DIR}/API/sound_api.h
-	${MOUNT_DIR}/API/FileSystem_api.h
-	${MOUNT_DIR}/API/CVarSystem_api.h
-	${MOUNT_DIR}/GPURenderer/r_types.h
-	${MOUNT_DIR}/API/bgame_api.h
-	${MOUNT_DIR}/API/gui_api.h
-	${MOUNT_DIR}/API/cgame_api.h
-	${MOUNT_DIR}/API/Parse_api.h
-	${TREMGAME_DIR}/GUI/gui_local.h
-	${TREMGAME_DIR}/GUI/gui_shared.h
-	${TREMGAME_DIR}/GUI/keycodes.h
-	${TREMGAME_DIR}/GUI/menudef.h
-	${TREMGAME_DIR}/GUI/gui_precompiled.h
+	${MOUNT_DIR}/framework/appConfig.hpp
+	${MOUNT_DIR}/framework/types.hpp
+	${MOUNT_DIR}/API/cm_api.hpp
+	${MOUNT_DIR}/API/CmdBuffer_api.hpp
+	${MOUNT_DIR}/API/CmdSystem_api.hpp
+	${MOUNT_DIR}/API/system_api.hpp
+	${MOUNT_DIR}/API/clientLAN_api.hpp
+	${MOUNT_DIR}/API/clientGUI_api.hpp
+	${MOUNT_DIR}/API/renderer_api.hpp
+	${MOUNT_DIR}/API/sound_api.hpp
+	${MOUNT_DIR}/API/FileSystem_api.hpp
+	${MOUNT_DIR}/API/CVarSystem_api.hpp
+	${MOUNT_DIR}/GPURenderer/r_types.hpp
+	${MOUNT_DIR}/API/bgame_api.hpp
+	${MOUNT_DIR}/API/gui_api.hpp
+	${MOUNT_DIR}/API/cgame_api.hpp
+	${MOUNT_DIR}/API/Parse_api.hpp
+	${TREMGAME_DIR}/GUI/gui_local.hpp
+	${TREMGAME_DIR}/GUI/gui_shared.hpp
+	${TREMGAME_DIR}/GUI/keycodes.hpp
+	${TREMGAME_DIR}/GUI/menudef.hpp
+	${TREMGAME_DIR}/GUI/gui_precompiled.hpp
 )
 
 set( GUI_SOURCES
@@ -153,50 +150,49 @@ set( GUI_SOURCES
 )
 
 set( SGAMELIST_HEADERS
-	${MOUNT_DIR}/framework/appConfig.h
-	${MOUNT_DIR}/qcommon/qfiles.h
-	${MOUNT_DIR}/API/cm_api.h
-	${MOUNT_DIR}/API/serverGame_api.h
-	${MOUNT_DIR}/API/serverWorld_api.h
-	${MOUNT_DIR}/API/serverInit_api.h
-	${MOUNT_DIR}/API/CmdBuffer_api.h
-	${MOUNT_DIR}/API/CmdSystem_api.h
-	${MOUNT_DIR}/API/serverDemo_api.h
-	${MOUNT_DIR}/API/system_api.h
-	${MOUNT_DIR}/API/sound_api.h
-	${MOUNT_DIR}/API/FileSystem_api.h
-	${MOUNT_DIR}/API/CVarSystem_api.h
-	${MOUNT_DIR}/API/serverMain_api.h
-	${MOUNT_DIR}/API/Parse_api.h
-	${TREMGAME_DIR}/sgame/sgame_precompiled.h
-	${TREMGAME_DIR}/bgame/bgame_local.h
-	${MOUNT_DIR}/API/bgame_api.h
-	${TREMGAME_DIR}/sgame/sgame_admin.h
-	${TREMGAME_DIR}/sgame/sgame_local.h
-	${MOUNT_DIR}/framework/SurfaceFlags_Tech3.h
-	${MOUNT_DIR}/API/sgame_api.h
-	${TREMGAME_DIR}/sgame/tremulous.h
-	${TREMGAME_DIR}/sgame/sgame_active.h
-	${TREMGAME_DIR}/sgame/sgame_buildable.h
-	${TREMGAME_DIR}/sgame/sgame_client.h
-	${TREMGAME_DIR}/sgame/sgame_cmds.h
-	${TREMGAME_DIR}/sgame/sgame_combat.h
-	${TREMGAME_DIR}/sgame/sgame_main.h
-	${TREMGAME_DIR}/sgame/sgame_maprotation.h
-	${TREMGAME_DIR}/sgame/sgame_misc.h
-	${TREMGAME_DIR}/sgame/sgame_missile.h
-	${TREMGAME_DIR}/sgame/sgame_mover.h
-	${TREMGAME_DIR}/sgame/sgame_physics.h
-	${TREMGAME_DIR}/sgame/sgame_bulletphysics.h
-	${TREMGAME_DIR}/sgame/sgame_ptr.h
-	${TREMGAME_DIR}/sgame/sgame_session.h
-	${TREMGAME_DIR}/sgame/sgame_spawn.h
-	${TREMGAME_DIR}/sgame/sgame_svcmds.h
-	${TREMGAME_DIR}/sgame/sgame_target.h
-	${TREMGAME_DIR}/sgame/sgame_team.h
-	${TREMGAME_DIR}/sgame/sgame_trigger.h
-	${TREMGAME_DIR}/sgame/sgame_utils.h
-	${TREMGAME_DIR}/sgame/sgame_weapon.h
+	${MOUNT_DIR}/framework/appConfig.hpp
+	${MOUNT_DIR}/qcommon/qfiles.hpp
+	${MOUNT_DIR}/API/cm_api.hpp
+	${MOUNT_DIR}/API/serverGame_api.hpp
+	${MOUNT_DIR}/API/serverWorld_api.hpp
+	${MOUNT_DIR}/API/serverInit_api.hpp
+	${MOUNT_DIR}/API/CmdBuffer_api.hpp
+	${MOUNT_DIR}/API/CmdSystem_api.hpp
+	${MOUNT_DIR}/API/serverDemo_api.hpp
+	${MOUNT_DIR}/API/system_api.hpp
+	${MOUNT_DIR}/API/sound_api.hpp
+	${MOUNT_DIR}/API/FileSystem_api.hpp
+	${MOUNT_DIR}/API/CVarSystem_api.hpp
+	${MOUNT_DIR}/API/serverMain_api.hpp
+	${MOUNT_DIR}/API/Parse_api.hpp
+	${TREMGAME_DIR}/sgame/sgame_precompiled.hpp
+	${TREMGAME_DIR}/bgame/bgame_local.hpp
+	${MOUNT_DIR}/API/bgame_api.hpp
+	${TREMGAME_DIR}/sgame/sgame_admin.hpp
+	${TREMGAME_DIR}/sgame/sgame_local.hpp
+	${MOUNT_DIR}/framework/SurfaceFlags_Tech3.hpp
+	${MOUNT_DIR}/API/sgame_api.hpp
+	${TREMGAME_DIR}/sgame/tremulous.hpp
+	${TREMGAME_DIR}/sgame/sgame_active.hpp
+	${TREMGAME_DIR}/sgame/sgame_buildable.hpp
+	${TREMGAME_DIR}/sgame/sgame_client.hpp
+	${TREMGAME_DIR}/sgame/sgame_cmds.hpp
+	${TREMGAME_DIR}/sgame/sgame_combat.hpp
+	${TREMGAME_DIR}/sgame/sgame_main.hpp
+	${TREMGAME_DIR}/sgame/sgame_maprotation.hpp
+	${TREMGAME_DIR}/sgame/sgame_misc.hpp
+	${TREMGAME_DIR}/sgame/sgame_missile.hpp
+	${TREMGAME_DIR}/sgame/sgame_mover.hpp
+	${TREMGAME_DIR}/sgame/sgame_physics.hpp
+	${TREMGAME_DIR}/sgame/sgame_ptr.hpp
+	${TREMGAME_DIR}/sgame/sgame_session.hpp
+	${TREMGAME_DIR}/sgame/sgame_spawn.hpp
+	${TREMGAME_DIR}/sgame/sgame_svcmds.hpp
+	${TREMGAME_DIR}/sgame/sgame_target.hpp
+	${TREMGAME_DIR}/sgame/sgame_team.hpp
+	${TREMGAME_DIR}/sgame/sgame_trigger.hpp
+	${TREMGAME_DIR}/sgame/sgame_utils.hpp
+	${TREMGAME_DIR}/sgame/sgame_weapon.hpp
 )
 
 set( SGAMELIST_SOURCES
@@ -219,7 +215,6 @@ set( SGAMELIST_SOURCES
 	${TREMGAME_DIR}/sgame/sgame_missile.cpp
 	${TREMGAME_DIR}/sgame/sgame_mover.cpp
 	${TREMGAME_DIR}/sgame/sgame_physics.cpp
-	${TREMGAME_DIR}/sgame/sgame_bulletphysics.cpp
 	${TREMGAME_DIR}/sgame/sgame_ptr.cpp
 	${TREMGAME_DIR}/sgame/sgame_session.cpp
 	${TREMGAME_DIR}/sgame/sgame_spawn.cpp
@@ -232,54 +227,54 @@ set( SGAMELIST_SOURCES
 )
 
 set( CGAMELIST_HEADERS
-	${MOUNT_DIR}/framework/appConfig.h
-	${MOUNT_DIR}/framework/types.h
-	${MOUNT_DIR}/framework/keycodes.h
-	${MOUNT_DIR}/framework/SurfaceFlags_Tech3.h
-	${MOUNT_DIR}/API/cm_api.h
-	${MOUNT_DIR}/API/CmdBuffer_api.h
-	${MOUNT_DIR}/API/CmdSystem_api.h
-	${MOUNT_DIR}/API/system_api.h
-	${MOUNT_DIR}/API/clientGame_api.h
-	${MOUNT_DIR}/API/clientLAN_api.h
-	${MOUNT_DIR}/API/clientGUI_api.h
-	${MOUNT_DIR}/API/renderer_api.h
-	${MOUNT_DIR}/API/sound_api.h
-	${MOUNT_DIR}/API/FileSystem_api.h
-	${MOUNT_DIR}/API/CVarSystem_api.h
-	${MOUNT_DIR}/API/cgame_api.h
-	${MOUNT_DIR}/API/Parse_api.h
-	${TREMGAME_DIR}/GUI/menudef.h
-	${MOUNT_DIR}/API/bgame_api.h
-	${TREMGAME_DIR}/GUI/gui_shared.h
-	${MOUNT_DIR}/GPURenderer/r_types.h
-	${TREMGAME_DIR}/bgame/bgame_local.h
-	${TREMGAME_DIR}/cgame/cgame_local.h
-	${TREMGAME_DIR}/cgame/cgame_precompiled.h
-	${TREMGAME_DIR}/cgame/cgame_animation.h
-	${TREMGAME_DIR}/cgame/cgame_animmapobj.h
-	${TREMGAME_DIR}/cgame/cgame_attachment.h
-	${TREMGAME_DIR}/cgame/cgame_buildable.h
-	${TREMGAME_DIR}/cgame/cgame_consolecmds.h
-	${TREMGAME_DIR}/cgame/cgame_draw.h
-	${TREMGAME_DIR}/cgame/cgame_drawtools.h
-	${TREMGAME_DIR}/cgame/cgame_ents.h
-	${TREMGAME_DIR}/cgame/cgame_event.h
-	${TREMGAME_DIR}/cgame/cgame_main.h
-	${TREMGAME_DIR}/cgame/cgame_marks.h
-	${TREMGAME_DIR}/cgame/cgame_mem.h
-	${TREMGAME_DIR}/cgame/cgame_particles.h
-	${TREMGAME_DIR}/cgame/cgame_players.h
-	${TREMGAME_DIR}/cgame/cgame_playerstate.h
-	${TREMGAME_DIR}/cgame/cgame_predict.h
-	${TREMGAME_DIR}/cgame/cgame_ptr.h
-	${TREMGAME_DIR}/cgame/cgame_scanner.h
-	${TREMGAME_DIR}/cgame/cgame_servercmds.h
-	${TREMGAME_DIR}/cgame/cgame_snapshot.h
-	${TREMGAME_DIR}/cgame/cgame_trails.h
-	${TREMGAME_DIR}/cgame/cgame_tutorial.h
-	${TREMGAME_DIR}/cgame/cgame_view.h
-	${TREMGAME_DIR}/cgame/cgame_weapons.h
+	${MOUNT_DIR}/framework/appConfig.hpp
+	${MOUNT_DIR}/framework/types.hpp
+	${MOUNT_DIR}/framework/keycodes.hpp
+	${MOUNT_DIR}/framework/SurfaceFlags_Tech3.hpp
+	${MOUNT_DIR}/API/cm_api.hpp
+	${MOUNT_DIR}/API/CmdBuffer_api.hpp
+	${MOUNT_DIR}/API/CmdSystem_api.hpp
+	${MOUNT_DIR}/API/system_api.hpp
+	${MOUNT_DIR}/API/clientGame_api.hpp
+	${MOUNT_DIR}/API/clientLAN_api.hpp
+	${MOUNT_DIR}/API/clientGUI_api.hpp
+	${MOUNT_DIR}/API/renderer_api.hpp
+	${MOUNT_DIR}/API/sound_api.hpp
+	${MOUNT_DIR}/API/FileSystem_api.hpp
+	${MOUNT_DIR}/API/CVarSystem_api.hpp
+	${MOUNT_DIR}/API/cgame_api.hpp
+	${MOUNT_DIR}/API/Parse_api.hpp
+	${TREMGAME_DIR}/GUI/menudef.hpp
+	${MOUNT_DIR}/API/bgame_api.hpp
+	${TREMGAME_DIR}/GUI/gui_shared.hpp
+	${MOUNT_DIR}/GPURenderer/r_types.hpp
+	${TREMGAME_DIR}/bgame/bgame_local.hpp
+	${TREMGAME_DIR}/cgame/cgame_local.hpp
+	${TREMGAME_DIR}/cgame/cgame_precompiled.hpp
+	${TREMGAME_DIR}/cgame/cgame_animation.hpp
+	${TREMGAME_DIR}/cgame/cgame_animmapobj.hpp
+	${TREMGAME_DIR}/cgame/cgame_attachment.hpp
+	${TREMGAME_DIR}/cgame/cgame_buildable.hpp
+	${TREMGAME_DIR}/cgame/cgame_consolecmds.hpp
+	${TREMGAME_DIR}/cgame/cgame_draw.hpp
+	${TREMGAME_DIR}/cgame/cgame_drawtools.hpp
+	${TREMGAME_DIR}/cgame/cgame_ents.hpp
+	${TREMGAME_DIR}/cgame/cgame_event.hpp
+	${TREMGAME_DIR}/cgame/cgame_main.hpp
+	${TREMGAME_DIR}/cgame/cgame_marks.hpp
+	${TREMGAME_DIR}/cgame/cgame_mem.hpp
+	${TREMGAME_DIR}/cgame/cgame_particles.hpp
+	${TREMGAME_DIR}/cgame/cgame_players.hpp
+	${TREMGAME_DIR}/cgame/cgame_playerstate.hpp
+	${TREMGAME_DIR}/cgame/cgame_predict.hpp
+	${TREMGAME_DIR}/cgame/cgame_ptr.hpp
+	${TREMGAME_DIR}/cgame/cgame_scanner.hpp
+	${TREMGAME_DIR}/cgame/cgame_servercmds.hpp
+	${TREMGAME_DIR}/cgame/cgame_snapshot.hpp
+	${TREMGAME_DIR}/cgame/cgame_trails.hpp
+	${TREMGAME_DIR}/cgame/cgame_tutorial.hpp
+	${TREMGAME_DIR}/cgame/cgame_view.hpp
+	${TREMGAME_DIR}/cgame/cgame_weapons.hpp
 )
 
 set( CGAMELIST_SOURCES
@@ -354,11 +349,9 @@ if( MSVC )
 	SET_TARGET_PROPERTIES( sgame PROPERTIES LINK_FLAGS "/DEF:\"${TREMGAME_DIR}/sgame/sgame.def" )
 endif( MSVC )
 
-	target_precompile_headers( sgame PRIVATE "${TREMGAME_DIR}/sgame/sgame_precompiled.h" )
+	target_precompile_headers( sgame PRIVATE "${TREMGAME_DIR}/sgame/sgame_precompiled.hpp" )
 
-find_package( Bullet REQUIRED )
-
-TARGET_INCLUDE_DIRECTORIES( sgame PRIVATE ${MOUNT_DIR} ${TREMGAME_DIR} ${BULLET_INCLUDE_DIRS} ${BULLET_INCLUDE_DIR} ${BULLET_INCLUDE_COLLISION_DIR} ${BULLET_INCLUDE_DYNAMICS_DIR} ${BULLET_INCLUDE_SOFTBODY_DIR} ${BULLET_INCLUDE_LINEARMATH_DIR} ${BULLET_INCLUDE_FILELOADER_DIR} ${BULLET_INCLUDE_WORLDIMPORTER_DIR} )
+TARGET_INCLUDE_DIRECTORIES( sgame PRIVATE ${MOUNT_DIR} ${TREMGAME_DIR} )
 
 if(MSVC)
 	target_compile_options(sgame PRIVATE "/MP")
@@ -373,12 +366,6 @@ set_target_properties( sgame PROPERTIES
 	LIBRARY_OUTPUT_DIRECTORY "main"
 )
 
-if( MSVC )
-target_link_libraries( sgame ${BULLET_LIBRARIES} )
-else()
-target_link_libraries( sgame ${BULLET_LIBRARIES} ${BULLET_COLLISION_LIBRARY} ${BULLET_DYNAMICS_LIBRARY} ${BULLET_LINEARMATH_LIBRARY} )
-endif()
-
 add_library( cgame SHARED ${SHAREDLIST_HEADERS} ${SHAREDLIST_SOURCES} ${CGAMELIST_HEADERS} ${CGAMELIST_SOURCES})
 if( MSVC )
 	SOURCE_GROUP( Header\ Files\\SharedList                               FILES ${SHAREDLIST_HEADERS} )
@@ -389,7 +376,7 @@ if( MSVC )
 	SET_TARGET_PROPERTIES( cgame PROPERTIES LINK_FLAGS "/DEF:\"${TREMGAME_DIR}/cgame/cgame.def" )
 endif( MSVC )
 
-	target_precompile_headers( cgame PRIVATE "${TREMGAME_DIR}/cgame/cgame_precompiled.h" )
+	target_precompile_headers( cgame PRIVATE "${TREMGAME_DIR}/cgame/cgame_precompiled.hpp" )
 
 	TARGET_INCLUDE_DIRECTORIES( cgame PRIVATE ${MOUNT_DIR} ${TREMGAME_DIR} )
 	
@@ -418,7 +405,7 @@ if( MSVC )
 	SET_TARGET_PROPERTIES( gui PROPERTIES LINK_FLAGS "/DEF:\"${TREMGAME_DIR}/GUI/gui.def" )
 endif( MSVC )
 
-	target_precompile_headers( gui PRIVATE "${TREMGAME_DIR}/GUI/gui_precompiled.h" )
+	target_precompile_headers( gui PRIVATE "${TREMGAME_DIR}/GUI/gui_precompiled.hpp" )
 
 	TARGET_INCLUDE_DIRECTORIES( gui PRIVATE ${MOUNT_DIR} ${TREMGAME_DIR} )
 	

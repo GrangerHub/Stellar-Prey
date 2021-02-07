@@ -1,13 +1,13 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 // Copyright(C) 1999 - 2005 Id Software, Inc.
 // Copyright(C) 2000 - 2006 Tim Angus
-// Copyright(C) 2011 - 2019 Dusan Jocic <dusanjocic@msn.com>
+// Copyright(C) 2011 - 2021 Dusan Jocic <dusanjocic@msn.com>
 //
 // This file is part of OpenWolf.
 //
 // OpenWolf is free software; you can redistribute it
 // and / or modify it under the terms of the GNU General Public License as
-// published by the Free Software Foundation; either version 2 of the License,
+// published by the Free Software Foundation; either version 3 of the License,
 // or (at your option) any later version.
 //
 // OpenWolf is distributed in the hope that it will be
@@ -21,14 +21,14 @@
 //
 // -------------------------------------------------------------------------------------
 // File name:   sgame_combat.cpp
-// Version:     v1.01
 // Created:
-// Compilers:   Visual Studio 2019, gcc 7.3.0
+// Compilers:   Microsoft (R) C/C++ Optimizing Compiler Version 19.26.28806 for x64,
+//              gcc (Ubuntu 9.3.0-10ubuntu2) 9.3.0
 // Description:
 // -------------------------------------------------------------------------------------
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include <sgame/sgame_precompiled.h>
+#include <sgame/sgame_precompiled.hpp>
 
 /*
 ===============
@@ -209,13 +209,13 @@ float32 idSGameCombat::RewardAttackers( gentity_t* self )
             idSGameClient::AddCreditToClient( player->client, num, true );
             
             // add to stage counters
-            if( player->client->ps.stats[ STAT_TEAM ] == TEAM_ALIENS )
+            if( player->client->ps.stats[STAT_TEAM] == TEAM_ALIENS )
             {
-                trap_Cvar_Set( "g_alienCredits", va( "%d", g_alienCredits.integer + stageValue ) );
+                //trap_Cvar_Set( "g_alienCredits", va( "%d", g_alienCredits.integer + stageValue ) );
             }
-            else if( player->client->ps.stats[ STAT_TEAM ] == TEAM_HUMANS )
+            else if( player->client->ps.stats[STAT_TEAM] == TEAM_HUMANS )
             {
-                trap_Cvar_Set( "g_humanCredits", va( "%d", g_humanCredits.integer + stageValue ) );
+                //trap_Cvar_Set( "g_humanCredits", va( "%d", g_humanCredits.integer + stageValue ) );
             }
         }
         
@@ -806,7 +806,7 @@ void idSGameCombat::InitDamageLocations( void )
     for( i = PCL_NONE + 1; i < PCL_NUM_CLASSES; i++ )
     {
         modelName = bggame->ClassConfig( ( class_t )i )->modelName;
-        Com_sprintf( filename, sizeof( filename ), "models/players/%s/locdamage.cfg", modelName );
+        Q_vsprintf_s( filename, sizeof( filename ), sizeof( filename ), "models/players/%s/locdamage.cfg", modelName );
         
         len = trap_FS_FOpenFile( filename, &fileHandle, FS_READ );
         if( !fileHandle )
@@ -832,7 +832,7 @@ void idSGameCombat::InitDamageLocations( void )
     for( i = UP_NONE + 1; i < UP_NUM_UPGRADES; i++ )
     {
         modelName = bggame->Upgrade( ( upgrade_t )i )->name;
-        Com_sprintf( filename, sizeof( filename ), "armour/%s.armour", modelName );
+        Q_vsprintf_s( filename, sizeof( filename ), sizeof( filename ), "armour/%s.armour", modelName );
         
         len = trap_FS_FOpenFile( filename, &fileHandle, FS_READ );
         

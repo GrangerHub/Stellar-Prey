@@ -1,13 +1,13 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 // Copyright(C) 1999 - 2005 Id Software, Inc.
 // Copyright(C) 2000 - 2006 Tim Angus
-// Copyright(C) 2011 - 2019 Dusan Jocic <dusanjocic@msn.com>
+// Copyright(C) 2011 - 2021 Dusan Jocic <dusanjocic@msn.com>
 //
 // This file is part of OpenWolf.
 //
 // OpenWolf is free software; you can redistribute it
 // and / or modify it under the terms of the GNU General Public License as
-// published by the Free Software Foundation; either version 2 of the License,
+// published by the Free Software Foundation; either version 3 of the License,
 // or (at your option) any later version.
 //
 // OpenWolf is distributed in the hope that it will be
@@ -21,14 +21,14 @@
 //
 // -------------------------------------------------------------------------------------
 // File name:   sgame_client.cpp
-// Version:     v1.01
 // Created:
-// Compilers:   Visual Studio 2019, gcc 7.3.0
+// Compilers:   Microsoft (R) C/C++ Optimizing Compiler Version 19.26.28806 for x64,
+//              gcc (Ubuntu 9.3.0-10ubuntu2) 9.3.0
 // Description:
 // -------------------------------------------------------------------------------------
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include <sgame/sgame_precompiled.h>
+#include <sgame/sgame_precompiled.hpp>
 
 /*
 ===============
@@ -1106,17 +1106,17 @@ void idSGameLocal::ClientUserinfoChanged( sint clientNum )
         //model details to that of the spawning class or the info change will not be
         //registered and an axis appears instead of the player model. There is zero chance
         //the player can spawn with the battlesuit, hence this choice.
-        Com_sprintf( buffer, MAX_QPATH, "%s/%s", bggame->ClassConfig( PCL_HUMAN_BSUIT )->modelName,
-                     bggame->ClassConfig( PCL_HUMAN_BSUIT )->skinName );
+        Q_vsprintf_s( buffer, MAX_QPATH, MAX_QPATH, "%s/%s", bggame->ClassConfig( PCL_HUMAN_BSUIT )->modelName,
+                      bggame->ClassConfig( PCL_HUMAN_BSUIT )->skinName );
     }
     else
     {
-        Com_sprintf( buffer, MAX_QPATH, "%s/%s", bggame->ClassConfig( client->pers.classSelection )->modelName,
-                     bggame->ClassConfig( client->pers.classSelection )->skinName );
+        Q_vsprintf_s( buffer, MAX_QPATH, MAX_QPATH, "%s/%s", bggame->ClassConfig( client->pers.classSelection )->modelName,
+                      bggame->ClassConfig( client->pers.classSelection )->skinName );
                      
         //model segmentation
-        Com_sprintf( filename, sizeof( filename ), "models/players/%s/animation.cfg",
-                     bggame->ClassConfig( client->pers.classSelection )->modelName );
+        Q_vsprintf_s( filename, sizeof( filename ), sizeof( filename ), "models/players/%s/animation.cfg",
+                      bggame->ClassConfig( client->pers.classSelection )->modelName );
                      
         if( idSGameClient::NonSegModel( filename ) )
             client->ps.persistant[ PERS_STATE ] |= PS_NONSEGMODEL;
@@ -1190,12 +1190,12 @@ void idSGameLocal::ClientUserinfoChanged( sint clientNum )
     // send over a subset of the userinfo keys so other clients can
     // print scoreboards, display models, and play custom sounds
     
-    Com_sprintf( userinfo, sizeof( userinfo ),
-                 "n\\%s\\t\\%i\\model\\%s\\c1\\%s\\c2\\%s\\"
-                 "hc\\%i\\ig\\%16s\\v\\%s\\skill\\%i",
-                 client->pers.netname, client->pers.teamSelection, model, c1, c2,
-                 client->pers.maxHealth, bggame->ClientListString( &client->sess.ignoreList ),
-                 client->pers.voice, botskill );
+    Q_vsprintf_s( userinfo, sizeof( userinfo ), sizeof( userinfo ),
+                  "n\\%s\\t\\%i\\model\\%s\\c1\\%s\\c2\\%s\\"
+                  "hc\\%i\\ig\\%16s\\v\\%s\\skill\\%i",
+                  client->pers.netname, client->pers.teamSelection, model, c1, c2,
+                  client->pers.maxHealth, bggame->ClientListString( &client->sess.ignoreList ),
+                  client->pers.voice, botskill );
                  
     trap_SetConfigstring( CS_PLAYERS + clientNum, userinfo );
     
@@ -1745,9 +1745,6 @@ void idSGameClient::ClientSpawn( gentity_t* ent, gentity_t* spawn, vec3_t origin
             }
         }
     }
-    
-    idSGameBulletPhysics::FreeCharacter( client->characterController );
-    client->characterController = idSGameBulletPhysics::CreateCharacter( 8.f, client->ps.origin, 48, 16 );
     
     // run a client frame to drop exactly to the floor,
     // initialize animations and other things
