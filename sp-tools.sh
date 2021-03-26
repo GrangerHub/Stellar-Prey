@@ -535,16 +535,9 @@ Git_Subcommand() {
       cd $CURRENTPATH
       ;;
 
-    default_paks)
-      cd $SCRIPTPATH/default-paks-test
-      git ${@:2}
-      cd $CURRENTPATH
-      ;;
-
     *)
       printf "$1 is an invalid argument.  Allowed arguments:\n"
       echo "engine"
-      echo "default_paks"
       printf "\n"
       Help_Subcommand git
       return 1
