@@ -317,7 +317,7 @@ Help_Subcommand() {
       ;;
 
     install_default_paks)
-      echo "Installs the default pk3 files from the default paks submodule into the basepath."
+      echo "Automatically generates and installs the default pk3 files from git into the basepath."
 
       printf "\n"
       echo "Usage:"
@@ -703,21 +703,11 @@ Run_Subcommand() {
   case $1 in
     client)
       cd $BINPATH
-      while true; do
-        "$BINPATH/${GAME_APP_NAME_UPPER}.${BUILD_ARCH}" \
-          +set com_ansiColor 1 \
-          +set fs_game "$FS_GAME" \
-          +set fs_basepath "$BASEPATH" \
-          +set fs_homepath "$HOMEPATH"
-
-        if read -r -s -n 1 -t 6 -p "Press any key in the next 5 seconds to abort restarting the client..."
-        then
-          echo $'\a\naborted'
-          break
-        else
-          echo $'\nrestarting'
-        fi
-      done
+      "$BINPATH/${GAME_APP_NAME_UPPER}.${BUILD_ARCH}" \
+        +set com_ansiColor 1 \
+        +set fs_game "$FS_GAME" \
+        +set fs_basepath "$BASEPATH" \
+        +set fs_homepath "$HOMEPATH"
       cd $CURRENTPATH
       ;;
 
@@ -736,12 +726,14 @@ Run_Subcommand() {
           +exec server.cfg \
           +map eXcs
 
-        if read -r -s -n 1 -t 6 -p "Press any key in the next 5 seconds to abort restarting the game server..."
+        exec 0<&-
+        exec 0</dev/tty
+        if read -r -s -n 1 -t 6 -p "Press any key in the next 5 seconds to abort restarting the game server..." key
         then
           echo $'\a\naborted'
           break
         else
-          echo $'\nrestarting'
+          echo $'\nrestarting...'
         fi
       done
       cd $CURRENTPATH
@@ -760,12 +752,14 @@ Run_Subcommand() {
           +set dedicated 2 \
           +set sv_allowDownload 1
 
-        if read -r -s -n 1 -t 6 -p "Press any key in the next 5 seconds to abort restarting the game server..."
+        exec 0<&-
+        exec 0</dev/tty
+        if read -r -s -n 1 -t 6 -p "Press any key in the next 5 seconds to abort restarting the autoupdater server..." key
         then
           echo $'\a\naborted'
           break
         else
-          echo $'\nrestarting'
+          echo $'\nrestarting...'
         fi
       done
       cd $CURRENTPATH
@@ -776,12 +770,14 @@ Run_Subcommand() {
       while true; do
         "$BINPATH/OWMaster.${BUILD_ARCH}"
 
-        if read -r -s -n 1 -t 6 -p "Press any key in the next 5 seconds to abort restarting the game server..."
+        exec 0<&-
+        exec 0</dev/tty
+        if read -r -s -n 1 -t 6 -p "Press any key in the next 5 seconds to abort restarting the master server..." key
         then
           echo $'\a\naborted'
           break
         else
-          echo $'\nrestarting'
+          echo $'\nrestarting...'
         fi
       done
       cd $CURRENTPATH
@@ -792,12 +788,14 @@ Run_Subcommand() {
       while true; do
         "$BINPATH/OWAuthServer.${BUILD_ARCH}"
 
-        if read -r -s -n 1 -t 6 -p "Press any key in the next 5 seconds to abort restarting the game server..."
+        exec 0<&-
+        exec 0</dev/tty
+        if read -r -s -n 1 -t 6 -p "Press any key in the next 5 seconds to abort restarting the authentication server..." key
         then
           echo $'\a\naborted'
           break
         else
-          echo $'\nrestarting'
+          echo $'\nrestarting...'
         fi
       done
       cd $CURRENTPATH
@@ -1280,10 +1278,132 @@ Package_Assets_Subcommand() {
   return 0
 }
 
+Generate_Default_Assets_Pak() {
+  if [ $# -lt 3 ]; then
+    echo "Not enough arguments"
+    echo "Generate_Default_Assets_Pak() Arguments: <install path> <resulting pak name> <commit hash> <optional base commit hash for diff pak>"
+    echo "Generate_Default_Assets_Pak(): failed to install pak '${2}.pk3'"
+    return 1
+  fi
+
+  if [ $# -gt 4 ]; then
+    echo "Too many arguments"
+    echo "Generate_Default_Assets_Pak() Arguments: <install path> <resulting pak name> <commit hash> <optional base commit hash for diff pak>"
+    echo "Generate_Default_Assets_Pak(): failed to install pak '${2}.pk3'"
+    return 1
+  fi
+
+  if [ ! -d $1 ]; then
+    echo "Generate_Default_Assets_Pak(): Install path '${1}' doesn't exist"
+    echo "Generate_Default_Assets_Pak(): failed to install pak '${2}.pk3'"
+    return 1
+  fi
+
+  if [ $(git cat-file -t "${3}") != "commit" ]; then
+    echo "Generate_Default_Assets_Pak(): Commit hash '${3}' doesn't exist"
+    echo "Generate_Default_Assets_Pak(): failed to install pak '${2}.pk3'"
+    return 1
+  fi
+
+  if [ $# -eq 4 ]; then
+    if [ $(git cat-file -t "${4}") != "commit" ]; then
+      echo "Generate_Default_Assets_Pak(): Optional base commit hash '${4}' for diff pak doesn't exist"
+      echo "Generate_Default_Assets_Pak(): failed to install pak '${2}.pk3'"
+      return 1
+    fi
+
+    cd $SCRIPTPATH
+    CHANGED_FILES_PATHS=$(git diff --name-only --diff-filter=d ${4} ${3} source/game-assets/default/)
+
+    if [ -z "${CHANGED_FILES_PATHS/\n/}" ]; then
+      echo "Generate_Default_Assets_Pak(): Nothing changed for diff pak '${2}.pk3'"
+      echo "Generate_Default_Assets_Pak(): failed to install pak '${2}.pk3'"
+      cd $CURRENTPATH
+      return 1
+    fi
+
+    echo "Generating and installing default pak '${2}.pk3'..."
+    cd $SOURCEPATH/game-assets/default/
+    CHANGED_FILES=""
+    for i in $CHANGED_FILES_PATHS; do
+      CHANGED_FILES+="./${i#source/game-assets/default/} "
+    done
+
+    git archive --format=zip --output=${1}/${2}.pk3 ${3} $CHANGED_FILES
+    cd $CURRENTPATH
+
+    return 0
+  fi
+
+  cd $SOURCEPATH/game-assets/default/
+  echo "Generating and installing default pak '${2}.pk3'..."
+  git archive --format=zip --output=${1}/${2}.pk3 ${3} ./
+  cd $CURRENTPATH
+
+  return 0
+}
+
+Generate_Default_Map_Pak() {
+  if [ $# -lt 4 ]; then
+    echo "Not enough arguments"
+    echo "Generate_Default_Map_Pak() Arguments: <install path> <default map assets folder name> <resulting pak name> <commit hash>"
+    echo "Generate_Default_Map_Pak(): failed to install pak '${3}.pk3'"
+    return 1
+  fi
+
+  if [ $# -gt 4 ]; then
+    echo "Too many arguments"
+    echo "Generate_Default_Map_Pak() Arguments: <install path> <default map assets folder name> <resulting pak name> <commit hash>"
+    echo "Generate_Default_Map_Pak(): failed to install pak '${3}.pk3'"
+    return 1
+  fi
+
+  if [ ! -d $1 ]; then
+    echo "Generate_Default_Map_Pak(): Install path '${1}' doesn't exist"
+    echo "Generate_Default_Map_Pak(): failed to install pak '${3}.pk3'"
+    return 1
+  fi
+
+  if [ ! -d $SOURCEPATH/map-assets/default/$2 ]; then
+    echo "Generate_Default_Map_Pak(): Default map assets folder '${2}' doesn't exist"
+    echo "Generate_Default_Map_Pak(): failed to install pak '${3}.pk3'"
+    return 1
+  fi
+
+  if [ $(git cat-file -t "${4}") != "commit" ]; then
+    echo "Generate_Default_Map_Pak(): Commit hash '${4}' doesn't exist"
+    echo "Generate_Default_Map_Pak(): failed to install pak '${3}.pk3'"
+    return 1
+  fi
+
+  cd $SOURCEPATH/map-assets/default/${2}
+  echo "Generating and installing default pak '${3}.pk3'..."
+  git archive --format=zip --output=${1}/${3}.pk3 ${4} ./
+  cd $CURRENTPATH
+  return 0
+}
+
 Install_Default_Paks() {
+  if [ ! -d $1 ]; then
+    echo "Install_Default_Paks(): Install path '${1}' doesn't exist"
+    echo "Failed to install default paks"
+    return 1
+  fi
+
+  echo "Installing default paks to ${1}..."
+  Generate_Default_Assets_Pak $1 pak0 4e7129f84d2c97730ae76e8c223cc25bf0a9b398
+  Generate_Default_Map_Pak $1 eX-texture-pack1 eX-texture-pack1_a1 4e7129f84d2c97730ae76e8c223cc25bf0a9b398
+  Generate_Default_Map_Pak $1 eX-texture-pack2 eX-texture-pack2_a1 4e7129f84d2c97730ae76e8c223cc25bf0a9b398
+  Generate_Default_Map_Pak $1 map-eXcs map-eXcs_a1 4e7129f84d2c97730ae76e8c223cc25bf0a9b398
+  Generate_Default_Map_Pak $1 map-UTCSUD map-UTCSUD_a1 4e7129f84d2c97730ae76e8c223cc25bf0a9b398
+  echo "Default paks installed."
+  return 0
+}
+
+Install_Default_Paks_Subcommand() {
   mkdir -p $BASEPATH
   mkdir -p $BASEPATH/main
-  rsync -zarvm --include="*/" --include="*.pk3" --exclude="*" "$SCRIPTPATH/default-paks-test/" "$BASEPATH/main/"
+  Install_Default_Paks "$BASEPATH/main"
   return 0
 }
 
@@ -1352,7 +1472,7 @@ case $1 in
     ;;
 
   install_default_paks)
-    Install_Default_Paks
+    Install_Default_Paks_Subcommand
     exit 0
     ;;
 

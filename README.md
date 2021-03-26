@@ -40,6 +40,18 @@ Set the values in the `config.sh` accordingly.  Then continue with the following
 ./sp-tools.sh build both
 ```
 
+To run an installed binary, use:
+
+```
+./sp-tools.sh run
+```
+
+To debug an installed binary, use:
+
+```
+./sp-tools.sh debug
+```
+
 For more details on how to manage and use this repo, check:
 
 ```
