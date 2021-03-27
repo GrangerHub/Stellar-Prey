@@ -1391,11 +1391,11 @@ Install_Default_Paks() {
   fi
 
   echo "Installing default paks to ${1}..."
-  Generate_Default_Assets_Pak $1 pak0 4e7129f84d2c97730ae76e8c223cc25bf0a9b398
-  Generate_Default_Map_Pak $1 eX-texture-pack1 eX-texture-pack1_a1 4e7129f84d2c97730ae76e8c223cc25bf0a9b398
-  Generate_Default_Map_Pak $1 eX-texture-pack2 eX-texture-pack2_a1 4e7129f84d2c97730ae76e8c223cc25bf0a9b398
-  Generate_Default_Map_Pak $1 map-eXcs map-eXcs_a1 4e7129f84d2c97730ae76e8c223cc25bf0a9b398
-  Generate_Default_Map_Pak $1 map-UTCSUD map-UTCSUD_a1 4e7129f84d2c97730ae76e8c223cc25bf0a9b398
+  Generate_Default_Assets_Pak $1 pak0 71e7974b8969f6912c77efc212262ecdd0f94a7f
+  Generate_Default_Map_Pak $1 eX-texture-pack1 eX-texture-pack1_a1 71e7974b8969f6912c77efc212262ecdd0f94a7f
+  Generate_Default_Map_Pak $1 eX-texture-pack2 eX-texture-pack2_a1 71e7974b8969f6912c77efc212262ecdd0f94a7f
+  Generate_Default_Map_Pak $1 map-eXcs map-eXcs_a1 71e7974b8969f6912c77efc212262ecdd0f94a7f
+  Generate_Default_Map_Pak $1 map-UTCSUD map-UTCSUD_a1 71e7974b8969f6912c77efc212262ecdd0f94a7f
   echo "Default paks installed."
   return 0
 }
