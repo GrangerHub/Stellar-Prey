@@ -1,12 +1,12 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 // Copyright(C) 2000 - 2006 Tim Angus
-// Copyright(C) 2011 - 2018 Dusan Jocic <dusanjocic@msn.com>
+// Copyright(C) 2011 - 2021 Dusan Jocic <dusanjocic@msn.com>
 //
 // This file is part of OpenWolf.
 //
 // OpenWolf is free software; you can redistribute it
 // and / or modify it under the terms of the GNU General Public License as
-// published by the Free Software Foundation; either version 2 of the License,
+// published by the Free Software Foundation; either version 3 of the License,
 // or (at your option) any later version.
 //
 // OpenWolf is distributed in the hope that it will be
@@ -20,15 +20,15 @@
 //
 // -------------------------------------------------------------------------------------
 // File name:   cgame_trails.cpp
-// Version:     v1.01
 // Created:
-// Compilers:   Visual Studio 2017, gcc 7.3.0
+// Compilers:   Microsoft (R) C/C++ Optimizing Compiler Version 19.26.28806 for x64,
+//              gcc (Ubuntu 9.3.0-10ubuntu2) 9.3.0
 // Description: things that happen on snapshot transition,
 //              not necessarily every single rendered frame
 // -------------------------------------------------------------------------------------
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include <cgame/cgame_precompiled.h>
+#include <cgame/cgame_precompiled.hpp>
 
 /*
 ===============
@@ -71,13 +71,6 @@ void idCGameSnapshot::ResetEntity( centity_t* cent )
     {
         idCGamePlayers::ResetPlayerEntity( cent );
     }
-    
-    cent->muzzleFlashTime = 0;
-    cent->miscTime = 0;
-    cent->soundTime = 0;
-    
-    VectorClear( cent->rawOrigin );
-    VectorClear( cent->rawAngles );
 }
 
 /*
@@ -152,13 +145,6 @@ void idCGameSnapshot::SetInitialSnapshot( snapshot_t* snap )
         // check for events
         idCGameEvent::CheckEvents( cent );
     }
-
-    {
-        static valueType prevmap[64] = { 0 };
-        valueType curmap[64];
-
-        trap_Cvar_VariableStringBuffer("mapname", curmap, 64);
-    }
 }
 
 
@@ -188,10 +174,9 @@ void idCGameSnapshot::TransitionSnapshot( void )
     // execute any server string commands before transitioning entities
     idCGameServerCmds::ExecuteNewServerCommands( cg.nextSnap->serverCommandSequence );
     
-    // if we had a map_restart, set everthing with initial
-    if( !( cg.snap ) || !( cg.nextSnap ) )
+    // if we had a map_restart, set everything with initial
+    if( cg.mapRestart )
     {
-        return;
     }
     
     // clear the currentValid flag for all entities in the existing snapshot
@@ -223,7 +208,7 @@ void idCGameSnapshot::TransitionSnapshot( void )
     if( oldFrame )
     {
         playerState_t* ops, *ps;
-        
+    
         ops = &oldFrame->ps;
         ps = &cg.snap->ps;
         // teleporting checks are irrespective of prediction
@@ -240,6 +225,7 @@ void idCGameSnapshot::TransitionSnapshot( void )
         }
     }
 }
+
 
 /*
 ===================
@@ -307,6 +293,7 @@ void idCGameSnapshot::SetNextSnap( snapshot_t* snap )
     idCGamePredict::BuildSolidList( );
 }
 
+
 /*
 ========================
 idCGameSnapshot::ReadNextSnapshot
@@ -346,25 +333,13 @@ snapshot_t* idCGameSnapshot::ReadNextSnapshot( void )
         // FIXME: why would trap_GetSnapshot return a snapshot with the same server time
         if( cg.nextSnap && r && dest->serverTime == cg.nextSnap->serverTime )
         {
-            if( cg.demoPlayback )
-            {
-                continue;
-            }
+            //continue;
         }
         
         // if it succeeded, return
         if( r )
         {
-            idCGameDraw::AddLagometerSnapshotInfo(dest);
-
-            if (cg.snap && (dest->snapFlags ^ cg.snap->snapFlags) & SNAPFLAG_SERVERCOUNT) 
-            {
-                cg.damageTime = 0;
-                cg.duckTime = -1;
-                cg.landTime = -1;
-                cg.stepTime = -1;
-            }
-
+            idCGameDraw::AddLagometerSnapshotInfo( dest );
             return dest;
         }
         
@@ -488,17 +463,6 @@ void idCGameSnapshot::ProcessSnapshots( void )
     {
         // this can happen right after a vid_restart
         cg.time = cg.snap->serverTime;
-    }
-    
-    // assert our valid conditions upon exiting
-    if( cg.snap == nullptr )
-    {
-        Error( "idCGameSnapshot::ProcessSnapshots: cg.snap == nullptr" );
-    }
-    
-    if( cg.snap->serverTime > cg.time )
-    {
-        Error( "idCGameSnapshot::ProcessSnapshots: cg.snap->serverTime > cg.time" );
     }
     
     if( cg.nextSnap != nullptr && cg.nextSnap->serverTime <= cg.time )

@@ -2,7 +2,7 @@
 // Copyright(C) 1999 - 2005 Id Software, Inc.
 // Copyright(C) 2000 - 2006 Tim Angus
 // Copyright(C) 2008 Tony J. White
-// Copyright(C) 2018 - 2019 Dusan Jocic <dusanjocic@msn.com>
+// Copyright(C) 2018 - 2021 Dusan Jocic <dusanjocic@msn.com>
 //
 // This file is part of OpenWolf.
 //
@@ -22,19 +22,19 @@
 //
 // -------------------------------------------------------------------------------------
 // File name:   bgame_alloc.cpp
-// Version:     v1.01
 // Created:
-// Compilers:   Visual Studio 2019, gcc 7.3.0
+// Compilers:   Microsoft (R) C/C++ Optimizing Compiler Version 19.26.28806 for x64,
+//              gcc (Ubuntu 9.3.0-10ubuntu2) 9.3.0
 // Description: both games voice functions
 // -------------------------------------------------------------------------------------
 ////////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef CGAMEDLL
-#include <cgame/cgame_precompiled.h>
+#include <cgame/cgame_precompiled.hpp>
 #elif GAMEDLL
-#include <sgame/sgame_precompiled.h>
+#include <sgame/sgame_precompiled.hpp>
 #else
-#include <GUI/gui_precompiled.h>
+#include <GUI/gui_precompiled.hpp>
 #endif // !GAMEDLL
 
 sint trap_FS_FOpenFile( pointer qpath, fileHandle_t* f, fsMode_t mode );

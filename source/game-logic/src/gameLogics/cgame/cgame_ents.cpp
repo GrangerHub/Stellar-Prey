@@ -1,13 +1,13 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 // Copyright(C) 1999 - 2005 Id Software, Inc.
 // Copyright(C) 2000 - 2006 Tim Angus
-// Copyright(C) 2011 - 2018 Dusan Jocic <dusanjocic@msn.com>
+// Copyright(C) 2011 - 2021 Dusan Jocic <dusanjocic@msn.com>
 //
 // This file is part of OpenWolf.
 //
 // OpenWolf is free software; you can redistribute it
 // and / or modify it under the terms of the GNU General Public License as
-// published by the Free Software Foundation; either version 2 of the License,
+// published by the Free Software Foundation; either version 3 of the License,
 // or (at your option) any later version.
 //
 // OpenWolf is distributed in the hope that it will be
@@ -21,14 +21,14 @@
 //
 // -------------------------------------------------------------------------------------
 // File name:   cgame_ents.cpp
-// Version:     v1.00
 // Created:
-// Compilers:   Visual Studio 2015
+// Compilers:   Microsoft (R) C/C++ Optimizing Compiler Version 19.26.28806 for x64,
+//              gcc (Ubuntu 9.3.0-10ubuntu2) 9.3.0
 // Description: present snapshot entities, happens every single frame
 // -------------------------------------------------------------------------------------
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include <cgame/cgame_precompiled.h>
+#include <cgame/cgame_precompiled.hpp>
 
 /*
 ===============
@@ -353,12 +353,22 @@ void idCGameEnts::General( centity_t* cent )
     VectorCopy( cent->lerpOrigin, ent.origin );
     VectorCopy( cent->lerpOrigin, ent.oldorigin );
     
+    if( s1->solid == SOLID_BMODEL )
+    {
+        ent.hModel = cgs.inlineDrawModel[s1->modelindex];
+    }
+    else
+    {
+        ent.hModel = cgs.gameModels[s1->modelindex];
+    }
+    
     ent.hModel = cgs.gameModels[ s1->modelindex ];
     
     // player model
     if( s1->number == cg.snap->ps.clientNum )
     {
-        ent.renderfx |= RF_THIRD_PERSON;  // only draw from mirrors
+        // only draw from mirrors
+        ent.renderfx |= RF_THIRD_PERSON;
     }
     
     // convert angles to axis
@@ -366,6 +376,13 @@ void idCGameEnts::General( centity_t* cent )
     
     // add to refresh list
     trap_R_AddRefEntityToScene( &ent );
+    
+    if( s1->modelindex2 )
+    {
+        ent.skinNum = 0;
+        ent.hModel = cgs.gameModels[s1->modelindex2];
+        trap_R_AddRefEntityToScene( &ent );
+    }
 }
 
 /*
@@ -1109,11 +1126,6 @@ void idCGameEnts::AddCEntity( centity_t* cent )
     
     // calculate the current origin
     CalcEntityLerpPositions( cent );
-    
-    if( Distance( cent->lerpOrigin, cg.refdef.vieworg ) > 2048 || !InFOV( cent->lerpOrigin, cg.refdef.vieworg, cg.refdefViewAngles, cg.refdef.fov_x * 1.1, cg.refdef.fov_y * 1.1 ) )
-    {
-        return;
-    }
     
     // add automatic effects
     EntityEffects( cent );

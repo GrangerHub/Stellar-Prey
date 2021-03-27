@@ -1,13 +1,13 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 // Copyright(C) 1999 - 2005 Id Software, Inc.
 // Copyright(C) 2000 - 2006 Tim Angus
-// Copyright(C) 2011 - 2018 Dusan Jocic <dusanjocic@msn.com>
+// Copyright(C) 2011 - 2021 Dusan Jocic <dusanjocic@msn.com>
 //
 // This file is part of OpenWolf.
 //
 // OpenWolf is free software; you can redistribute it
 // and / or modify it under the terms of the GNU General Public License as
-// published by the Free Software Foundation; either version 2 of the License,
+// published by the Free Software Foundation; either version 3 of the License,
 // or (at your option) any later version.
 //
 // OpenWolf is distributed in the hope that it will be
@@ -21,15 +21,15 @@
 //
 // -------------------------------------------------------------------------------------
 // File name:   cgame_consolecmds.cpp
-// Version:     v1.01
 // Created:
-// Compilers:   Visual Studio 2017, gcc 7.3.0
+// Compilers:   Microsoft (R) C/C++ Optimizing Compiler Version 19.26.28806 for x64,
+//              gcc (Ubuntu 9.3.0-10ubuntu2) 9.3.0
 // Description: text commands typed in at the local console, or
 //              executed by a key binding
 // -------------------------------------------------------------------------------------
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include <cgame/cgame_precompiled.h>
+#include <cgame/cgame_precompiled.hpp>
 
 /*
 ===============
@@ -206,7 +206,7 @@ void idCGameConsoleCmds::TellTarget_f( void )
     }
     
     trap_Args( message, 128 );
-    Com_sprintf( command, 128, "tell %i %s", clientNum, message );
+    Q_vsprintf_s( command, 128, 128, "tell %i %s", clientNum, message );
     trap_SendClientCommand( command );
 }
 
@@ -228,7 +228,7 @@ void idCGameConsoleCmds::TellAttacker_f( void )
     }
     
     trap_Args( message, 128 );
-    Com_sprintf( command, 128, "tell %i %s", clientNum, message );
+    Q_vsprintf_s( command, 128, 128, "tell %i %s", clientNum, message );
     trap_SendClientCommand( command );
 }
 
@@ -378,6 +378,7 @@ void idCGameConsoleCmds::InitConsoleCommands( void )
     trap_AddCommand( "deconstruct", "description" );
     trap_AddCommand( "ignore", "description" );
     trap_AddCommand( "unignore", "description" );
+    trap_AddCommand( "stats", "description" );
 }
 /*
 =================

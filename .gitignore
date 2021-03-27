@@ -11,6 +11,11 @@ source/game-assets/*
 !source/map-assets/default
 !source/game-assets/default
 
+*.swp
+*tags
+
+# CMake
+####################
 source/game-logic/main
 source/game-logic/CMakeCache.txt
 source/game-logic/CMakeFiles
@@ -19,8 +24,18 @@ source/game-logic/CPackSourceConfig.cmake
 source/game-logic/Makefile
 source/game-logic/cmake_install.cmake
 
-*.swp
-*tags
+*CMakeFiles
+*CMakeCache.txt
+*CPackConfig.cmake
+*CPackSourceConfig.cmake
+*cmake_install.cmake
+*CTestTestFile.cmake
+
+# Visual Studio build files
+####################
+*.vcxproj
+*.vcxproj.filters
+*.sln
 
 # OS X
 ####################

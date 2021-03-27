@@ -1,13 +1,13 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 // Copyright(C) 1999 - 2005 Id Software, Inc.
 // Copyright(C) 2000 - 2006 Tim Angus
-// Copyright(C) 2011 - 2018 Dusan Jocic <dusanjocic@msn.com>
+// Copyright(C) 2011 - 2021 Dusan Jocic <dusanjocic@msn.com>
 //
 // This file is part of OpenWolf.
 //
 // OpenWolf is free software; you can redistribute it
 // and / or modify it under the terms of the GNU General Public License as
-// published by the Free Software Foundation; either version 2 of the License,
+// published by the Free Software Foundation; either version 3 of the License,
 // or (at your option) any later version.
 //
 // OpenWolf is distributed in the hope that it will be
@@ -21,14 +21,14 @@
 //
 // -------------------------------------------------------------------------------------
 // File name:   cgame_weapons.cpp
-// Version:     v1.01
 // Created:
-// Compilers:   Visual Studio 2017, gcc 7.3.0
+// Compilers:   Microsoft (R) C/C++ Optimizing Compiler Version 19.26.28806 for x64,
+//              gcc (Ubuntu 9.3.0-10ubuntu2) 9.3.0
 // Description: setup all the parameters (position, angle, etc) for a 3D rendering
 // -------------------------------------------------------------------------------------
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include <cgame/cgame_precompiled.h>
+#include <cgame/cgame_precompiled.hpp>
 
 /*
 =============================================================================
@@ -1582,9 +1582,12 @@ void idCGameLocal::DrawActiveFrame( sint serverTime, stereoFrame_t stereoView, b
     // are added to the render list
     trap_S_ClearLoopingSounds( false );
     
+    // clear all the render lists
+    trap_R_ClearScene( );
+    
     // set up cg.snap and possibly cg.nextSnap
-    idCGameSnapshot::ProcessSnapshots();
-
+    idCGameSnapshot::ProcessSnapshots( );
+    
     // if we haven't received any snapshots yet, all
     // we can draw is the information screen
     if( !cg.snap || ( cg.snap->snapFlags & SNAPFLAG_NOT_ACTIVE ) )
@@ -1601,9 +1604,6 @@ void idCGameLocal::DrawActiveFrame( sint serverTime, stereoFrame_t stereoView, b
     
     // update cg.predictedPlayerState
     idCGamePredict::PredictPlayerState( );
-
-    // clear all the render lists
-    trap_R_ClearScene();
     
     // cg.refdef is 100% inisialized here -> set stereo flag
     //cg.refdef.stereoFrame = stereoView;
@@ -1665,8 +1665,6 @@ void idCGameLocal::DrawActiveFrame( sint serverTime, stereoFrame_t stereoView, b
         idCGameDraw::AddLagometerFrameInfo( );
     }
     
-    trap_SetClientLerpOrigin(cg.refdef.vieworg[0], cg.refdef.vieworg[1], cg.refdef.vieworg[2]);
-
     if( cg_timescale.value != cg_timescaleFadeEnd.value )
     {
         if( cg_timescale.value < cg_timescaleFadeEnd.value )

@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 // Copyright(C) 1999 - 2005 Id Software, Inc.
 // Copyright(C) 2000 - 2006 Tim Angus
-// Copyright(C) 2011 - 2019 Dusan Jocic <dusanjocic@msn.com>
+// Copyright(C) 2011 - 2021 Dusan Jocic <dusanjocic@msn.com>
 //
 // This file is part of OpenWolf.
 //
@@ -21,9 +21,9 @@
 //
 // -------------------------------------------------------------------------------------
 // File name:   bgame_pmove.cpp
-// Version:     v1.01
 // Created:
-// Compilers:   Visual Studio 2019, gcc 7.3.0
+// Compilers:   Microsoft (R) C/C++ Optimizing Compiler Version 19.26.28806 for x64,
+//              gcc (Ubuntu 9.3.0-10ubuntu2) 9.3.0
 // Description: Both games player movement code
 //              Takes a playerstate and a usercmd as input and returns a
 //              modifed playerstate
@@ -31,11 +31,11 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef CGAMEDLL
-#include <cgame/cgame_precompiled.h>
+#include <cgame/cgame_precompiled.hpp>
 #elif GAMEDLL
-#include <sgame/sgame_precompiled.h>
+#include <sgame/sgame_precompiled.hpp>
 #else
-#include <GUI/gui_precompiled.h>
+#include <GUI/gui_precompiled.hpp>
 #endif // !GAMEDLL
 
 pmove_t*     pm;
@@ -4122,31 +4122,6 @@ void idBothGamesLocal::PmoveSingle( pmove_t* pmove )
     pml.frametime = pml.msec * 0.001;
     
     AngleVectors( pm->ps->viewangles, pml.forward, pml.right, pml.up );
-    
-    vec3_t dir = { 0, 0, 0 };
-    VectorAdd( dir, pml.forward, dir );
-    VectorAdd( dir, pml.right, dir );
-    VectorAdd( dir, pml.up, dir );
-    
-#ifdef GAMEDLL
-    if( 0 )
-    {
-        VectorAdd( pm->ps->origin, dir, pm->ps->origin );
-    }
-    else
-    {
-        dir[2] = 0;
-        VectorScale( dir, 0.75f, dir );
-        idSGameBulletPhysics::RunCharacterController( dir, pm->ps->origin );
-        
-        if( pm->cmd.upmove )
-        {
-            idSGameBulletPhysics::TryToJump();
-        }
-    }
-    
-    //Com_Printf( "at %f %f %f\n", pm->ps->origin[0], pm->ps->origin[1], pm->ps->origin[2]);
-#endif
     
     // not holding jump
     if( pm->cmd.upmove < 10 )

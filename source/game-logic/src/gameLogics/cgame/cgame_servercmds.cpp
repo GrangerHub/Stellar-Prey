@@ -1,12 +1,12 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 // Copyright(C) 2000 - 2006 Tim Angus
-// Copyright(C) 2011 - 2018 Dusan Jocic <dusanjocic@msn.com>
+// Copyright(C) 2011 - 2021 Dusan Jocic <dusanjocic@msn.com>
 //
 // This file is part of OpenWolf.
 //
 // OpenWolf is free software; you can redistribute it
 // and / or modify it under the terms of the GNU General Public License as
-// published by the Free Software Foundation; either version 2 of the License,
+// published by the Free Software Foundation; either version 3 of the License,
 // or (at your option) any later version.
 //
 // OpenWolf is distributed in the hope that it will be
@@ -20,16 +20,16 @@
 //
 // -------------------------------------------------------------------------------------
 // File name:   cgame_servercmds.cpp
-// Version:     v1.01
 // Created:
-// Compilers:   Visual Studio 2017, gcc 7.3.0
+// Compilers:   Microsoft (R) C/C++ Optimizing Compiler Version 19.26.28806 for x64,
+//              gcc (Ubuntu 9.3.0-10ubuntu2) 9.3.0
 // Description: reliably sequenced text commands sent by the server
 //              these are processed at snapshot transition time, so there
 //              will definately be a valid snapshot this frame
 // -------------------------------------------------------------------------------------
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include <cgame/cgame_precompiled.h>
+#include <cgame/cgame_precompiled.hpp>
 
 extern sint sortedTeamPlayers[TEAM_MAXOVERLAY];
 extern sint numSortedTeamPlayers;
@@ -151,7 +151,7 @@ void idCGameServerCmds::ParseServerinfo( void )
     cgs.maxclients = atoi( Info_ValueForKey( info, "sv_maxclients" ) );
     cgs.markDeconstruct = atoi( Info_ValueForKey( info, "g_markDeconstruct" ) );
     mapname = Info_ValueForKey( info, "mapname" );
-    Com_sprintf( cgs.mapname, sizeof( cgs.mapname ), "maps/%s.bsp", mapname );
+    Q_vsprintf_s( cgs.mapname, sizeof( cgs.mapname ), sizeof( cgs.mapname ), "maps/%s.bsp", mapname );
 }
 
 /*
@@ -998,7 +998,7 @@ void idCGameServerCmds::Say( sint clientNum, valueType* text )
     }
     
     ci = &cgs.clientinfo[ clientNum ];
-    Com_sprintf( sayText, sizeof( sayText ), "%s: " S_COLOR_WHITE S_COLOR_GREEN "%s" S_COLOR_WHITE "\n", ci->name, text );
+    Q_vsprintf_s( sayText, sizeof( sayText ), sizeof( sayText ), "%s: " S_COLOR_WHITE S_COLOR_GREEN "%s" S_COLOR_WHITE "\n", ci->name, text );
     
     if( bggame->ClientListTest( &cgs.ignoreList, clientNum ) )
     {
@@ -1026,7 +1026,7 @@ void idCGameServerCmds::SayTeam( sint clientNum, valueType* text )
     }
     
     ci = &cgs.clientinfo[ clientNum ];
-    Com_sprintf( sayText, sizeof( sayText ), "%s: " S_COLOR_CYAN "%s" S_COLOR_WHITE "\n", ci->name, text );
+    Q_vsprintf_s( sayText, sizeof( sayText ), sizeof( sayText ), "%s: " S_COLOR_CYAN "%s" S_COLOR_WHITE "\n", ci->name, text );
     
     if( bggame->ClientListTest( &cgs.ignoreList, clientNum ) )
     {
@@ -1362,8 +1362,20 @@ void idCGameServerCmds::PlaySound( void )
     trap_S_StartSound( origin, 0, 0, sfx );
 }
 
+/*
+=================
+idCGameServerCmds::SpawnServer
+=================
+*/
+void idCGameServerCmds::SpawnServer( void )
+{
+    cg.serverRespawning = true;
+}
+
+
 static consoleCommand_t svcommands[ ] =
 {
+    { "spawnserver", &idCGameServerCmds::SpawnServer , "description" },
     { "cp", &idCGameServerCmds::CenterPrint_f, "description" },
     { "cs", &idCGameServerCmds::ConfigStringModified, "description" },
     { "print", &idCGameServerCmds::Print_f, "description" },

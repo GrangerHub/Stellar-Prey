@@ -1,0 +1,118 @@
+#include "gui/menudef.h"
+#include "gui/hud/common/colours.cfg"
+
+{
+	#define W           135
+	#define H           235
+	#define X           204
+	#define Y           160
+	#define BORDER      30
+
+	menuDef
+	{
+		name "autoupdate"
+		visible MENU_FALSE
+		aspectBias ASPECT_NONE
+		fullscreen MENU_FALSE
+		rect X Y W H
+		focusColor COMMON_GOLD_R COMMON_GOLD_G COMMON_GOLD_B COMMON_FULLALPHA
+		visible MENU_TRUE
+		style MENU_TRUE
+		border MENU_TRUE
+		popup
+
+		onOpen
+		{
+			hide main;
+			show autoupdate;
+		}
+		onESC
+		{ 
+			close autoupdate;
+			open main; 
+		}
+
+		itemDef 
+		{
+			name acwindow
+			group grpControlbutton
+			rect 0 2 235 135
+			style WINDOW_STYLE_FILLED
+			border 1
+			bordercolor .5 .5 .5 .5
+			forecolor 1 1 1 1
+			backcolor 0 0 0 .85
+			visible 1
+			decoration
+		}
+
+		itemDef 
+		{
+			name acwindow2
+			group grpControlbutton
+			rect 2 4 231 20	
+			style WINDOW_STYLE_FILLED
+			border 1
+			bordercolor .1 .1 .1 .2
+			forecolor 1 1 1 1
+			backcolor .3 0.5 0.2 .55
+			visible 1
+			decoration
+		}
+
+
+		itemDef 
+		{
+			name acconfirm
+			text "An update is avaliable for your game!" 
+			style 0
+			textscale .25 
+			textstyle 3
+			rect 66 0 110 20
+			textalign 1
+			textalignx 0
+			textaligny 0
+			decoration
+			forecolor 1 1 1 1
+			visible 1
+		}
+
+		itemDef 
+		{
+			name yes
+			text "Update now"
+			type 1
+			textscale .3
+			style WINDOW_STYLE_FILLED
+			rect 45 60 50 20
+			textalign 1
+			textalignx 0
+			textaligny -5
+			forecolor 1 1 1 1
+			backcolor .3 0.5 0.2 .55
+			border 1	
+			bordercolor .1 .1 .1 .3
+			visible 1
+			action { getautoupdate ; close autoupdate }	
+		}
+
+		itemDef 
+		{
+			name no
+			text "Cancel"
+			type 1
+			textscale .3
+			style WINDOW_STYLE_FILLED
+			border 1
+			bordercolor .1 .1 .1 .3
+			rect 142 60 50 20
+			textalign 1
+			textalignx 0
+			textaligny -5
+			forecolor 1 1 1 1
+			backcolor .3 0.5 0.2 .55
+			visible 1
+			action { open frontend ; close autoupdate } 		
+		}
+	}
+}

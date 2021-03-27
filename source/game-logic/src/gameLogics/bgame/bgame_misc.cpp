@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 // Copyright(C) 1999 - 2005 Id Software, Inc.
 // Copyright(C) 2000 - 2006 Tim Angus
-// Copyright(C) 2011 - 2019 Dusan Jocic <dusanjocic@msn.com>
+// Copyright(C) 2011 - 2021 Dusan Jocic <dusanjocic@msn.com>
 //
 // This file is part of OpenWolf.
 //
@@ -21,19 +21,19 @@
 //
 // -------------------------------------------------------------------------------------
 // File name:   bgame_misc.cpp
-// Version:     v1.01
 // Created:
-// Compilers:   Visual Studio 2019, gcc 7.3.0
+// Compilers:   Microsoft (R) C/C++ Optimizing Compiler Version 19.26.28806 for x64,
+//              gcc (Ubuntu 9.3.0-10ubuntu2) 9.3.0
 // Description: Both games misc functions, all completely stateless
 // -------------------------------------------------------------------------------------
 ////////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef CGAMEDLL
-#include <cgame/cgame_precompiled.h>
+#include <cgame/cgame_precompiled.hpp>
 #elif GAMEDLL
-#include <sgame/sgame_precompiled.h>
+#include <sgame/sgame_precompiled.hpp>
 #else
-#include <GUI/gui_precompiled.h>
+#include <GUI/gui_precompiled.hpp>
 #endif // !GAMEDLL
 
 idBothGamesLocal bgLocal;
@@ -2775,7 +2775,7 @@ void idBothGamesLocal::EvaluateTrajectory( const trajectory_t* tr, sint atTime, 
             deltaTime = ( atTime - tr->trTime ) * 0.001; // milliseconds to seconds
             if( deltaTime < 0 )
                 deltaTime = 0;
-                
+            
             VectorMA( tr->trBase, deltaTime, tr->trDelta, result );
             break;
             
@@ -3000,7 +3000,7 @@ Handles the sequence numbers
 ===============
 */
 
-void  trap_Cvar_VariableStringBuffer( pointer var_name, valueType* buffer, sint bufsize );
+void  trap_Cvar_VariableStringBuffer( pointer var_name, valueType* buffer, uint64 bufsize );
 
 void idBothGamesLocal::AddPredictableEventToPlayerstate( sint newEvent, sint eventParm, playerState_t* ps )
 {
@@ -4099,7 +4099,8 @@ valueType* idBothGamesLocal::ClientListString( clientList_t* list )
         return s;
     }
     
-    Com_sprintf( s, sizeof( s ), "%08x%08x", list->hi, list->lo );
+    Q_vsprintf_s( s, sizeof( s ), sizeof( s ), "%08x%08x", list->hi, list->lo );
+    
     return s;
 }
 

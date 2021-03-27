@@ -81,6 +81,20 @@ To see other options, run:
 ./sp-tools.sh help run 
 ```
 
+## Debugging
+
+The built binaries can be debugged with the `debug` subcommand:
+
+```bash
+./sp-tools.sh debug client
+```
+
+To see other options, run:
+
+```bash
+./sp-tools.sh help debug 
+```
+
 ## More help
 
 For more details on how to manage and use this repo, check:
