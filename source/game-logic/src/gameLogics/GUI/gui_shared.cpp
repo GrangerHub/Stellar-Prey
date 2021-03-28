@@ -1,13 +1,13 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 // Copyright(C) 1999 - 2005 Id Software, Inc.
 // Copyright(C) 2000 - 2006 Tim Angus
-// Copyright(C) 2011 - 2019 Dusan Jocic <dusanjocic@msn.com>
+// Copyright(C) 2011 - 2021 Dusan Jocic <dusanjocic@msn.com>
 //
 // This file is part of OpenWolf.
 //
 // OpenWolf is free software; you can redistribute it
 // and / or modify it under the terms of the GNU General Public License as
-// published by the Free Software Foundation; either version 2 of the License,
+// published by the Free Software Foundation; either version 3 of the License,
 // or (at your option) any later version.
 //
 // OpenWolf is distributed in the hope that it will be
@@ -21,17 +21,17 @@
 //
 // -------------------------------------------------------------------------------------
 // File name:   gui_shared.cpp
-// Version:     v1.01
 // Created:
-// Compilers:   Visual Studio 2019, gcc 7.3.0
+// Compilers:   Microsoft (R) C/C++ Optimizing Compiler Version 19.26.28806 for x64,
+//              gcc (Ubuntu 9.3.0-10ubuntu2) 9.3.0
 // Description:
 // -------------------------------------------------------------------------------------
 ////////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef CGAMEDLL
-#include <cgame/cgame_precompiled.h>
+#include <cgame/cgame_precompiled.hpp>
 #else
-#include <GUI/gui_precompiled.h>
+#include <GUI/gui_precompiled.hpp>
 #endif // !CGAMEDLL
 
 #define SCROLL_TIME_START         500
@@ -378,7 +378,7 @@ void PC_SourceWarning( sint handle, valueType* format, ... )
     static valueType string[4096];
     
     va_start( argptr, format );
-    Q_vsnprintf( string, sizeof( string ), format, argptr );
+    Q_vsprintf_s( string, sizeof( string ), sizeof( string ), format, argptr );
     va_end( argptr );
     
     filename[0] = '\0';
@@ -401,7 +401,7 @@ void PC_SourceError( sint handle, valueType* format, ... )
     static valueType string[4096];
     
     va_start( argptr, format );
-    Q_vsnprintf( string, sizeof( string ), format, argptr );
+    Q_vsprintf_s( string, sizeof( string ), sizeof( string ), format, argptr );
     va_end( argptr );
     
     filename[0] = '\0';

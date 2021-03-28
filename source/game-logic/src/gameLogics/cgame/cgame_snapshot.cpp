@@ -1,12 +1,12 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 // Copyright(C) 2000 - 2006 Tim Angus
-// Copyright(C) 2011 - 2018 Dusan Jocic <dusanjocic@msn.com>
+// Copyright(C) 2011 - 2021 Dusan Jocic <dusanjocic@msn.com>
 //
 // This file is part of OpenWolf.
 //
 // OpenWolf is free software; you can redistribute it
 // and / or modify it under the terms of the GNU General Public License as
-// published by the Free Software Foundation; either version 2 of the License,
+// published by the Free Software Foundation; either version 3 of the License,
 // or (at your option) any later version.
 //
 // OpenWolf is distributed in the hope that it will be
@@ -20,15 +20,15 @@
 //
 // -------------------------------------------------------------------------------------
 // File name:   cgame_trails.cpp
-// Version:     v1.01
 // Created:
-// Compilers:   Visual Studio 2017, gcc 7.3.0
+// Compilers:   Microsoft (R) C/C++ Optimizing Compiler Version 19.26.28806 for x64,
+//              gcc (Ubuntu 9.3.0-10ubuntu2) 9.3.0
 // Description: things that happen on snapshot transition,
 //              not necessarily every single rendered frame
 // -------------------------------------------------------------------------------------
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include <cgame/cgame_precompiled.h>
+#include <cgame/cgame_precompiled.hpp>
 
 /*
 ===============
@@ -55,7 +55,13 @@ idCGameSnapshot::ResetEntity
 */
 void idCGameSnapshot::ResetEntity( centity_t* cent )
 {
-    cent->previousEvent = 0;
+    // if the previous snapshot this entity was updated in is at least
+    // an event window back in time then we can reset the previous event
+    if( cent->snapShotTime < cg.time - EVENT_VALID_MSEC )
+    {
+        cent->previousEvent = 0;
+    }
+    
     cent->trailTime = cg.snap->serverTime;
     
     VectorCopy( cent->currentState.origin, cent->lerpOrigin );
@@ -65,13 +71,6 @@ void idCGameSnapshot::ResetEntity( centity_t* cent )
     {
         idCGamePlayers::ResetPlayerEntity( cent );
     }
-    
-    cent->muzzleFlashTime = 0;
-    cent->miscTime = 0;
-    cent->soundTime = 0;
-    
-    VectorClear( cent->rawOrigin );
-    VectorClear( cent->rawAngles );
 }
 
 /*
@@ -175,10 +174,9 @@ void idCGameSnapshot::TransitionSnapshot( void )
     // execute any server string commands before transitioning entities
     idCGameServerCmds::ExecuteNewServerCommands( cg.nextSnap->serverCommandSequence );
     
-    // if we had a map_restart, set everthing with initial
-    if( !( cg.snap ) || !( cg.nextSnap ) )
+    // if we had a map_restart, set everything with initial
+    if( cg.mapRestart )
     {
-        return;
     }
     
     // clear the currentValid flag for all entities in the existing snapshot
@@ -207,21 +205,27 @@ void idCGameSnapshot::TransitionSnapshot( void )
     cg.nextSnap = nullptr;
     
     // check for playerstate transition events
-    playerState_t* ops = &oldFrame->ps, * ps = &cg.snap->ps;
-    
-    // teleporting checks are irrespective of prediction
-    if( ( ps->eFlags ^ ops->eFlags ) & EF_TELEPORT_BIT )
+    if( oldFrame )
     {
-        cg.thisFrameTeleport = true; // will be cleared by prediction code
-    }
+        playerState_t* ops, *ps;
     
-    // if we are not doing client side movement prediction for any
-    // reason, then the client events and view changes will be issued now
-    if( cg.demoPlayback || ( cg.snap->ps.pm_flags & PMF_FOLLOW ) || cg_nopredict.integer || cg_synchronousClients.integer )
-    {
-        idCGamePlayerState::TransitionPlayerState( ps, ops );
+        ops = &oldFrame->ps;
+        ps = &cg.snap->ps;
+        // teleporting checks are irrespective of prediction
+        if( ( ps->eFlags ^ ops->eFlags ) & EF_TELEPORT_BIT )
+        {
+            cg.thisFrameTeleport = true; // will be cleared by prediction code
+        }
+        
+        // if we are not doing client side movement prediction for any
+        // reason, then the client events and view changes will be issued now
+        if( cg.demoPlayback || ( cg.snap->ps.pm_flags & PMF_FOLLOW ) || cg_nopredict.integer || cg_synchronousClients.integer )
+        {
+            idCGamePlayerState::TransitionPlayerState( ps, ops );
+        }
     }
 }
+
 
 /*
 ===================
@@ -329,20 +333,12 @@ snapshot_t* idCGameSnapshot::ReadNextSnapshot( void )
         // FIXME: why would trap_GetSnapshot return a snapshot with the same server time
         if( cg.nextSnap && r && dest->serverTime == cg.nextSnap->serverTime )
         {
-            if( cg.demoPlayback )
-            {
-                continue;
-            }
+            //continue;
         }
         
         // if it succeeded, return
         if( r )
         {
-            cg.damageTime = 0;
-            cg.duckTime = -1;
-            cg.landTime = -1;
-            cg.stepTime = -1;
-            
             idCGameDraw::AddLagometerSnapshotInfo( dest );
             return dest;
         }
@@ -447,8 +443,7 @@ void idCGameSnapshot::ProcessSnapshots( void )
         }
         
         // if our time is < nextFrame's, we have a nice interpolating state
-        //if( cg.time >= cg.snap->serverTime && cg.time < cg.nextSnap->serverTime )
-        if( cg.time < cg.nextSnap->serverTime )
+        if( cg.time >= cg.snap->serverTime && cg.time < cg.nextSnap->serverTime )
         {
             break;
         }
@@ -468,17 +463,6 @@ void idCGameSnapshot::ProcessSnapshots( void )
     {
         // this can happen right after a vid_restart
         cg.time = cg.snap->serverTime;
-    }
-    
-    // assert our valid conditions upon exiting
-    if( cg.snap == nullptr )
-    {
-        Error( "idCGameSnapshot::ProcessSnapshots: cg.snap == nullptr" );
-    }
-    
-    if( cg.snap->serverTime > cg.time )
-    {
-        Error( "idCGameSnapshot::ProcessSnapshots: cg.snap->serverTime > cg.time" );
     }
     
     if( cg.nextSnap != nullptr && cg.nextSnap->serverTime <= cg.time )

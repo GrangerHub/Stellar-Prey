@@ -1,13 +1,13 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 // Copyright(C) 1999 - 2005 Id Software, Inc.
 // Copyright(C) 2000 - 2006 Tim Angus
-// Copyright(C) 2011 - 2018 Dusan Jocic <dusanjocic@msn.com>
+// Copyright(C) 2011 - 2021 Dusan Jocic <dusanjocic@msn.com>
 //
 // This file is part of OpenWolf.
 //
 // OpenWolf is free software; you can redistribute it
 // and / or modify it under the terms of the GNU General Public License as
-// published by the Free Software Foundation; either version 2 of the License,
+// published by the Free Software Foundation; either version 3 of the License,
 // or (at your option) any later version.
 //
 // OpenWolf is distributed in the hope that it will be
@@ -21,15 +21,15 @@
 //
 // -------------------------------------------------------------------------------------
 // File name:   cgame_draw.cpp
-// Version:     v1.01
 // Created:
-// Compilers:   Visual Studio 2017, gcc 7.3.0
+// Compilers:   Microsoft (R) C/C++ Optimizing Compiler Version 19.26.28806 for x64,
+//              gcc (Ubuntu 9.3.0-10ubuntu2) 9.3.0
 // Description: draw all of the graphical elements during
 //              active (after loading) gameplay
 // -------------------------------------------------------------------------------------
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include <cgame/cgame_precompiled.h>
+#include <cgame/cgame_precompiled.hpp>
 
 menuDef_t* menuScoreboard = nullptr;
 
@@ -166,7 +166,7 @@ void idCGameDraw::DrawFieldPadded( sint x, sint y, sint width, sint cw, sint ch,
             break;
     }
     
-    Com_sprintf( num, sizeof( num ), "%d", value );
+    Q_vsprintf_s( num, sizeof( num ), sizeof( num ), "%d", value );
     l = strlen( num );
     
     if( l > width )
@@ -255,7 +255,7 @@ void idCGameDraw::DrawField( float32 x, float32 y, sint width, float32 cw, float
             break;
     }
     
-    Com_sprintf( num, sizeof( num ), "%d", value );
+    Q_vsprintf_s( num, sizeof( num ), sizeof( num ), "%d", value );
     l = strlen( num );
     
     if( l > width )
@@ -340,7 +340,7 @@ void idCGameDraw::DrawProgressBar( rectDef_t* rect, vec4_t color, float32 scale,
     //draw text
     if( scale > 0.0 )
     {
-        Com_sprintf( textBuffer, sizeof( textBuffer ), "%d%%", ( sint )( progress * 100 ) );
+        Q_vsprintf_s( textBuffer, sizeof( textBuffer ), sizeof( textBuffer ), "%d%%", ( sint )( progress * 100 ) );
         AlignText( rect, textBuffer, scale, 0.0f, 0.0f, textalign, VALIGN_CENTER, &tx, &ty );
         
         UI_Text_Paint( tx, ty, scale, color, textBuffer, 0, 0, textStyle );
@@ -1993,7 +1993,7 @@ void idCGameDraw::DrawTeamLabel( rectDef_t* rect, team_t team, float32 text_x, f
             t = "Aliens";
             if( cg.intermissionStarted )
             {
-                Com_sprintf( stage, MAX_TOKEN_CHARS, "(Stage %d)", cgs.alienStage + 1 );
+                Q_vsprintf_s( stage, MAX_TOKEN_CHARS, MAX_TOKEN_CHARS, "(Stage %d)", cgs.alienStage + 1 );
             }
             break;
             
@@ -2001,7 +2001,7 @@ void idCGameDraw::DrawTeamLabel( rectDef_t* rect, team_t team, float32 text_x, f
             t = "Humans";
             if( cg.intermissionStarted )
             {
-                Com_sprintf( stage, MAX_TOKEN_CHARS, "(Stage %d)", cgs.humanStage + 1 );
+                Q_vsprintf_s( stage, MAX_TOKEN_CHARS, MAX_TOKEN_CHARS, "(Stage %d)", cgs.humanStage + 1 );
             }
             break;
             
@@ -2067,15 +2067,15 @@ void idCGameDraw::DrawStageReport( rectDef_t* rect, float32 text_x, float32 text
         
         if( cgs.alienNextStageThreshold < 0 )
         {
-            Com_sprintf( s, MAX_TOKEN_CHARS, "Stage %d", cgs.alienStage + 1 );
+            Q_vsprintf_s( s, MAX_TOKEN_CHARS, MAX_TOKEN_CHARS, "Stage %d", cgs.alienStage + 1 );
         }
         else if( frags == 1 )
         {
-            Com_sprintf( s, MAX_TOKEN_CHARS, "Stage %d, 1 frag for %s", cgs.alienStage + 1, reward );
+            Q_vsprintf_s( s, MAX_TOKEN_CHARS, MAX_TOKEN_CHARS, "Stage %d, 1 frag for %s", cgs.alienStage + 1, reward );
         }
         else
         {
-            Com_sprintf( s, MAX_TOKEN_CHARS, "Stage %d, %d frags for %s", cgs.alienStage + 1, frags, reward );
+            Q_vsprintf_s( s, MAX_TOKEN_CHARS, MAX_TOKEN_CHARS, "Stage %d, %d frags for %s", cgs.alienStage + 1, frags, reward );
         }
     }
     else if( cg.snap->ps.stats[ STAT_TEAM ] == TEAM_HUMANS )
@@ -2098,15 +2098,15 @@ void idCGameDraw::DrawStageReport( rectDef_t* rect, float32 text_x, float32 text
         
         if( cgs.humanNextStageThreshold < 0 )
         {
-            Com_sprintf( s, MAX_TOKEN_CHARS, "Stage %d", cgs.humanStage + 1 );
+            Q_vsprintf_s( s, MAX_TOKEN_CHARS, MAX_TOKEN_CHARS, "Stage %d", cgs.humanStage + 1 );
         }
         else if( credits == 1 )
         {
-            Com_sprintf( s, MAX_TOKEN_CHARS, "Stage %d, 1 credit for %s", cgs.humanStage + 1, reward );
+            Q_vsprintf_s( s, MAX_TOKEN_CHARS, MAX_TOKEN_CHARS, "Stage %d, 1 credit for %s", cgs.humanStage + 1, reward );
         }
         else
         {
-            Com_sprintf( s, MAX_TOKEN_CHARS, "Stage %d, %d credits for %s", cgs.humanStage + 1, credits, reward );
+            Q_vsprintf_s( s, MAX_TOKEN_CHARS, MAX_TOKEN_CHARS, "Stage %d, %d credits for %s", cgs.humanStage + 1, credits, reward );
         }
     }
     
@@ -3985,22 +3985,22 @@ bool idCGameDraw::DrawQueue( void )
         ordinal = "rd";
     }
     
-    Com_sprintf( buffer, MAX_STRING_CHARS, "You are %d%s in the spawn queue", position, ordinal );
+    Q_vsprintf_s( buffer, MAX_STRING_CHARS, MAX_STRING_CHARS, "You are %d%s in the spawn queue", position, ordinal );
     
     w = UI_Text_Width( buffer, 0.7f, 0 );
     UI_Text_Paint( 320 - w / 2, 360, 0.7f, color, buffer, 0, 0, ITEM_TEXTSTYLE_SHADOWED );
     
     if( cg.snap->ps.persistant[PERS_SPAWNS] == 0 )
     {
-        Com_sprintf( buffer, MAX_STRING_CHARS, "There are no spawns remaining" );
+        Q_vsprintf_s( buffer, MAX_STRING_CHARS, MAX_STRING_CHARS, "There are no spawns remaining" );
     }
     else if( cg.snap->ps.persistant[PERS_SPAWNS] == 1 )
     {
-        Com_sprintf( buffer, MAX_STRING_CHARS, "There is 1 spawn remaining" );
+        Q_vsprintf_s( buffer, MAX_STRING_CHARS, MAX_STRING_CHARS, "There is 1 spawn remaining" );
     }
     else
     {
-        Com_sprintf( buffer, MAX_STRING_CHARS, "There are %d spawns remaining", cg.snap->ps.persistant[PERS_SPAWNS] );
+        Q_vsprintf_s( buffer, MAX_STRING_CHARS, MAX_STRING_CHARS, "There are %d spawns remaining", cg.snap->ps.persistant[PERS_SPAWNS] );
     }
     
     w = UI_Text_Width( buffer, 0.7f, 0 );
@@ -4025,7 +4025,7 @@ void idCGameDraw::DrawBotInfo( void )
     valueType value[MAX_INFO_VALUE];
     sint y, clientnum;
     
-    //Com_sprintf( buffer, MAX_STRING_CHARS, "BotInfo Test.");
+    //Q_vsprintf_s( buffer, MAX_STRING_CHARS, "BotInfo Test.");
     //w = UI_Text_Width( buffer, scale, 0 );
     //Text_Paint( 640 - w , 160, scale, color, buffer, 0, 0, ITEM_TEXTSTYLE_NORMAL );
     
@@ -4058,7 +4058,7 @@ void idCGameDraw::DrawBotInfo( void )
             break;
         }
         
-        Com_sprintf( buffer, MAX_STRING_CHARS, va( "%s: %s", key, value ) );
+        Q_vsprintf_s( buffer, MAX_STRING_CHARS, MAX_STRING_CHARS, va( "%s: %s", key, value ) );
         
         y += UI_Text_Height( buffer, scale, 0 ) + 5;
         w = UI_Text_Width( buffer, scale, 0 );

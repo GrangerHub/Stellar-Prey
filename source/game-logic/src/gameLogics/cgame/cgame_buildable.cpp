@@ -1,12 +1,12 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 // Copyright(C) 2000 - 2006 Tim Angus
-// Copyright(C) 2011 - 2018 Dusan Jocic <dusanjocic@msn.com>
+// Copyright(C) 2011 - 2021 Dusan Jocic <dusanjocic@msn.com>
 //
 // This file is part of OpenWolf.
 //
 // OpenWolf is free software; you can redistribute it
 // and / or modify it under the terms of the GNU General Public License as
-// published by the Free Software Foundation; either version 2 of the License,
+// published by the Free Software Foundation; either version 3 of the License,
 // or (at your option) any later version.
 //
 // OpenWolf is distributed in the hope that it will be
@@ -20,14 +20,14 @@
 //
 // -------------------------------------------------------------------------------------
 // File name:   cgame_buildable.cpp
-// Version:     v1.01
 // Created:
-// Compilers:   Visual Studio 2017, gcc 7.3.0
+// Compilers:   Microsoft (R) C/C++ Optimizing Compiler Version 19.26.28806 for x64,
+//              gcc (Ubuntu 9.3.0-10ubuntu2) 9.3.0
 // Description:
 // -------------------------------------------------------------------------------------
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include <cgame/cgame_precompiled.h>
+#include <cgame/cgame_precompiled.hpp>
 
 valueType* cg_buildableSoundNames[ MAX_BUILDABLE_ANIMATIONS ] =
 {
@@ -371,10 +371,10 @@ void idCGameBuildable::InitBuildables( void )
     {
         strcpy( soundfile, cg_buildableSoundNames[ j - 1 ] );
         
-        Com_sprintf( filename, sizeof( filename ), "sound/buildables/alien/%s", soundfile );
+        Q_vsprintf_s( filename, sizeof( filename ), sizeof( filename ), "sound/buildables/alien/%s", soundfile );
         defaultAlienSounds[ j ] = trap_S_RegisterSound( filename );
         
-        Com_sprintf( filename, sizeof( filename ), "sound/buildables/human/%s", soundfile );
+        Q_vsprintf_s( filename, sizeof( filename ), sizeof( filename ), "sound/buildables/human/%s", soundfile );
         defaultHumanSounds[ j ] = trap_S_RegisterSound( filename );
     }
     
@@ -385,14 +385,14 @@ void idCGameBuildable::InitBuildables( void )
         buildableName = bggame->Buildable( ( buildable_t )i )->name;
         
         //animation.cfg
-        Com_sprintf( filename, sizeof( filename ), "models/buildables/%s/animation.cfg", buildableName );
+        Q_vsprintf_s( filename, sizeof( filename ), sizeof( filename ), "models/buildables/%s/animation.cfg", buildableName );
         if( !ParseBuildableAnimationFile( filename, ( buildable_t )i ) )
         {
             Com_Printf( S_COLOR_YELLOW "WARNING: failed to load animation file %s\n", filename );
         }
         
         //sound.cfg
-        Com_sprintf( filename, sizeof( filename ), "sound/buildables/%s/sound.cfg", buildableName );
+        Q_vsprintf_s( filename, sizeof( filename ), sizeof( filename ), "sound/buildables/%s/sound.cfg", buildableName );
         if( !ParseBuildableSoundFile( filename, ( buildable_t )i ) )
         {
             Com_Printf( S_COLOR_YELLOW "WARNING: failed to load sound file %s\n", filename );
@@ -412,7 +412,7 @@ void idCGameBuildable::InitBuildables( void )
         for( j = BANIM_NONE + 1; j < MAX_BUILDABLE_ANIMATIONS; j++ )
         {
             strcpy( soundfile, cg_buildableSoundNames[ j - 1 ] );
-            Com_sprintf( filename, sizeof( filename ), "sound/buildables/%s/%s", buildableName, soundfile );
+            Q_vsprintf_s( filename, sizeof( filename ), sizeof( filename ), "sound/buildables/%s/%s", buildableName, soundfile );
             
             if( cg_buildables[ i ].sounds[ j ].enabled )
             {

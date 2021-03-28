@@ -1,13 +1,13 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 // Copyright(C) 1999 - 2005 Id Software, Inc.
 // Copyright(C) 2000 - 2006 Tim Angus
-// Copyright(C) 2011 - 2019 Dusan Jocic <dusanjocic@msn.com>
+// Copyright(C) 2011 - 2021 Dusan Jocic <dusanjocic@msn.com>
 //
 // This file is part of OpenWolf.
 //
 // OpenWolf is free software; you can redistribute it
 // and / or modify it under the terms of the GNU General Public License as
-// published by the Free Software Foundation; either version 2 of the License,
+// published by the Free Software Foundation; either version 3 of the License,
 // or (at your option) any later version.
 //
 // OpenWolf is distributed in the hope that it will be
@@ -21,14 +21,14 @@
 //
 // -------------------------------------------------------------------------------------
 // File name:   sgame_main.cpp
-// Version:     v1.01
 // Created:
-// Compilers:   Visual Studio 2019, gcc 7.3.0
+// Compilers:   Microsoft (R) C/C++ Optimizing Compiler Version 19.26.28806 for x64,
+//              gcc (Ubuntu 9.3.0-10ubuntu2) 9.3.0
 // Description:
 // -------------------------------------------------------------------------------------
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include <sgame/sgame_precompiled.h>
+#include <sgame/sgame_precompiled.hpp>
 
 vec3_t playerMins = { -15, -15, -24 };
 vec3_t playerMaxs = { 15, 15, 32 };
@@ -331,7 +331,7 @@ void idSGameMain::Printf( pointer fmt, ... )
     valueType    text[ 1024 ];
     
     va_start( argptr, fmt );
-    Q_vsnprintf( text, sizeof( text ), fmt, argptr );
+    Q_vsprintf_s( text, sizeof( text ), fmt, argptr );
     va_end( argptr );
     
     trap_Print( text );
@@ -343,7 +343,7 @@ void idSGameMain::Error( pointer fmt, ... )
     valueType    text[ 1024 ];
     
     va_start( argptr, fmt );
-    Q_vsnprintf( text, sizeof( text ), fmt, argptr );
+    Q_vsprintf_s( text, sizeof( text ), fmt, argptr );
     va_end( argptr );
     
     trap_Error( text );
@@ -525,7 +525,6 @@ void idSGameLocal::Init( sint levelTime, sint randomSeed, sint restart )
     idSGameMain::Printf( "idSGameLocal::Init:Gamename: %s\n", GAME_VERSION );
     idSGameMain::Printf( "idSGameLocal::Init:Gamedate: %s\n", __DATE__ );
     
-    // xDiloc - mapname
     trap_Cvar_Register( &mapname, "mapname", "", CVAR_SERVERINFO | CVAR_ROM, "description" );
     idSGameMain::Printf( "mapname: %s\n", mapname.string );
     
@@ -539,9 +538,10 @@ void idSGameLocal::Init( sint levelTime, sint randomSeed, sint restart )
     level.alienStagedownCredits = level.humanStagedownCredits = -1;
     trap_Cvar_VariableStringBuffer( "session", buffer, sizeof( buffer ) );
     sscanf( buffer, "%i %i", &a, &b );
-    if( a != trap_Cvar_VariableIntegerValue( "sv_maxclients" ) ||
-            b != trap_Cvar_VariableIntegerValue( "sv_democlients" ) )
+    if( a != trap_Cvar_VariableIntegerValue( "sv_maxclients" ) || b != trap_Cvar_VariableIntegerValue( "sv_democlients" ) )
+    {
         level.newSession = true;
+    }
         
     level.snd_fry = idSGameUtils::SoundIndex( "sound/misc/fry.wav" ); // FIXME standing in lava / slime
     
@@ -598,7 +598,9 @@ void idSGameLocal::Init( sint levelTime, sint randomSeed, sint restart )
     
     // set client fields on player ents
     for( i = 0; i < level.maxclients; i++ )
+    {
         g_entities[i].client = level.clients + i;
+    }
         
     // always leave room for the max number of clients,
     // even if they aren't all used, so numbers inside that
@@ -627,8 +629,6 @@ void idSGameLocal::Init( sint levelTime, sint randomSeed, sint restart )
     
     //Init bullet physics
     trap_Cvar_VariableStringBuffer( "mapname", mapName, sizeof( mapName ) );
-    idSGameBulletPhysics::InitBullet();
-    idSGameBulletPhysics::LoadMap( mapName );
     
     // general initialization
     idSGameMain::FindTeams();
@@ -707,9 +707,6 @@ void idSGameLocal::Shutdown( sint restart )
     // write all the client session data so we can get it back
     idSGameSession::WriteSessionData( );
     
-    //Shutdown bullet physics
-    idSGameBulletPhysics::ShudownBullet();
-    
     adminLocal.AdminCleanup( );
     adminLocal.AdminNamelogCleanup( );
     
@@ -732,7 +729,7 @@ void Com_Error( sint level, pointer error, ... )
     valueType    text[ 1024 ];
     
     va_start( argptr, error );
-    Q_vsnprintf( text, sizeof( text ), error, argptr );
+    Q_vsprintf_s( text, sizeof( text ), error, argptr );
     va_end( argptr );
     
     idSGameMain::Error( "%s", text );
@@ -744,7 +741,7 @@ void Com_Printf( pointer msg, ... )
     valueType    text[ 1024 ];
     
     va_start( argptr, msg );
-    Q_vsnprintf( text, sizeof( text ), msg, argptr );
+    Q_vsprintf_s( text, sizeof( text ), msg, argptr );
     va_end( argptr );
     
     idSGameMain::Printf( "%s", text );
@@ -1412,9 +1409,9 @@ void idSGameMain::CalculateStages( void )
         if( g_humanStage.integer == S2 )
             level.humanStage2Time = level.startTime;
         lastHumanStageModCount = g_humanStage.modificationCount;
-        trap_Cvar_Set( "g_humanStage", va( "%d", g_humanStage.integer - 1 ) );
-        trap_Cvar_Set( "g_humanCredits", va( "%d", ( sint )ceil( g_humanCredits.integer - g_humanStageThreshold.integer * humanPlayerCountMod ) ) );
-        trap_Cvar_Set( "g_alienCredits", va( "%d", ( sint )ceil( g_alienCredits.integer - g_alienStageThreshold.integer * alienPlayerCountMod ) ) );
+        //trap_Cvar_Set( "g_humanStage", va( "%d", g_humanStage.integer - 1 ) );
+        //trap_Cvar_Set( "g_humanCredits", va( "%d", ( sint )ceil( g_humanCredits.integer - g_humanStageThreshold.integer * humanPlayerCountMod ) ) );
+        //trap_Cvar_Set( "g_alienCredits", va( "%d", ( sint )ceil( g_alienCredits.integer - g_alienStageThreshold.integer * alienPlayerCountMod ) ) );
         LogPrintf( "stagedownlog: after: %d %d %d %d %d %d\n",
                    trap_Cvar_VariableIntegerValue( "g_humanStage" ),
                    trap_Cvar_VariableIntegerValue( "g_humanCredits" ),
@@ -1476,13 +1473,13 @@ void idSGameMain::CalculateAvgPlayers( void )
     if( !level.numAlienClients )
     {
         level.numAlienSamples = 0;
-        trap_Cvar_Set( "g_alienCredits", "0" );
+        //trap_Cvar_Set( "g_alienCredits", "0" );
     }
     
     if( !level.numHumanClients )
     {
         level.numHumanSamples = 0;
-        trap_Cvar_Set( "g_humanCredits", "0" );
+        //trap_Cvar_Set( "g_humanCredits", "0" );
     }
     
     //calculate average number of clients for stats
@@ -1870,7 +1867,7 @@ void idSGameMain::AdminMessage( pointer prefix, pointer fmt, ... )
     
     // Format the text
     va_start( argptr, fmt );
-    Q_vsnprintf( string, sizeof( string ), fmt, argptr );
+    Q_vsprintf_s( string, sizeof( string ), sizeof( string ), fmt, argptr );
     va_end( argptr );
     
     // If there is no prefix, assume that this function was called directly
@@ -1881,8 +1878,8 @@ void idSGameMain::AdminMessage( pointer prefix, pointer fmt, ... )
     }
     
     // Create the final string
-    Com_sprintf( outstring, sizeof( outstring ), "%s " S_COLOR_MAGENTA "%s",
-                 prefix, string );
+    Q_vsprintf_s( outstring, sizeof( outstring ), sizeof( outstring ), "%s " S_COLOR_MAGENTA "%s",
+                  prefix, string );
                  
     // Send to all appropriate clients
     for( i = 0; i < level.maxclients; i++ )
@@ -1915,12 +1912,12 @@ void idSGameMain::LogPrintf( pointer fmt, ... )
     tens = sec / 10;
     sec -= tens * 10;
     
-    Com_sprintf( string, sizeof( string ), "%3i:%i%i ", min, tens, sec );
+    Q_vsprintf_s( string, sizeof( string ), sizeof( string ), "%3i:%i%i ", min, tens, sec );
     
     tslen = strlen( string );
     
     va_start( argptr, fmt );
-    Q_vsnprintf( string + tslen, sizeof( string ) - tslen, fmt, argptr );
+    Q_vsprintf_s( string + tslen, sizeof( string ) - tslen, fmt, argptr );
     va_end( argptr );
     
     if( !level.logFile )
@@ -1963,23 +1960,23 @@ void idSGameMain::SendGameStat( team_t team )
             return;
     }
     
-    Com_sprintf( data, BIG_INFO_STRING,
-                 "%s %s T:%c A:%f H:%f M:%s D:%d SD:%d AS:%d AS2T:%d AS3T:%d HS:%d HS2T:%d HS3T:%d CL:%d",
-                 Q3_VERSION,
-                 g_tag.string,
-                 teamChar,
-                 level.averageNumAlienClients,
-                 level.averageNumHumanClients,
-                 map,
-                 level.time - level.startTime,
-                 TimeTilSuddenDeath( ),
-                 g_alienStage.integer,
-                 level.alienStage2Time - level.startTime,
-                 level.alienStage3Time - level.startTime,
-                 g_humanStage.integer,
-                 level.humanStage2Time - level.startTime,
-                 level.humanStage3Time - level.startTime,
-                 level.numConnectedClients );
+    Q_vsprintf_s( data, BIG_INFO_STRING, BIG_INFO_STRING,
+                  "%s %s T:%c A:%f H:%f M:%s D:%d SD:%d AS:%d AS2T:%d AS3T:%d HS:%d HS2T:%d HS3T:%d CL:%d",
+                  Q3_VERSION,
+                  g_tag.string,
+                  teamChar,
+                  level.averageNumAlienClients,
+                  level.averageNumHumanClients,
+                  map,
+                  level.time - level.startTime,
+                  TimeTilSuddenDeath( ),
+                  g_alienStage.integer,
+                  level.alienStage2Time - level.startTime,
+                  level.alienStage3Time - level.startTime,
+                  g_humanStage.integer,
+                  level.humanStage2Time - level.startTime,
+                  level.humanStage3Time - level.startTime,
+                  level.numConnectedClients );
                  
     dataLength = strlen( data );
     
@@ -2009,13 +2006,13 @@ void idSGameMain::SendGameStat( team_t team )
                 return;
         }
         
-        Com_sprintf( entry, MAX_STRING_CHARS,
-                     " \"%s\" %c %d %d %d",
-                     cl->pers.netname,
-                     teamChar,
-                     cl->ps.persistant[ PERS_SCORE ],
-                     ping,
-                     ( level.time - cl->pers.enterTime ) / 60000 );
+        Q_vsprintf_s( entry, MAX_STRING_CHARS, MAX_STRING_CHARS,
+                      " \"%s\" %c %d %d %d",
+                      cl->pers.netname,
+                      teamChar,
+                      cl->ps.persistant[ PERS_SCORE ],
+                      ping,
+                      ( level.time - cl->pers.enterTime ) / 60000 );
                      
         entryLength = strlen( entry );
         
@@ -2144,8 +2141,8 @@ void idSGameMain::CheckIntermissionExit( void )
     // whereas a decimal string would have to all be written at once
     // (and we can't fit a number that large in an sint)
     for( i = 0; i < ( g_maxclients.integer + 7 ) / 8; i++ )
-        Com_sprintf( &readyString[ i * 2 ], sizeof( readyString ) - i * 2,
-                     "%2.2x", readyMasks[ i ] );
+        Q_vsprintf_s( &readyString[ i * 2 ], sizeof( readyString ) - i * 2, sizeof( readyString ) - i * 2,
+                      "%2.2x", readyMasks[ i ] );
                      
     trap_SetConfigstring( CS_CLIENTS_READY, readyString );
     
@@ -2265,6 +2262,7 @@ void idSGameMain::CheckExitRules( void )
         }
     }
     
+#if 0
     if( level.uncondHumanWin || ( ( level.time > level.startTime + 1000 ) && ( level.numAlienSpawns == 0 ) && ( level.numLiveAlienClients == 0 ) ) )
     {
         //humans win
@@ -2285,6 +2283,7 @@ void idSGameMain::CheckExitRules( void )
         
         idSGameMain::LogExit( "Aliens win." );
     }
+#endif
 }
 
 /*
@@ -2689,15 +2688,14 @@ void idSGameLocal::RunFrame( sint levelTime )
     
     // if we are waiting for the level to restart, do nothing
     if( level.restarted )
+    {
         return;
+    }
         
     level.framenum++;
     level.previousTime = level.time;
     level.time = levelTime;
     msec = level.time - level.previousTime;
-    
-    //Run bullet physics
-    idSGameBulletPhysics::RunPhysics();
     
     // seed the rng
     srand( level.framenum );
@@ -2786,11 +2784,6 @@ void idSGameLocal::RunFrame( sint levelTime )
         {
             idSGameActive::RunClient( ent );
             continue;
-        }
-        
-        if( ent->body )
-        {
-            idSGameBulletPhysics::UpdatePhysicsObject( ent );
         }
         
         idSGameMain::RunThink( ent );

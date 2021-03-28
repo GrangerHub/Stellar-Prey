@@ -1,11 +1,11 @@
 ////////////////////////////////////////////////////////////////////////////////////////
-// Copyright(C) 2011 - 2018 Dusan Jocic <dusanjocic@msn.com>
+// Copyright(C) 2011 - 2021 Dusan Jocic <dusanjocic@msn.com>
 //
 // This file is part of OpenWolf.
 //
 // OpenWolf is free software; you can redistribute it
 // and / or modify it under the terms of the GNU General Public License as
-// published by the Free Software Foundation; either version 2 of the License,
+// published by the Free Software Foundation; either version 3 of the License,
 // or (at your option) any later version.
 //
 // OpenWolf is distributed in the hope that it will be
@@ -19,14 +19,14 @@
 //
 // -------------------------------------------------------------------------------------
 // File name:   cgame_api.cpp
-// Version:     v1.01
 // Created:
-// Compilers:   Visual Studio 2017, gcc 7.3.0
+// Compilers:   Microsoft (R) C/C++ Optimizing Compiler Version 19.26.28806 for x64,
+//              gcc (Ubuntu 9.3.0-10ubuntu2) 9.3.0
 // Description:
 // -------------------------------------------------------------------------------------
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include <cgame/cgame_precompiled.h>
+#include <cgame/cgame_precompiled.hpp>
 
 #define PASSFLOAT(x) x
 
@@ -45,9 +45,9 @@ idClientScreenSystem* idScreenSystem;
 idParseSystem* ParseSystem;
 
 #ifdef __LINUX__
-extern "C" idCGame* dllEntry( cgameImports_t* cgimports )
+extern "C" idCGame* cgameEntry( cgameImports_t* cgimports )
 #else
-Q_EXPORT idCGame* dllEntry( cgameImports_t* cgimports )
+Q_EXPORT idCGame* cgameEntry( cgameImports_t* cgimports )
 #endif
 {
     imports = cgimports;
@@ -98,12 +98,12 @@ void trap_Cvar_Set( pointer var_name, pointer value )
     imports->cvarSystem->Set( var_name, value );
 }
 
-void trap_Cvar_VariableStringBuffer( pointer var_name, valueType* buffer, sint bufsize )
+void trap_Cvar_VariableStringBuffer( pointer var_name, valueType* buffer, uint64 bufsize )
 {
     imports->cvarSystem->VariableStringBuffer( var_name, buffer, bufsize );
 }
 
-void trap_Cvar_LatchedVariableStringBuffer( pointer var_name, valueType* buffer, sint bufsize )
+void trap_Cvar_LatchedVariableStringBuffer( pointer var_name, valueType* buffer, uint64 bufsize )
 {
     imports->cvarSystem->LatchedVariableStringBuffer( var_name, buffer, bufsize );
 }
@@ -656,7 +656,7 @@ bool trap_getCameraInfo( sint camNum, sint time, vec3_t* origin, vec3_t* angles,
     return imports->getCameraInfo( camNum, time, origin, angles, fov );
 }
 
-bool trap_GetEntityToken( valueType* buffer, sint bufferSize )
+bool trap_GetEntityToken( valueType* buffer, uint64 bufferSize )
 {
     return imports->renderSystem->GetEntityToken( buffer, bufferSize );
 }

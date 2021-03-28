@@ -1,13 +1,13 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 // Copyright(C) 1999 - 2005 Id Software, Inc.
 // Copyright(C) 2000 - 2006 Tim Angus
-// Copyright(C) 2011 - 2019 Dusan Jocic <dusanjocic@msn.com>
+// Copyright(C) 2011 - 2021 Dusan Jocic <dusanjocic@msn.com>
 //
 // This file is part of OpenWolf.
 //
 // OpenWolf is free software; you can redistribute it
 // and / or modify it under the terms of the GNU General Public License as
-// published by the Free Software Foundation; either version 2 of the License,
+// published by the Free Software Foundation; either version 3 of the License,
 // or (at your option) any later version.
 //
 // OpenWolf is distributed in the hope that it will be
@@ -21,14 +21,14 @@
 //
 // -------------------------------------------------------------------------------------
 // File name:   sgame_team.cpp
-// Version:     v1.01
 // Created:
-// Compilers:   Visual Studio 2019, gcc 7.3.0
+// Compilers:   Microsoft (R) C/C++ Optimizing Compiler Version 19.26.28806 for x64,
+//              gcc (Ubuntu 9.3.0-10ubuntu2) 9.3.0
 // Description:
 // -------------------------------------------------------------------------------------
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include <sgame/sgame_precompiled.h>
+#include <sgame/sgame_precompiled.hpp>
 
 /*
 ===============
@@ -63,7 +63,7 @@ void idSGameTeam::PrintMsg( gentity_t* ent, pointer fmt, ... )
     
     va_start( argptr, fmt );
     
-    if( Q_vsnprintf( msg, sizeof( msg ), fmt, argptr ) > sizeof( msg ) )
+    if( Q_vsprintf_s( msg, sizeof( msg ), sizeof( msg ), fmt, argptr ) > sizeof( msg ) )
     {
         idSGameMain::Error( "PrintMsg overrun" );
     }
@@ -327,11 +327,11 @@ bool idSGameTeam::Team_GetLocationMsg( gentity_t* ent, valueType* loc, sint locl
             best->count = 7;
         }
         
-        Com_sprintf( loc, loclen, "%c%c%s" S_COLOR_WHITE, Q_COLOR_ESCAPE, best->count + '0', best->message );
+        Q_vsprintf_s( loc, loclen, loclen, "%c%c%s" S_COLOR_WHITE, Q_COLOR_ESCAPE, best->count + '0', best->message );
     }
     else
     {
-        Com_sprintf( loc, loclen, "%s", best->message );
+        Q_vsprintf_s( loc, loclen, loclen, "%s", best->message );
     }
     
     return true;
@@ -401,7 +401,7 @@ void idSGameTeam::TeamplayInfoMessage( gentity_t* ent )
                 h = 0;
             }
             
-            Com_sprintf( entry, sizeof( entry ), " %i %i %i %i %i", i, player->client->pers.location, h, a, player->client->ps.weapon );
+            Q_vsprintf_s( entry, sizeof( entry ), sizeof( entry ), " %i %i %i %i %i", i, player->client->pers.location, h, a, player->client->ps.weapon );
             
             j = strlen( entry );
             

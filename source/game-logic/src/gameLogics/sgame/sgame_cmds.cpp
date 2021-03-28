@@ -1,13 +1,13 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 // Copyright(C) 1999 - 2005 Id Software, Inc.
 // Copyright(C) 2000 - 2006 Tim Angus
-// Copyright(C) 2011 - 2019 Dusan Jocic <dusanjocic@msn.com>
+// Copyright(C) 2011 - 2021 Dusan Jocic <dusanjocic@msn.com>
 //
 // This file is part of OpenWolf.
 //
 // OpenWolf is free software; you can redistribute it
 // and / or modify it under the terms of the GNU General Public License as
-// published by the Free Software Foundation; either version 2 of the License,
+// published by the Free Software Foundation; either version 3 of the License,
 // or (at your option) any later version.
 //
 // OpenWolf is distributed in the hope that it will be
@@ -21,14 +21,14 @@
 //
 // -------------------------------------------------------------------------------------
 // File name:   sgame_cmds.cpp
-// Version:     v1.01
 // Created:
-// Compilers:   Visual Studio 2019, gcc 7.3.0
+// Compilers:   Microsoft (R) C/C++ Optimizing Compiler Version 19.26.28806 for x64,
+//              gcc (Ubuntu 9.3.0-10ubuntu2) 9.3.0
 // Description:
 // -------------------------------------------------------------------------------------
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include <sgame/sgame_precompiled.h>
+#include <sgame/sgame_precompiled.hpp>
 
 /*
 ===============
@@ -178,8 +178,8 @@ void idSGameCmds::MatchOnePlayer( sint* plist, sint num, valueType* err, sint le
             cl = &level.clients[ plist[ i ] ];
             if( cl->pers.connected == CON_DISCONNECTED )
                 continue;
-            Com_sprintf( line, sizeof( line ), "%2i - %s^7\n",
-                         plist[ i ], cl->pers.netname );
+            Q_vsprintf_s( line, sizeof( line ), sizeof( line ), "%2i - %s^7\n",
+                          plist[ i ], cl->pers.netname );
             if( strlen( err ) + strlen( line ) > len )
                 break;
             Q_strcat( err, len, line );
@@ -304,9 +304,9 @@ void idSGameCmds::ScoreboardMessage( gentity_t* ent )
             upgrade = UP_NONE;
         }
         
-        Com_sprintf( entry, sizeof( entry ),
-                     " %d %d %d %d %d %d", level.sortedClients[ i ], cl->ps.persistant[ PERS_SCORE ],
-                     ping, ( level.time - cl->pers.enterTime ) / 60000, weapon, upgrade );
+        Q_vsprintf_s( entry, sizeof( entry ), sizeof( entry ),
+                      " %d %d %d %d %d %d", level.sortedClients[ i ], cl->ps.persistant[ PERS_SCORE ],
+                      ping, ( level.time - cl->pers.enterTime ) / 60000, weapon, upgrade );
                      
         j = strlen( entry );
         
@@ -744,8 +744,8 @@ void idSGameCmds::Say( gentity_t* ent, gentity_t* target, sint mode, pointer cha
         default:
         case SAY_ALL:
             idSGameMain::LogPrintf( "say: %s^7: %s\n", ent->client->pers.netname, chatText );
-            Com_sprintf( name, sizeof( name ), "%s%s" S_COLOR_WHITE ": ", prefix,
-                         ent->client->pers.netname );
+            Q_vsprintf_s( name, sizeof( name ), sizeof( name ), "%s%s" S_COLOR_WHITE ": ", prefix,
+                          ent->client->pers.netname );
             color = COLOR_GREEN;
             idSGameMain::DemoCommand( DC_SERVER_COMMAND, va( "chat \"%s^2%s\"", name, chatText ) );
             break;
@@ -753,11 +753,11 @@ void idSGameCmds::Say( gentity_t* ent, gentity_t* target, sint mode, pointer cha
         case SAY_TEAM:
             idSGameMain::LogPrintf( "sayteam: %s^7: %s\n", ent->client->pers.netname, chatText );
             if( idSGameTeam::Team_GetLocationMsg( ent, location, sizeof( location ) ) )
-                Com_sprintf( name, sizeof( name ), "(%s" S_COLOR_WHITE ") (%s): ",
-                             ent->client->pers.netname, location );
+                Q_vsprintf_s( name, sizeof( name ), sizeof( name ), "(%s" S_COLOR_WHITE ") (%s): ",
+                              ent->client->pers.netname, location );
             else
-                Com_sprintf( name, sizeof( name ), "(%s" S_COLOR_WHITE "): ",
-                             ent->client->pers.netname );
+                Q_vsprintf_s( name, sizeof( name ), sizeof( name ), "(%s" S_COLOR_WHITE "): ",
+                              ent->client->pers.netname );
             color = COLOR_CYAN;
             idSGameMain::DemoCommand( DC_SERVER_COMMAND, va( "tchat \"%s^5%s\"", name, chatText ) );
             break;
@@ -765,11 +765,11 @@ void idSGameCmds::Say( gentity_t* ent, gentity_t* target, sint mode, pointer cha
         case SAY_TELL:
             if( target && idSGameTeam::OnSameTeam( target, ent ) &&
                     idSGameTeam::Team_GetLocationMsg( ent, location, sizeof( location ) ) )
-                Com_sprintf( name, sizeof( name ), "[%s" S_COLOR_WHITE "] (%s): ",
-                             ent->client->pers.netname, location );
+                Q_vsprintf_s( name, sizeof( name ), sizeof( name ), "[%s" S_COLOR_WHITE "] (%s): ",
+                              ent->client->pers.netname, location );
             else
-                Com_sprintf( name, sizeof( name ), "[%s" S_COLOR_WHITE "]: ",
-                             ent->client->pers.netname );
+                Q_vsprintf_s( name, sizeof( name ), sizeof( name ), "[%s" S_COLOR_WHITE "]: ",
+                              ent->client->pers.netname );
             color = COLOR_MAGENTA;
             break;
     }
@@ -821,7 +821,7 @@ void idSGameCmds::Cmd_SayArea_f( gentity_t* ent )
         prefix = "";
         
     idSGameMain::LogPrintf( "sayarea: %s%s^7: %s\n", prefix, ent->client->pers.netname, msg );
-    Com_sprintf( name, sizeof( name ), "%s<%s%c%c> ", prefix, ent->client->pers.netname, Q_COLOR_ESCAPE, COLOR_WHITE );
+    Q_vsprintf_s( name, sizeof( name ), sizeof( name ), "%s<%s%c%c> ", prefix, ent->client->pers.netname, Q_COLOR_ESCAPE, COLOR_WHITE );
     
     VectorAdd( ent->s.origin, range, maxs );
     VectorSubtract( ent->s.origin, range, mins );
@@ -1160,11 +1160,11 @@ void idSGameCmds::Cmd_CallVote_f( gentity_t* ent )
         }
         
         // use ip in case this player disconnects before the vote ends
-        Com_sprintf( level.voteString, sizeof( level.voteString ),
-                     "!ban %s \"1s%s\" vote kick", level.clients[ clientNum ].pers.ip,
-                     g_adminTempBan.string );
-        Com_sprintf( level.voteDisplayString, sizeof( level.voteDisplayString ),
-                     "Kick player \'%s\'", name );
+        Q_vsprintf_s( level.voteString, sizeof( level.voteString ), sizeof( level.voteString ),
+                      "!ban %s \"1s%s\" vote kick", level.clients[ clientNum ].pers.ip,
+                      g_adminTempBan.string );
+        Q_vsprintf_s( level.voteDisplayString, sizeof( level.voteDisplayString ), sizeof( level.voteDisplayString ),
+                      "Kick player \'%s\'", name );
     }
     else if( !Q_stricmp( arg1, "mute" ) )
     {
@@ -1180,10 +1180,10 @@ void idSGameCmds::Cmd_CallVote_f( gentity_t* ent )
             trap_SendServerCommand( ent - g_entities, "print \"callvote: admin is immune from vote mute\n\"" );
             return;
         }
-        Com_sprintf( level.voteString, sizeof( level.voteString ),
-                     "!mute %i", clientNum );
-        Com_sprintf( level.voteDisplayString, sizeof( level.voteDisplayString ),
-                     "Mute player \'%s\'", name );
+        Q_vsprintf_s( level.voteString, sizeof( level.voteString ), sizeof( level.voteString ),
+                      "!mute %i", clientNum );
+        Q_vsprintf_s( level.voteDisplayString, sizeof( level.voteDisplayString ), sizeof( level.voteDisplayString ),
+                      "Mute player \'%s\'", name );
     }
     else if( !Q_stricmp( arg1, "unmute" ) )
     {
@@ -1193,16 +1193,16 @@ void idSGameCmds::Cmd_CallVote_f( gentity_t* ent )
                                     "print \"callvote: player is not currently muted\n\"" );
             return;
         }
-        Com_sprintf( level.voteString, sizeof( level.voteString ),
-                     "!unmute %i", clientNum );
-        Com_sprintf( level.voteDisplayString, sizeof( level.voteDisplayString ),
-                     "Un-Mute player \'%s\'", name );
+        Q_vsprintf_s( level.voteString, sizeof( level.voteString ), sizeof( level.voteString ),
+                      "!unmute %i", clientNum );
+        Q_vsprintf_s( level.voteDisplayString, sizeof( level.voteDisplayString ), sizeof( level.voteDisplayString ),
+                      "Un-Mute player \'%s\'", name );
     }
     else if( !Q_stricmp( arg1, "map_restart" ) )
     {
-        Com_sprintf( level.voteString, sizeof( level.voteString ), "%s", arg1 );
-        Com_sprintf( level.voteDisplayString,
-                     sizeof( level.voteDisplayString ), "Restart current map" );
+        Q_vsprintf_s( level.voteString, sizeof( level.voteString ), sizeof( level.voteString ), "%s", arg1 );
+        Q_vsprintf_s( level.voteDisplayString, sizeof( level.voteDisplayString ),
+                      sizeof( level.voteDisplayString ), "Restart current map" );
     }
     else if( !Q_stricmp( arg1, "map" ) )
     {
@@ -1213,15 +1213,15 @@ void idSGameCmds::Cmd_CallVote_f( gentity_t* ent )
             return;
         }
         
-        Com_sprintf( level.voteString, sizeof( level.voteString ), "%s %s", arg1, arg2 );
-        Com_sprintf( level.voteDisplayString,
-                     sizeof( level.voteDisplayString ), "Change to map '%s'", arg2 );
+        Q_vsprintf_s( level.voteString, sizeof( level.voteString ), sizeof( level.voteString ), "%s %s", arg1, arg2 );
+        Q_vsprintf_s( level.voteDisplayString, sizeof( level.voteDisplayString ),
+                      sizeof( level.voteDisplayString ), "Change to map '%s'", arg2 );
     }
     else if( !Q_stricmp( arg1, "draw" ) )
     {
-        Com_sprintf( level.voteString, sizeof( level.voteString ), "evacuation" );
-        Com_sprintf( level.voteDisplayString, sizeof( level.voteDisplayString ),
-                     "End match in a draw" );
+        Q_vsprintf_s( level.voteString, sizeof( level.voteString ), sizeof( level.voteString ), "evacuation" );
+        Q_vsprintf_s( level.voteDisplayString, sizeof( level.voteDisplayString ), sizeof( level.voteDisplayString ),
+                      "End match in a draw" );
     }
     else if( !Q_stricmp( arg1, "sudden_death" ) ||
              !Q_stricmp( arg1, "suddendeath" ) )
@@ -1247,9 +1247,9 @@ void idSGameCmds::Cmd_CallVote_f( gentity_t* ent )
         else
         {
             level.votePassThreshold = g_suddenDeathVotePercent.integer;
-            Com_sprintf( level.voteString, sizeof( level.voteString ), "suddendeath" );
-            Com_sprintf( level.voteDisplayString,
-                         sizeof( level.voteDisplayString ), "Begin sudden death" );
+            Q_vsprintf_s( level.voteString, sizeof( level.voteString ), sizeof( level.voteString ), "suddendeath" );
+            Q_vsprintf_s( level.voteDisplayString, sizeof( level.voteDisplayString ),
+                          sizeof( level.voteDisplayString ), "Begin sudden death" );
                          
             if( g_suddenDeathVoteDelay.integer )
                 Q_strcat( level.voteDisplayString, sizeof( level.voteDisplayString ),
@@ -1431,13 +1431,13 @@ void idSGameCmds::Cmd_CallTeamVote_f( gentity_t* ent )
         }
         
         // use ip in case this player disconnects before the vote ends
-        Com_sprintf( level.teamVoteString[ cs_offset ],
-                     sizeof( level.teamVoteString[ cs_offset ] ),
-                     "!ban %s \"1s%s\" team vote kick", level.clients[ clientNum ].pers.ip,
-                     g_adminTempBan.string );
-        Com_sprintf( level.teamVoteDisplayString[ cs_offset ],
-                     sizeof( level.teamVoteDisplayString[ cs_offset ] ),
-                     "Kick player '%s'", name );
+        Q_vsprintf_s( level.teamVoteString[ cs_offset ], sizeof( level.teamVoteString[cs_offset] ),
+                      sizeof( level.teamVoteString[ cs_offset ] ),
+                      "!ban %s \"1s%s\" team vote kick", level.clients[ clientNum ].pers.ip,
+                      g_adminTempBan.string );
+        Q_vsprintf_s( level.teamVoteDisplayString[ cs_offset ], sizeof( level.teamVoteDisplayString[cs_offset] ),
+                      sizeof( level.teamVoteDisplayString[ cs_offset ] ),
+                      "Kick player '%s'", name );
     }
     else if( !Q_stricmp( arg1, "denybuild" ) )
     {
@@ -1453,11 +1453,11 @@ void idSGameCmds::Cmd_CallTeamVote_f( gentity_t* ent )
             return;
         }
         
-        Com_sprintf( level.teamVoteString[ cs_offset ],
-                     sizeof( level.teamVoteString[ cs_offset ] ), "!denybuild %i", clientNum );
-        Com_sprintf( level.teamVoteDisplayString[ cs_offset ],
-                     sizeof( level.teamVoteDisplayString[ cs_offset ] ),
-                     "Take away building rights from '%s'", name );
+        Q_vsprintf_s( level.teamVoteString[ cs_offset ], sizeof( level.teamVoteString[cs_offset] ),
+                      sizeof( level.teamVoteString[ cs_offset ] ), "!denybuild %i", clientNum );
+        Q_vsprintf_s( level.teamVoteDisplayString[ cs_offset ], sizeof( level.teamVoteDisplayString[cs_offset] ),
+                      sizeof( level.teamVoteDisplayString[ cs_offset ] ),
+                      "Take away building rights from '%s'", name );
     }
     else if( !Q_stricmp( arg1, "allowbuild" ) )
     {
@@ -1468,11 +1468,11 @@ void idSGameCmds::Cmd_CallTeamVote_f( gentity_t* ent )
             return;
         }
         
-        Com_sprintf( level.teamVoteString[ cs_offset ],
-                     sizeof( level.teamVoteString[ cs_offset ] ), "!allowbuild %i", clientNum );
-        Com_sprintf( level.teamVoteDisplayString[ cs_offset ],
-                     sizeof( level.teamVoteDisplayString[ cs_offset ] ),
-                     "Allow '%s' to build", name );
+        Q_vsprintf_s( level.teamVoteString[ cs_offset ], sizeof( level.teamVoteString[cs_offset] ),
+                      sizeof( level.teamVoteString[ cs_offset ] ), "!allowbuild %i", clientNum );
+        Q_vsprintf_s( level.teamVoteDisplayString[ cs_offset ], sizeof( level.teamVoteDisplayString[cs_offset] ),
+                      sizeof( level.teamVoteDisplayString[ cs_offset ] ),
+                      "Allow '%s' to build", name );
     }
     else if( !Q_stricmp( arg1, "admitdefeat" ) )
     {
@@ -1481,11 +1481,11 @@ void idSGameCmds::Cmd_CallTeamVote_f( gentity_t* ent )
             trap_SendServerCommand( ent - g_entities, "print \"You have already surrendered\n\"" );
             return;
         }
-        Com_sprintf( level.teamVoteString[ cs_offset ],
-                     sizeof( level.teamVoteString[ cs_offset ] ), "admitdefeat %i", team );
-        Com_sprintf( level.teamVoteDisplayString[ cs_offset ],
-                     sizeof( level.teamVoteDisplayString[ cs_offset ] ),
-                     "Admit Defeat" );
+        Q_vsprintf_s( level.teamVoteString[ cs_offset ], sizeof( level.teamVoteString[cs_offset] ),
+                      sizeof( level.teamVoteString[ cs_offset ] ), "admitdefeat %i", team );
+        Q_vsprintf_s( level.teamVoteDisplayString[ cs_offset ], sizeof( level.teamVoteDisplayString[cs_offset] ),
+                      sizeof( level.teamVoteDisplayString[ cs_offset ] ),
+                      "Admit Defeat" );
     }
     else
     {
@@ -1560,7 +1560,6 @@ void idSGameCmds::Cmd_TeamVote_f( gentity_t* ent )
     // for players entering or leaving
 }
 
-
 /*
 =================
 Cmd_SetViewpos_f
@@ -1590,6 +1589,15 @@ void idSGameCmds::Cmd_SetViewpos_f( gentity_t* ent )
     angles[ YAW ] = atof( buffer );
     
     idSGameMisc::TeleportPlayer( ent, origin, angles );
+}
+
+/*
+=================
+idSGameCmds::Cmd_Stats_f
+=================
+*/
+void idSGameCmds::Cmd_Stats_f( gentity_t* ent )
+{
 }
 
 #define AS_OVER_RT3         ((ALIENSENSE_RANGE*0.5f)/M_ROOT3)
@@ -3345,6 +3353,7 @@ commands_t cmds[ ] =
     { "notarget", CMD_CHEAT | CMD_TEAM | CMD_LIVING, &idSGameCmds::Cmd_Notarget_f },
     { "levelshot", CMD_CHEAT, &idSGameCmds::Cmd_LevelShot_f },
     { "setviewpos", CMD_CHEAT_TEAM, &idSGameCmds::Cmd_SetViewpos_f },
+    { "stats", 0, &idSGameCmds::Cmd_Stats_f },
     { "noclip", CMD_CHEAT_TEAM, &idSGameCmds::Cmd_Noclip_f },
     { "destroy", CMD_CHEAT | CMD_TEAM | CMD_LIVING, &idSGameCmds::Cmd_Destroy_f },
     { "test", CMD_CHEAT, &idSGameCmds::Cmd_Test_f },
@@ -3639,7 +3648,7 @@ void idSGameCmds::PrivateMessage_f( gentity_t* ent )
     
     color = teamonly ? COLOR_CYAN : COLOR_YELLOW;
     
-    Com_sprintf( str, sizeof( str ), "^%csent to %i player%s: ^7", color, matches, ( matches == 1 ) ? "" : "s" );
+    Q_vsprintf_s( str, sizeof( str ), sizeof( str ), "^%csent to %i player%s: ^7", color, matches, ( matches == 1 ) ? "" : "s" );
     
     for( i = 0; i < matches; i++ )
     {
@@ -3688,8 +3697,8 @@ void idSGameCmds::PrivateMessage_f( gentity_t* ent )
     
     if( ignored )
     {
-        Com_sprintf( str, sizeof( str ), "^%cignored by %i player%s: ^7", color,
-                     ignored, ( ignored == 1 ) ? "" : "s" );
+        Q_vsprintf_s( str, sizeof( str ), sizeof( str ), "^%cignored by %i player%s: ^7", color,
+                      ignored, ( ignored == 1 ) ? "" : "s" );
         for( i = 0; i < ignored; i++ )
         {
             tmpent = &g_entities[ ignoreids[ i ] ];
@@ -3718,7 +3727,7 @@ void idSGameCmds::AdminMessage_f( gentity_t* ent )
     // Check permissions and add the appropriate user [prefix]
     if( !ent )
     {
-        Com_sprintf( prefix, sizeof( prefix ), "[CONSOLE]:" );
+        Q_vsprintf_s( prefix, sizeof( prefix ), sizeof( prefix ), "[CONSOLE]:" );
     }
     else if( !adminLocal.AdminPermission( ent, ADMF_ADMINCHAT ) )
     {
@@ -3729,15 +3738,15 @@ void idSGameCmds::AdminMessage_f( gentity_t* ent )
         }
         else
         {
-            Com_sprintf( prefix, sizeof( prefix ), "[PLAYER] %s" S_COLOR_WHITE ":",
-                         ent->client->pers.netname );
+            Q_vsprintf_s( prefix, sizeof( prefix ), sizeof( prefix ), "[PLAYER] %s" S_COLOR_WHITE ":",
+                          ent->client->pers.netname );
             adminLocal.ADMP( "Your message has been sent to any available admins and to the server logs.\n" );
         }
     }
     else
     {
-        Com_sprintf( prefix, sizeof( prefix ), "[ADMIN] %s" S_COLOR_WHITE ":",
-                     ent->client->pers.netname );
+        Q_vsprintf_s( prefix, sizeof( prefix ), sizeof( prefix ), "[ADMIN] %s" S_COLOR_WHITE ":",
+                      ent->client->pers.netname );
     }
     
     // Skip say/say_team if this was used from one of those
