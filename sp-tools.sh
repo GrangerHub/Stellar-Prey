@@ -4,6 +4,15 @@
 # Don't mess with the variables in this script, instead use the generated config.sh
 # to adjust the configurable variables.
 
+
+set -e
+function On_Error () {
+	printf "Critical error at $(caller): ${BASH_COMMAND}\n"
+	exit 1
+}
+trap On_Error ERR
+
+
 SCRIPT=`readlink -f ${BASH_SOURCE[0]}`
 SCRIPTPATH=`dirname "$SCRIPT"`
 SCRIPTNAME=`basename "$0"`
@@ -415,7 +424,7 @@ Configure_cmake_engine() {
     make clean
   fi
 
-  echo "Configuring cmake for the OpenWolf Engine." > /dev/tty
+  echo "Configuring cmake for the OpenWolf Engine."
 
   printf "\n"
 
