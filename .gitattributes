@@ -1,5 +1,6 @@
 * text=auto
 
+source/game-assets/* binary
 source/game-assets/*.cfg text eol=crlf
 source/game-assets/*.config text eol=crlf
 source/game-assets/*.dat text eol=crlf
@@ -25,6 +26,7 @@ source/game-assets/*.map text eol=crlf
 source/game-assets/*.arena text eol=crlf
 source/game-assets/*.bot text eol=crlf
 
+source/map-assets/* binary
 source/map-assets/*.cfg text eol=crlf
 source/game-assets/*.config text eol=crlf
 source/map-assets/*.dat text eol=crlf
