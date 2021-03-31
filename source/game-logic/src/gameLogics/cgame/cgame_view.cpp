@@ -92,10 +92,11 @@ can then be moved around
 void idCGameView::TestModel_f( void )
 {
     vec3_t angles;
-    
+
+    cg.testGun = false;
+
     ::memset( &cg.testModelEntity, 0, sizeof( cg.testModelEntity ) );
-    ::memset( &cg.testModelBarrelEntity, 0, sizeof( cg.testModelBarrelEntity ) );
-    
+
     if( trap_Argc() < 2 )
     {
         return;
@@ -103,11 +104,6 @@ void idCGameView::TestModel_f( void )
     
     Q_strncpyz( cg.testModelName, idCGameMain::Argv( 1 ), MAX_QPATH );
     cg.testModelEntity.hModel = trap_R_RegisterModel( cg.testModelName );
-    
-    Q_strncpyz( cg.testModelBarrelName, idCGameMain::Argv( 1 ), MAX_QPATH );
-    cg.testModelBarrelName[ strlen( cg.testModelBarrelName ) - 4 ] = '\0';
-    Q_strcat( cg.testModelBarrelName, MAX_QPATH, "_barrel.md3" );
-    cg.testModelBarrelEntity.hModel = trap_R_RegisterModel( cg.testModelBarrelName );
     
     if( trap_Argc( ) == 3 )
     {
@@ -129,15 +125,6 @@ void idCGameView::TestModel_f( void )
     angles[ ROLL ] = 0;
     
     AnglesToAxis( angles, cg.testModelEntity.axis );
-    cg.testGun = false;
-    
-    if( cg.testModelBarrelEntity.hModel )
-    {
-        angles[ YAW ] = 0;
-        angles[ PITCH ] = 0;
-        angles[ ROLL ] = 0;
-        AnglesToAxis( angles, cg.testModelBarrelEntity.axis );
-    }
 }
 
 /*
@@ -1698,4 +1685,3 @@ void idCGameLocal::DrawActiveFrame( sint serverTime, stereoFrame_t stereoView, b
         Printf( "cg.clientFrame:%i\n", cg.clientFrame );
     }
 }
-

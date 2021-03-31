@@ -62,7 +62,6 @@
 #include <API/CVarSystem_api.hpp>
 #include <GPURenderer/r_types.hpp>
 #include <API/renderer_api.hpp>
-#include <API/sound_api.hpp>
 #include <API/FileSystem_api.hpp>
 #include <API/serverDemo_api.hpp>
 #include <API/serverGame_api.hpp>
@@ -71,6 +70,7 @@
 #include <API/serverWorld_api.hpp>
 #include <API/CmdSystem_api.hpp>
 #include <API/system_api.hpp>
+#include <API/soundSystem_api.hpp>
 #include <API/bgame_api.hpp>
 #include <bgame/bgame_local.hpp>
 #include <sgame/tremulous.hpp>

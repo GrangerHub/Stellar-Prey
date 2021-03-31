@@ -120,7 +120,7 @@ set( GUI_HEADERS
 	${MOUNT_DIR}/API/clientLAN_api.hpp
 	${MOUNT_DIR}/API/clientGUI_api.hpp
 	${MOUNT_DIR}/API/renderer_api.hpp
-	${MOUNT_DIR}/API/sound_api.hpp
+	${MOUNT_DIR}/API/soundSystem_api.hpp
 	${MOUNT_DIR}/API/FileSystem_api.hpp
 	${MOUNT_DIR}/API/CVarSystem_api.hpp
 	${MOUNT_DIR}/GPURenderer/r_types.hpp
@@ -160,7 +160,7 @@ set( SGAMELIST_HEADERS
 	${MOUNT_DIR}/API/CmdSystem_api.hpp
 	${MOUNT_DIR}/API/serverDemo_api.hpp
 	${MOUNT_DIR}/API/system_api.hpp
-	${MOUNT_DIR}/API/sound_api.hpp
+	${MOUNT_DIR}/API/soundSystem_api.hpp
 	${MOUNT_DIR}/API/FileSystem_api.hpp
 	${MOUNT_DIR}/API/CVarSystem_api.hpp
 	${MOUNT_DIR}/API/serverMain_api.hpp
@@ -239,7 +239,7 @@ set( CGAMELIST_HEADERS
 	${MOUNT_DIR}/API/clientLAN_api.hpp
 	${MOUNT_DIR}/API/clientGUI_api.hpp
 	${MOUNT_DIR}/API/renderer_api.hpp
-	${MOUNT_DIR}/API/sound_api.hpp
+	${MOUNT_DIR}/API/soundSystem_api.hpp
 	${MOUNT_DIR}/API/FileSystem_api.hpp
 	${MOUNT_DIR}/API/CVarSystem_api.hpp
 	${MOUNT_DIR}/API/cgame_api.hpp
