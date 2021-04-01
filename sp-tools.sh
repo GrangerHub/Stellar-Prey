@@ -226,7 +226,7 @@ Help_Subcommand() {
     help)
       printf "Prints help for the subcommands\n\n"
       List_Subcommands
-      return 1
+      return 0
       ;;
 
     init)
@@ -237,7 +237,7 @@ Help_Subcommand() {
       printf "\n"
       echo "Usage:"
       echo "./$SCRIPTNAME init"
-      return 1
+      return 0
       ;;
 
     default_config)
@@ -246,7 +246,7 @@ Help_Subcommand() {
       printf "\n"
       echo "Usage:"
       echo "./$SCRIPTNAME default_config"
-      return 1
+      return 0
       ;;
 
     run)
@@ -256,7 +256,7 @@ Help_Subcommand() {
       printf "\n"
       echo "Usage:"
       echo "./$SCRIPTNAME run <client|server|autoupdater|master|auth>"
-      return 1
+      return 0
       ;;
 
     debug)
@@ -265,7 +265,7 @@ Help_Subcommand() {
       printf "\n"
       echo "Usage:"
       echo "./$SCRIPTNAME debug <client|server|autoupdater|master|auth>"
-      return 1
+      return 0
       ;;
 
     git)
@@ -274,7 +274,7 @@ Help_Subcommand() {
       printf "\n"
       echo "Usage:"
       echo "./$SCRIPTNAME git <engine|default_paks> <git arguments>"
-      return 1
+      return 0
       ;;
 
     configure_cmake)
@@ -284,7 +284,7 @@ Help_Subcommand() {
       printf "\n"
       echo "Usage:"
       echo "./$SCRIPTNAME configure_cmake <engine|game_logic|both>"
-      return 1
+      return 0
       ;;
 
     makeclean)
@@ -293,7 +293,7 @@ Help_Subcommand() {
       printf "\n"
       echo "Usage:"
       echo "./$SCRIPTNAME makeclean <engine|game_logic|both>"
-      return 1
+      return 0
       ;;
 
     build)
@@ -302,7 +302,7 @@ Help_Subcommand() {
       printf "\n"
       echo "Usage:"
       echo "./$SCRIPTNAME build <engine|game_logic|both>"
-      return 1
+      return 0
       ;;
 
     package_assets)
@@ -314,7 +314,7 @@ Help_Subcommand() {
       echo "./$SCRIPTNAME package_assets <custom> <game|map> <optoinal directory name> <optional package name>"
       echo "./$SCRIPTNAME package_assets <default> <map> <optoinal directory name> <optional package name>"
       echo "./$SCRIPTNAME package_assets <default> <game> <package name> <optional commit hash>"
-      return 1
+      return 0
       ;;
 
     package_release)
@@ -323,7 +323,7 @@ Help_Subcommand() {
       printf "\n"
       echo "Usage:"
       echo "./$SCRIPTNAME package_release"
-      return 1
+      return 0
       ;;
 
     install_default_paks)
@@ -332,7 +332,7 @@ Help_Subcommand() {
       printf "\n"
       echo "Usage:"
       echo "./$SCRIPTNAME install_default_paks"
-      return 1
+      return 0
       ;;
 
     sync)
@@ -341,7 +341,7 @@ Help_Subcommand() {
       printf "\n"
       echo "Usage:"
       echo "./$SCRIPTNAME sync <web|remote_server>"
-      return 1
+      return 0
       ;;
 
     rotate_logs)
@@ -350,15 +350,17 @@ Help_Subcommand() {
       printf "\n"
       echo "Usage:"
       echo "./$SCRIPTNAME rotate_logs"
-      return 1
+      return 0
       ;;
 
     *)
       printf "Unknown subcommand \"$1\"\n\n"
       List_Subcommands
-      return 1
+      return 0
       ;;
     esac
+
+    return 1
 }
 
 Init_Subcommand() {
