@@ -96,6 +96,7 @@ Set_Config_To_Defaults() {
   printf "BUILD_AUTOUPDATE_SERVER=\"ON\"\n" >> $SCRIPTPATH/config.sh
   printf "BUILD_MASTER_SERVER=\"ON\"\n" >> $SCRIPTPATH/config.sh
   printf "BUILD_AUTH_SERVER=\"ON\"\n" >> $SCRIPTPATH/config.sh
+  printf "BUILD_COMMUNITY_SERVER=\"ON\"\n" >> $SCRIPTPATH/config.sh
 }
 
 #Caches the entire config file
@@ -129,6 +130,7 @@ Cache_Config_File() {
   printf "CACHED_BUILD_AUTOUPDATE_SERVER=\"$BUILD_AUTOUPDATE_SERVER\"\n" >> $SCRIPTPATH/.cache-config.sh
   printf "CACHED_BUILD_MASTER_SERVER=\"$BUILD_MASTER_SERVER\"\n" >> $SCRIPTPATH/.cache-config.sh
   printf "CACHED_BUILD_AUTH_SERVER=\"$BUILD_AUTH_SERVER\"\n" >> $SCRIPTPATH/.cache-config.sh
+  printf "CACHED_BUILD_COMMUNITY_SERVER=\"$BUILD_COMMUNITY_SERVER\"\n" >> $SCRIPTPATH/.cache-config.sh
 }
 
 # create a default config file if a config file doesn't exist
@@ -186,6 +188,7 @@ Save_Cached_Variables() {
   printf "CACHED_BUILD_AUTOUPDATE_SERVER=\"$CACHED_BUILD_AUTOUPDATE_SERVER\"\n" >> $SCRIPTPATH/.cache-config.sh
   printf "CACHED_BUILD_MASTER_SERVER=\"$CACHED_BUILD_MASTER_SERVER\"\n" >> $SCRIPTPATH/.cache-config.sh
   printf "CACHED_BUILD_AUTH_SERVER=\"$CACHED_BUILD_AUTH_SERVER\"\n" >> $SCRIPTPATH/.cache-config.sh
+  printf "CACHED_BUILD_COMMUNITY_SERVER=\"$BUILD_COMMUNITY_SERVER\"\n" >> $SCRIPTPATH/.cache-config.sh
 }
 
 # cache the config file if the config file hasn't been cached before
@@ -438,7 +441,8 @@ Configure_cmake_engine() {
     -DBUILD_SERVER="$BUILD_SERVER" \
     -DBUILD_AUTOUPDATE_SERVER="$BUILD_AUTOUPDATE_SERVER" \
     -DBUILD_MASTER_SERVER="$BUILD_MASTER_SERVER" \
-    -DBUILD_AUTH_SERVER="$BUILD_AUTH_SERVER" .
+    -DBUILD_AUTH_SERVER="$BUILD_AUTH_SERVER" \
+    -DBUILD_COMMUNITY_SERVER="$BUILD_COMMUNITY_SERVER" .
   cd $CURRENTPATH
 }
 
@@ -666,6 +670,11 @@ Build_engine() {
 
   if [ ! "$BUILD_AUTH_SERVER" = "$CACHED_BUILD_AUTH_SERVER" ]; then
     CACHED_BUILD_AUTH_SERVER="$BUILD_AUTH_SERVER"
+    RECONFIGURE=1
+  fi
+
+  if [ ! "$BUILD_COMMUNITY_SERVER" = "$CACHED_BUILD_COMMUNITY_SERVER" ]; then
+    CACHED_BUILD_COMMUNITY_SERVER="$BUILD_COMMUNITY_SERVER"
     RECONFIGURE=1
   fi
 
