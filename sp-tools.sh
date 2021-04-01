@@ -258,7 +258,7 @@ Help_Subcommand() {
 
       printf "\n"
       echo "Usage:"
-      echo "./$SCRIPTNAME run <client|server|autoupdater|master|auth>"
+      echo "./$SCRIPTNAME run <client|server|autoupdater|master|auth|community>"
       return 0
       ;;
 
@@ -267,7 +267,7 @@ Help_Subcommand() {
 
       printf "\n"
       echo "Usage:"
-      echo "./$SCRIPTNAME debug <client|server|autoupdater|master|auth>"
+      echo "./$SCRIPTNAME debug <client|server|autoupdater|master|auth|community>"
       return 0
       ;;
 
@@ -822,6 +822,24 @@ Run_Subcommand() {
       cd $CURRENTPATH
       ;;
 
+    community)
+      cd $BINPATH
+      while true; do
+        "$BINPATH/OWCommunityServer.${BUILD_ARCH}"
+
+        exec 0<&-
+        exec 0</dev/tty
+        if read -r -s -n 1 -t 6 -p "Press any key in the next 5 seconds to abort restarting the community server..." key
+        then
+          echo $'\a\naborted'
+          break
+        else
+          echo $'\nrestarting...'
+        fi
+      done
+      cd $CURRENTPATH
+      ;;
+
     *)
       printf "$1 is an invalid argument.  Allowed arguments:\n"
       echo "client"
@@ -829,6 +847,7 @@ Run_Subcommand() {
       echo "autoupdater"
       echo "master"
       echo "auth"
+      echo "community"
       printf "\n"
       Help_Subcommand run
       return 1
@@ -891,6 +910,12 @@ Debug_Subcommand() {
       cd $CURRENTPATH
       ;;
 
+    community)
+      cd $BINPATH
+      gdb -ex run --args "$BINPATH/OWCommunityServer.${BUILD_ARCH}"
+      cd $CURRENTPATH
+      ;;
+
     *)
       printf "$1 is an invalid argument.  Allowed arguments:\n"
       echo "client"
@@ -898,6 +923,7 @@ Debug_Subcommand() {
       echo "autoupdater"
       echo "master"
       echo "auth"
+      echo "community"
       printf "\n"
       Help_Subcommand debug
       return 1
