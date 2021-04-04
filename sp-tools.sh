@@ -1376,7 +1376,7 @@ Generate_Default_Assets_Pak() {
       CHANGED_FILES+="./${i#source/game-assets/default/} "
     done
 
-    git archive --format=zip --output=${1}/${2}.pk3 ${3} $CHANGED_FILES
+    TZ='America/New_York' git archive --format=zip --output=${1}/${2}.pk3 ${3} $CHANGED_FILES
     cd $CURRENTPATH
 
     return 0
@@ -1384,7 +1384,7 @@ Generate_Default_Assets_Pak() {
 
   cd $SOURCEPATH/game-assets/default/
   echo "Generating and installing default pak '${2}.pk3'..."
-  git archive --format=zip --output=${1}/${2}.pk3 ${3} ./
+  TZ='America/New_York' git archive --format=zip --output=${1}/${2}.pk3 ${3} ./
   cd $CURRENTPATH
 
   return 0
@@ -1425,7 +1425,7 @@ Generate_Default_Map_Pak() {
 
   cd $SOURCEPATH/map-assets/default/${2}
   echo "Generating and installing default pak '${3}.pk3'..."
-  git archive --format=zip --output=${1}/${3}.pk3 ${4} ./
+  TZ='America/New_York' git archive --format=zip --output=${1}/${3}.pk3 ${4} ./
   cd $CURRENTPATH
   return 0
 }
