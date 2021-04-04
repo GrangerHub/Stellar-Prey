@@ -20,6 +20,9 @@ CURRENTPATH=$(pwd)
 
 BASEPATH="$SCRIPTPATH/basepath"
 HOMEPATH="$SCRIPTPATH/homepath"
+HOMEPATH_CLIENT="$HOMEPATH/client"
+HOMEPATH_GAMESERVER="$HOMEPATH/gameserver"
+HOMEPATH_AUTOUPDATER="$HOMEPATH/autoupdater"
 
 BASEGAME="main"
 
@@ -410,8 +413,15 @@ Init_Subcommand() {
   mkdir -p "$BASEPATH/$BASEGAME"
   mkdir -p "$BASEPATH/$FS_GAME"
   mkdir -p "$HOMEPATH"
-  mkdir -p "$HOMEPATH/$BASEGAME"
-  mkdir -p "$HOMEPATH/$FS_GAME"
+  mkdir -p "$HOMEPATH_CLIENT"
+  mkdir -p "$HOMEPATH_CLIENT/$BASEGAME"
+  mkdir -p "$HOMEPATH_CLIENT/$FS_GAME"
+  mkdir -p "$HOMEPATH_GAMESERVER"
+  mkdir -p "$HOMEPATH_GAMESERVER/$BASEGAME"
+  mkdir -p "$HOMEPATH_GAMESERVER/$FS_GAME"
+  mkdir -p "$HOMEPATH_AUTOUPDATER"
+  mkdir -p "$HOMEPATH_AUTOUPDATER/$BASEGAME"
+  mkdir -p "$HOMEPATH_AUTOUPDATER/$FS_GAME"
   mkdir -p "$LOGPATH"
   mkdir -p "$SCRUBBED_LOGPATH"
   mkdir -p "$RELEASEPATH"
@@ -645,18 +655,19 @@ Build_game_logic() {
   make $MAKE_FLAGS
   mkdir -p "$BASEPATH"
   mkdir -p "$BASEPATH/$FS_GAME"
-  cp -a "$GAMELOGICPATH/main/." "$BASEPATH/$FS_GAME/"
+  cp -a "$GAMELOGICPATH/main/." "$HOMEPATH_CLIENT/$FS_GAME/"
+  cp -a "$GAMELOGICPATH/main/." "$HOMEPATH_GAMESERVER/$FS_GAME/"
 
-  cd $BASEPATH/$FS_GAME
+  cd $HOMEPATH_CLIENT/$FS_GAME
   for i in $GAMELOGICPATH/main/*; do
     j=${i#$GAMELOGICPATH/main/}
     if [ -f bin.pk3 ]; then
-      zip -d  bin.pk3 $j
       zip -ur  bin.pk3 $j
     else
       zip -r  bin.pk3 $j
     fi
   done
+  cp -a "bin.pk3" "$HOMEPATH_GAMESERVER/$FS_GAME/"
   cd $CURRENTPATH
 }
 
@@ -791,7 +802,7 @@ Run_Subcommand() {
         +set com_ansiColor 1 \
         +set fs_game "$FS_GAME" \
         +set fs_basepath "$BASEPATH" \
-        +set fs_homepath "$HOMEPATH"
+        +set fs_homepath "$HOMEPATH_CLIENT"
       cd $CURRENTPATH
       ;;
 
@@ -804,7 +815,7 @@ Run_Subcommand() {
           +set sv_wwwDownload 1 \
           +set sv_wwwBaseURL "$DOWNLOAD_URL" \
           +set fs_basepath "$BASEPATH" \
-          +set fs_homepath "$HOMEPATH" \
+          +set fs_homepath "$HOMEPATH_GAMESERVER" \
           +set dedicated 2 \
           +set sv_allowDownload 1 \
           +exec server.cfg \
@@ -832,7 +843,7 @@ Run_Subcommand() {
           +set sv_wwwDownload 1 \
           +set sv_wwwBaseURL "$DOWNLOAD_URL" \
           +set fs_basepath "$BASEPATH" \
-          +set fs_homepath "$HOMEPATH" \
+          +set fs_homepath "$HOMEPATH_AUTOUPDATER" \
           +set dedicated 2 \
           +set sv_allowDownload 1
 
@@ -927,7 +938,7 @@ Debug_Subcommand() {
         +set com_ansiColor 1 \
         +set fs_game "$FS_GAME" \
         +set fs_basepath "$BASEPATH" \
-        +set fs_homepath "$HOMEPATH"
+        +set fs_homepath "$HOMEPATH_CLIENT"
       cd $CURRENTPATH
       ;;
 
@@ -939,7 +950,7 @@ Debug_Subcommand() {
         +set sv_wwwDownload 1 \
         +set sv_wwwBaseURL "$DOWNLOAD_URL" \
         +set fs_basepath "$BASEPATH" \
-        +set fs_homepath "$HOMEPATH" \
+        +set fs_homepath "$HOMEPATH_GAMESERVER" \
         +set dedicated 2 \
         +set sv_allowDownload 1 \
         +exec server.cfg \
@@ -955,7 +966,7 @@ Debug_Subcommand() {
         +set sv_wwwDownload 1 \
         +set sv_wwwBaseURL "$DOWNLOAD_URL" \
         +set fs_basepath "$BASEPATH" \
-        +set fs_homepath "$HOMEPATH" \
+        +set fs_homepath "$HOMEPATH_AUTOUPDATER" \
         +set dedicated 2 \
         +set sv_allowDownload 1
       cd $CURRENTPATH
@@ -1007,7 +1018,9 @@ Sync_Subcommand() {
       rsync -rauvm --progress --include="*/" --include="*.pk3" --exclude="*" \
         -e 'ssh' $BASEPATH/ $SCRIPTPATH/../www/
       rsync -rauvm --progress --include="*/" --include="*.pk3" --exclude="*" \
-        -e 'ssh' $HOMEPATH/ $SCRIPTPATH/../www/
+        -e 'ssh' $HOMEPATH_CLIENT/ $SCRIPTPATH/../www/
+      rsync -rauvm --progress --include="*/" --include="*.pk3" --exclude="*" \
+        -e 'ssh' $HOMEPATH_GAMESERVER/ $SCRIPTPATH/../www/
 
       if [ -f $SCRIPTPATH/../sync-pk3.sh ]; then
         $SCRIPTPATH/../sync-pk3.sh
@@ -1019,7 +1032,9 @@ Sync_Subcommand() {
       rsync -rauvm --progress --include="*/" --include="*.pk3" --exclude="*" \
         -e 'ssh' $BASEPATH/ "$SSH_REMOTE_HOST:$SSH_REMOTE_SERVER_PATH/$BASEPATH"
       rsync -rauvm --progress --include="*/" --include="*.pk3" --exclude="*" \
-        -e 'ssh' $HOMEPATH/ "$SSH_REMOTE_HOST:$SSH_REMOTE_SERVER_PATH/$HOMEPATH"
+        -e 'ssh' $HOMEPATH_CLIENT/ "$SSH_REMOTE_HOST:$SSH_REMOTE_SERVER_PATH/$HOMEPATH_CLIENT"
+      rsync -rauvm --progress --include="*/" --include="*.pk3" --exclude="*" \
+        -e 'ssh' $HOMEPATH_GAMESERVER/ "$SSH_REMOTE_HOST:$SSH_REMOTE_SERVER_PATH/$HOMEPATH_GAMESERVER"
       ;;
 
     *)
@@ -1262,8 +1277,13 @@ Package_Assets_Subcommand() {
                 cd "$SOURCEPATH/game-assets/$3"
                 zip -r $PAK_NAME *
                 mkdir -p $HOMEPATH
-                mkdir -p "$HOMEPATH/$FS_GAME"
-                mv $PAK_NAME "$HOMEPATH/$FS_GAME"
+                mkdir -p $HOMEPATH_CLIENT
+                mkdir -p "$HOMEPATH_CLIENT/$FS_GAME"
+                mkdir -p $HOMEPATH_GAMESERVER
+                mkdir -p "$HOMEPATH_GAMESERVER/$FS_GAME"
+                cp $PAK_NAME "$HOMEPATH_CLIENT/$FS_GAME/"
+                cp $PAK_NAME "$HOMEPATH_GAMESERVER/$FS_GAME/"
+                rm $PAK_NAME
                 cd $CURRENTPATH
                 return 0
               else
@@ -1276,8 +1296,13 @@ Package_Assets_Subcommand() {
                 cd "$SOURCEPATH/game-assets/$3"
                 zip -r $PAK_NAME *
                 mkdir -p $HOMEPATH
-                mkdir -p "$HOMEPATH/$FS_GAME"
-                mv $PAK_NAME "$HOMEPATH/$FS_GAME"
+                mkdir -p $HOMEPATH_CLIENT
+                mkdir -p "$HOMEPATH_CLIENT/$FS_GAME"
+                mkdir -p $HOMEPATH_GAMESERVER
+                mkdir -p "$HOMEPATH_GAMESERVER/$FS_GAME"
+                cp $PAK_NAME "$HOMEPATH_CLIENT/$FS_GAME/"
+                cp $PAK_NAME "$HOMEPATH_GAMESERVER/$FS_GAME/"
+                rm $PAK_NAME
                 cd $CURRENTPATH
                 return 0
               else
@@ -1287,7 +1312,10 @@ Package_Assets_Subcommand() {
             fi
           else
             mkdir -p $HOMEPATH
-            mkdir -p "$HOMEPATH/$FS_GAME"
+            mkdir -p $HOMEPATH_CLIENT
+            mkdir -p "$HOMEPATH_CLIENT/$FS_GAME"
+            mkdir -p $HOMEPATH_GAMESERVER
+            mkdir -p "$HOMEPATH_GAMESERVER/$FS_GAME"
             for i in $SOURCEPATH/game-assets/*/; do
               if [ ! -d $i ]; then
                 continue
@@ -1300,7 +1328,9 @@ Package_Assets_Subcommand() {
               PAK_NAME="$(basename $i).pk3"
               cd $i
               zip -r $PAK_NAME *
-              mv $PAK_NAME "$HOMEPATH/$FS_GAME"
+              cp $PAK_NAME "$HOMEPATH_CLIENT/$FS_GAME/"
+              cp $PAK_NAME "$HOMEPATH_GAMESERVER/$FS_GAME/"
+              rm $PAK_NAME
             done
             cd $CURRENTPATH
             return 0
@@ -1320,8 +1350,13 @@ Package_Assets_Subcommand() {
                 cd "$SOURCEPATH/map-assets/$3"
                 zip -r $PAK_NAME *
                 mkdir -p $HOMEPATH
-                mkdir -p "$HOMEPATH/main"
-                mv $PAK_NAME "$HOMEPATH/main"
+                mkdir -p $HOMEPATH_CLIENT
+                mkdir -p "$HOMEPATH_CLIENT/$BASEGAME"
+                mkdir -p $HOMEPATH_GAMESERVER
+                mkdir -p "$HOMEPATH_GAMESERVER/$BASEGAME"
+                cp $PAK_NAME "$HOMEPATH_CLIENT/$BASEGAME/"
+                cp $PAK_NAME "$HOMEPATH_GAMESERVER/$BASEGAME/"
+                rm $PAK_NAME
                 cd $CURRENTPATH
                 return 0
               else
@@ -1334,8 +1369,13 @@ Package_Assets_Subcommand() {
                 cd "$SOURCEPATH/map-assets/$3"
                 zip -r $PAK_NAME *
                 mkdir -p $HOMEPATH
-                mkdir -p "$HOMEPATH/main"
-                mv $PAK_NAME "$HOMEPATH/main"
+                mkdir -p $HOMEPATH_CLIENT
+                mkdir -p "$HOMEPATH_CLIENT/$BASEGAME"
+                mkdir -p $HOMEPATH_GAMESERVER
+                mkdir -p "$HOMEPATH_GAMESERVER/$BASEGAME"
+                cp $PAK_NAME "$HOMEPATH_CLIENT/$BASEGAME/"
+                cp $PAK_NAME "$HOMEPATH_GAMESERVER/$BASEGAME/"
+                rm $PAK_NAME
                 cd $CURRENTPATH
                 return 0
               else
@@ -1345,7 +1385,10 @@ Package_Assets_Subcommand() {
             fi
           else
             mkdir -p $HOMEPATH
-            mkdir -p "$HOMEPATH/main"
+            mkdir -p $HOMEPATH_CLIENT
+            mkdir -p "$HOMEPATH_CLIENT/$BASEGAME"
+            mkdir -p $HOMEPATH_GAMESERVER
+            mkdir -p "$HOMEPATH_GAMESERVER/$BASEGAME"
             for i in $SOURCEPATH/map-assets/*/; do
               if [ ! -d $i ]; then
                 continue
@@ -1358,7 +1401,9 @@ Package_Assets_Subcommand() {
               PAK_NAME="$(basename $i).pk3"
               cd $i
               zip -r $PAK_NAME *
-              mv $PAK_NAME "$HOMEPATH/main"
+              cp $PAK_NAME "$HOMEPATH_CLIENT/$BASEGAME/"
+              cp $PAK_NAME "$HOMEPATH_GAMESERVER/$BASEGAME/"
+              rm $PAK_NAME
             done
             cd $CURRENTPATH
             return 0
