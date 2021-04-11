@@ -1121,7 +1121,7 @@ idCGameMain::ConfigString
 pointer idCGameMain::ConfigString( sint index )
 {
     if( index < 0 || index >= MAX_CONFIGSTRINGS )
-        Error( "CG_ConfigString: bad index: %i", index );
+        Error( "idCGameMain::ConfigString: bad index: %i", index );
         
     return cgs.gameState.stringData + cgs.gameState.stringOffsets[ index ];
 }
@@ -2293,4 +2293,3 @@ bool idCGameLocal::WantsBindKeys( void )
 {
     return ( g_waitingForKey && g_bindItem ) ? true : false;
 }
-

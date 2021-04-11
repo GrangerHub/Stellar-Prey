@@ -128,16 +128,6 @@ void trap_LiteralArgs( valueType* buffer, sint bufferLength )
     imports->cmdSystem->LiteralArgsBuffer( buffer, bufferLength );
 }
 
-sint trap_GetDemoState( void )
-{
-    return imports->DemoState();
-}
-
-sint trap_GetDemoPos( void )
-{
-    return imports->DemoPos();
-}
-
 sint trap_FS_FOpenFile( pointer qpath, fileHandle_t* f, fsMode_t mode )
 {
     return imports->fileSystem->FOpenFileByMode( qpath, f, mode );
@@ -728,11 +718,6 @@ sint trap_R_GetTextureId( pointer name )
 void trap_R_Finish( void )
 {
     //imports->renderSystem->Finish();
-}
-
-void trap_GetDemoName( valueType* buffer, sint size )
-{
-    imports->CL_DemoName( buffer, size );
 }
 
 sint trap_R_LightForPoint( vec3_t point, vec3_t ambientLight, vec3_t directedLight, vec3_t lightDir )

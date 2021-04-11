@@ -1745,11 +1745,6 @@ void idCGameDraw::DrawDemoPlayback( rectDef_t* rect, vec4_t color, qhandle_t sha
         return;
     }
     
-    if( trap_GetDemoState() != DS_PLAYBACK )
-    {
-        return;
-    }
-    
     trap_R_SetColor( color );
     idCGameDrawTools::DrawPic( rect->x, rect->y, rect->w, rect->h, shader );
     trap_R_SetColor( nullptr );
@@ -1763,11 +1758,6 @@ idCGameDraw::DrawDemoRecording
 void idCGameDraw::DrawDemoRecording( rectDef_t* rect, vec4_t color, qhandle_t shader )
 {
     if( !cg_drawDemoState.integer )
-    {
-        return;
-    }
-    
-    if( trap_GetDemoState() != DS_RECORDING )
     {
         return;
     }
@@ -4373,5 +4363,3 @@ void idCGameDraw::DrawActive( stereoFrame_t stereoView )
     // draw status bar and other floating elements
     Draw2D( );
 }
-
-

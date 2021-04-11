@@ -1447,15 +1447,6 @@ void idSGameMain::CalculateStages( void )
             
         lastHumanStageModCount = g_humanMaxReachedStage.modificationCount;
     }
-    
-    if( level.demoState == DS_RECORDING &&
-            ( trap_Cvar_VariableIntegerValue( "g_alienStage" ) != lastAlienStage ||
-              trap_Cvar_VariableIntegerValue( "g_humanStage" ) != lastHumanStage ) )
-    {
-        lastAlienStage = trap_Cvar_VariableIntegerValue( "g_alienStage" );
-        lastHumanStage = trap_Cvar_VariableIntegerValue( "g_humanStage" );
-        DemoCommand( DC_SET_STAGE, va( "%d %d", lastHumanStage, lastAlienStage ) );
-    }
 }
 
 /*
@@ -1581,86 +1572,6 @@ void idSGameMain::CalculateRanks( void )
     {
         SendScoreboardMessageToAllClients();
     }
-}
-
-/*
-============
-idSGameMain::DemoCommand
-
-Store a demo command to a demo if we are recording
-============
-*/
-void idSGameMain::DemoCommand( demoCommand_t cmd, pointer string )
-{
-    if( level.demoState == DS_RECORDING )
-    {
-        trap_DemoCommand( cmd, string );
-    }
-}
-
-/*
-============
-idSGameMain::DemoSetClient
-
-Mark a client as a demo client and load info into it
-============
-*/
-void idSGameMain::DemoSetClient( void )
-{
-    valueType buffer[ MAX_INFO_STRING ];
-    sint clientNum;
-    gclient_t* client;
-    valueType* s;
-    
-    trap_Argv( 0, buffer, sizeof( buffer ) );
-    clientNum = atoi( buffer );
-    client = level.clients + clientNum;
-    client->pers.demoClient = true;
-    
-    trap_Argv( 1, buffer, sizeof( buffer ) );
-    s = Info_ValueForKey( buffer, "n" );
-    if( *s )
-        Q_strncpyz( client->pers.netname, s, sizeof( client->pers.netname ) );
-    s = Info_ValueForKey( buffer, "t" );
-    if( *s )
-        client->pers.teamSelection = ( team_t )atoi( s );
-    client->sess.spectatorState = SPECTATOR_NOT;
-    trap_SetConfigstring( CS_PLAYERS + clientNum, buffer );
-}
-
-/*
-============
-idSGameMain::DemoRemoveClient
-
-Unmark a client as a demo client
-============
-*/
-void idSGameMain::DemoRemoveClient( void )
-{
-    valueType buffer[ 3 ];
-    sint clientNum;
-    
-    trap_Argv( 0, buffer, sizeof( buffer ) );
-    clientNum = atoi( buffer );
-    level.clients[clientNum].pers.demoClient = false;
-    trap_SetConfigstring( CS_PLAYERS + clientNum, nullptr );
-}
-
-/*
-============
-idSGameMain::DemoSetStage
-
-Set the stages in a demo
-============
-*/
-void idSGameMain::DemoSetStage( void )
-{
-    valueType buffer[ 2 ];
-    
-    trap_Argv( 0, buffer, sizeof( buffer ) );
-    trap_Cvar_Set( "g_humanStage", buffer );
-    trap_Argv( 1, buffer, sizeof( buffer ) );
-    trap_Cvar_Set( "g_alienStage", buffer );
 }
 
 
@@ -2215,10 +2126,6 @@ can see the last frag.
 */
 void idSGameMain::CheckExitRules( void )
 {
-    // don't exit in demos
-    if( level.demoState == DS_PLAYBACK )
-        return;
-        
     // if at the intermission, wait for all non-bots to
     // signal ready, then go to next level
     if( level.intermissiontime )
@@ -2578,54 +2485,6 @@ void idSGameMain::CheckCvars( void )
 }
 
 /*
-==================
-idSGameMain::CheckDemo
-==================
-*/
-void idSGameMain::CheckDemo( void )
-{
-    sint i;
-    
-    // Don't do anything if no change
-    if( g_demoState.integer == level.demoState )
-        return;
-    level.demoState = ( demoState_t )g_demoState.integer;
-    
-    // log all connected clients
-    if( g_demoState.integer == DS_RECORDING )
-    {
-        for( i = 0; i < level.maxclients; i++ )
-        {
-            if( level.clients[ i ].pers.connected != CON_DISCONNECTED )
-            {
-                valueType userinfo[ MAX_INFO_STRING ];
-                trap_GetConfigstring( CS_PLAYERS + i, userinfo, sizeof( userinfo ) );
-                DemoCommand( DC_CLIENT_SET, va( "%d %s", i, userinfo ) );
-            }
-        }
-    }
-    
-    // empty teams and display a message
-    else if( g_demoState.integer == DS_PLAYBACK )
-    {
-        trap_SendServerCommand( -1, "print \"A demo has been started on the server.\n\"" );
-        for( i = 0; i < level.maxclients; i++ )
-        {
-            if( level.clients[ i ].pers.teamSelection != TEAM_NONE )
-                idSGameTeam::ChangeTeam( g_entities + i, TEAM_NONE );
-        }
-    }
-    
-    // clear all demo clients
-    if( g_demoState.integer == DS_NONE || g_demoState.integer == DS_PLAYBACK )
-    {
-        sint clients = trap_Cvar_VariableIntegerValue( "sv_democlients" );
-        for( i = 0; i < clients; i++ )
-            trap_SetConfigstring( CS_PLAYERS + i, nullptr );
-    }
-}
-
-/*
 =============
 idSGameMain::RunThink
 
@@ -2703,17 +2562,13 @@ void idSGameLocal::RunFrame( sint levelTime )
     // get any cvar changes
     idSGameMain::UpdateCvars( );
     
-    // check demo state
-    idSGameMain::CheckDemo( );
-    
     //
     // go through all allocated objects
     //
     start = trap_Milliseconds( );
     ent = &g_entities[ 0 ];
     
-    for( i = 0; i < ( level.demoState == DS_PLAYBACK ? g_maxclients.integer : level.num_entities ); i++, ent++ )
-    {
+    for( i = 0; i < level.num_entities; i++, ent++ )    {
         if( !ent->inuse )
             continue;
             
@@ -2839,25 +2694,4 @@ void idSGameLocal::RunFrame( sint levelTime )
     }
     
     level.frameMsec = trap_Milliseconds();
-}
-
-/*
-============
-idSGameLocal::GameDemoCommand
-============
-*/
-void idSGameLocal::GameDemoCommand( sint arg0 )
-{
-    switch( arg0 )
-    {
-        case DC_CLIENT_SET:
-            idSGameMain::DemoSetClient();
-            break;
-        case DC_CLIENT_REMOVE:
-            idSGameMain::DemoRemoveClient();
-            break;
-        case DC_SET_STAGE:
-            idSGameMain::DemoSetStage();
-            break;
-    }
 }

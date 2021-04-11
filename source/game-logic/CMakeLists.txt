@@ -178,7 +178,6 @@ set( SGAMELIST_HEADERS
 	${MOUNT_DIR}/API/serverInit_api.hpp
 	${MOUNT_DIR}/API/CmdBuffer_api.hpp
 	${MOUNT_DIR}/API/CmdSystem_api.hpp
-	${MOUNT_DIR}/API/serverDemo_api.hpp
 	${MOUNT_DIR}/API/system_api.hpp
 	${MOUNT_DIR}/API/soundSystem_api.hpp
 	${MOUNT_DIR}/API/FileSystem_api.hpp

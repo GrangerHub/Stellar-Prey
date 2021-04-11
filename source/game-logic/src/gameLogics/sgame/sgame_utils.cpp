@@ -210,8 +210,6 @@ void idSGameUtils::TeamCommand( team_t team, valueType* cmd )
                 trap_SendServerCommand( i, cmd );
         }
     }
-    
-    idSGameMain::DemoCommand( DC_SERVER_COMMAND, cmd );
 }
 
 

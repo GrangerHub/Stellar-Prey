@@ -2311,12 +2311,6 @@ bool idAdminLocal::AdminPutTeam( gentity_t* ent, sint skiparg )
         return false;
     }
     
-    if( level.demoState == DS_PLAYBACK )
-    {
-        adminLocal.ADMP( "^3!putteam: ^7cannot join a team while a demo is playing\n" );
-        return false;
-    }
-    
     idSGameTeam::ChangeTeam( vic, teamnum );
     
     AP( va( "print \"^3!putteam: ^7%s^7 put %s^7 on to the %s team\n\"", ( ent ) ? ent->client->pers.netname : "console", vic->client->pers.netname, bggame->TeamName( teamnum ) ) );

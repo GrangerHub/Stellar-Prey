@@ -644,7 +644,6 @@ typedef struct
     valueType              emoticons[ MAX_EMOTICONS ][ MAX_EMOTICON_NAME_LEN ];
     sint               emoticonCount;
     sint               numBots;
-    demoState_t       demoState;
 } level_locals_t;
 
 #define CMD_CHEAT         0x0001
@@ -900,7 +899,6 @@ public:
     virtual void RunFrame( sint levelTime );
     virtual bool ConsoleCommand( void );
     virtual bool SnapshotCallback( sint entityNum, sint clientNum );
-    virtual void GameDemoCommand( sint arg0 );
 };
 
 extern idSGameLocal sgameLocal;

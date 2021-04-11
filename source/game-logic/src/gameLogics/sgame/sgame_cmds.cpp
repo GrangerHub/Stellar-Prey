@@ -747,7 +747,6 @@ void idSGameCmds::Say( gentity_t* ent, gentity_t* target, sint mode, pointer cha
             Q_vsprintf_s( name, sizeof( name ), sizeof( name ), "%s%s" S_COLOR_WHITE ": ", prefix,
                           ent->client->pers.netname );
             color = COLOR_GREEN;
-            idSGameMain::DemoCommand( DC_SERVER_COMMAND, va( "chat \"%s^2%s\"", name, chatText ) );
             break;
             
         case SAY_TEAM:
@@ -759,7 +758,6 @@ void idSGameCmds::Say( gentity_t* ent, gentity_t* target, sint mode, pointer cha
                 Q_vsprintf_s( name, sizeof( name ), sizeof( name ), "(%s" S_COLOR_WHITE "): ",
                               ent->client->pers.netname );
             color = COLOR_CYAN;
-            idSGameMain::DemoCommand( DC_SERVER_COMMAND, va( "tchat \"%s^5%s\"", name, chatText ) );
             break;
             
         case SAY_TELL:

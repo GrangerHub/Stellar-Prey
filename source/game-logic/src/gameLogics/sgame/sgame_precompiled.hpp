@@ -63,7 +63,6 @@
 #include <GPURenderer/r_types.hpp>
 #include <API/renderer_api.hpp>
 #include <API/FileSystem_api.hpp>
-#include <API/serverDemo_api.hpp>
 #include <API/serverGame_api.hpp>
 #include <API/serverInit_api.hpp>
 #include <API/serverMain_api.hpp>

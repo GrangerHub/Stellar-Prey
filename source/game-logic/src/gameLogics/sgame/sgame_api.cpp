@@ -39,7 +39,6 @@ idServerInitSystem* serverInitSystem;
 idServerMainSystem* serverMainSystem;
 idCmdBufferSystem* cmdBufferSystem;
 idCmdSystem* cmdSystem;
-idServerDemoSystem* serverDemoSystem;
 idSystem* idsystem;
 
 #ifdef GAMEDLL
@@ -67,7 +66,6 @@ Q_EXPORT idSGame* gameEntry( gameImports_t* gimports )
     serverMainSystem = imports->serverMainSystem;
     cmdBufferSystem = imports->cmdBufferSystem;
     cmdSystem = imports->cmdSystem;
-    serverDemoSystem = imports->serverDemoSystem;
     idsystem = imports->idsystem;
     
     return sgame;
@@ -306,11 +304,6 @@ sint trap_S_SoundDuration( sfxHandle_t handle )
 sfxHandle_t trap_S_RegisterSound( pointer sample )
 {
     return soundSystem->RegisterSound( sample, false );
-}
-
-void trap_DemoCommand( demoCommand_t cmd, pointer string )
-{
-    imports->serverGameSystem->DemoWriteCommand( cmd, string );
 }
 
 void trap_GetUsercmd( sint clientNum, usercmd_t* cmd )

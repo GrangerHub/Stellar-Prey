@@ -1199,9 +1199,6 @@ void idSGameLocal::ClientUserinfoChanged( sint clientNum )
                  
     trap_SetConfigstring( CS_PLAYERS + clientNum, userinfo );
     
-    // log to demo
-    idSGameMain::DemoCommand( DC_CLIENT_SET, va( "%d %s", clientNum, userinfo ) );
-    
     //  idSGameMain::LogPrintf( "ClientUserinfoChanged: %i %s\n", clientNum, userinfo );
 }
 
@@ -1384,10 +1381,6 @@ void idSGameLocal::ClientBegin( sint clientNum )
     admin = client->pers.admin;
     
     idSGameMain::LogPrintf( "idSGameLocal::ClientBegin: %i\n", clientNum );
-    
-    // log to demo
-    idSGameMain::DemoCommand( DC_CLIENT_SET, va( "%d \\name\\%s\\team\\%d", clientNum,
-                              client->pers.netname, client->pers.teamSelection ) );
                               
     // count current clients and rank for scoreboard
     idSGameMain::CalculateRanks( );
@@ -1451,7 +1444,6 @@ void idSGameClient::BotBegin( sint clientNum )
     
     // log to demo
     trap_GetConfigstring( CS_PLAYERS + clientNum, userinfo, sizeof( userinfo ) );
-    idSGameMain::DemoCommand( DC_CLIENT_SET, va( "%d %s", clientNum, userinfo ) );
     
     // count current clients and rank for scoreboard
     idSGameMain::CalculateRanks( );
@@ -1834,8 +1826,6 @@ void idSGameLocal::ClientDisconnect( sint clientNum )
     ent->client->sess.spectatorState = ( spectatorState_t )( ent->client->ps.persistant[ PERS_SPECSTATE ] = SPECTATOR_NOT );
     
     trap_SetConfigstring( CS_PLAYERS + clientNum, "" );
-    
-    idSGameMain::DemoCommand( DC_CLIENT_REMOVE, va( "%d", clientNum ) );
     
     idSGameMain::CalculateRanks( );
 }
