@@ -20,6 +20,9 @@ set( URL_MOTD_SERVER "" CACHE          STRING "The URL for the MOTD Server")
 set( URL_AUTHORIZE_SERVER "" CACHE     STRING "The URL for the Authorize Server")
 set( URL_AUTOUPDATE_SERVER "" CACHE    STRING "The URL for the Autoupdate Server")
 
+string( REPLACE " " "" GAME_APP_NAME_UPPER ${GAME_APP_NAME} )
+string( TOLOWER ${GAME_APP_NAME} GAME_APP_NAME_LOWER )
+
 if("${GAME_APP_NAME}" STREQUAL "")
 	message(FATAL_ERROR "Please set GAME_APP_NAME first")
 endif()
