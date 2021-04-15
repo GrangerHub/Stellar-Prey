@@ -1125,7 +1125,8 @@ idCGameServerCmds::Chat_f
 =================
 */
 void idCGameServerCmds::Chat_f(void) {
-    valueType cmd[ 6 ], text[ MAX_SAY_TEXT ];
+    valueType cmd[ 6 ], text[ MAX_SAY_TEXT ], text2[ ((MAX_SAY_TEXT * 2) + 1) ];
+    char *p, *p2;
     bool team;
 
     trap_Argv(0, cmd, sizeof(cmd));
@@ -1147,7 +1148,27 @@ void idCGameServerCmds::Chat_f(void) {
         }
     }
 
-    Printf("%s\n", text);
+    //unformat the chat
+    ::memset(text2, 0, sizeof(text2));
+    p = text;
+    p2 = text2;
+    while(*p != 0) {
+        if(*p == '%') {
+            *p2 = '%';
+            p2++;
+            *p2 = *p;
+            p++;
+            p2++;
+            continue;
+        } else {
+            *p2 = *p;
+            p++;
+            p2++;
+            continue;
+        }
+    }
+
+    Printf("%s\n", text2);
 }
 
 /*
