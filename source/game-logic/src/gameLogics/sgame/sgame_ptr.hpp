@@ -33,18 +33,17 @@ static connectionRecord_t connections[MAX_CLIENTS];
 
 class idSGameLocal;
 
-class idSGamePtr : public idSGameLocal
-{
+class idSGamePtr : public idSGameLocal {
 public:
     idSGamePtr();
     ~idSGamePtr();
-    
-    static bool CheckForUniquePTRC( sint code );
-    static void UpdatePTRConnection( gclient_t* client );
-    static connectionRecord_t* GenerateNewConnection( gclient_t* client );
-    static connectionRecord_t* FindConnectionForCode( sint code );
-    static void ResetPTRConnections( void );
-    
+
+    static bool CheckForUniquePTRC(sint code);
+    static void UpdatePTRConnection(gclient_t *client);
+    static connectionRecord_t *GenerateNewConnection(gclient_t *client);
+    static connectionRecord_t *FindConnectionForCode(sint code);
+    static void ResetPTRConnections(void);
+
 };
 
 #endif // !__SGAME_PTR_H__

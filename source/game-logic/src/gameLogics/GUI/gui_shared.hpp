@@ -113,16 +113,14 @@
 #define SLIDER_THUMB_HEIGHT 20.0f
 #define NUM_CROSSHAIRS      10
 
-typedef struct
-{
+typedef struct {
     pointer command;
     pointer args[MAX_SCRIPT_ARGS];
 }
 scriptDef_t;
 
 
-typedef struct
-{
+typedef struct {
     float32 x;    // horiz position
     float32 y;    // vert position
     float32 w;    // width
@@ -134,8 +132,7 @@ typedef rectDef_t rectangle;
 
 // FIXME: do something to separate text vs window stuff
 
-typedef struct
-{
+typedef struct {
     rectangle rect;                 // client coord rectangle
     sint aspectBias;                 // direction in which to aspect compensate
     rectangle rectClient;           // screen coord rectangle
@@ -163,8 +160,7 @@ windowDef_t;
 
 typedef windowDef_t WinDow;
 
-typedef struct
-{
+typedef struct {
     vec4_t  color;
     float32    low;
     float32    high;
@@ -183,16 +179,14 @@ colorRangeDef_t;
 //
 #define MAX_LB_COLUMNS 16
 
-typedef struct columnInfo_s
-{
+typedef struct columnInfo_s {
     sint pos;
     sint width;
     sint align;
 }
 columnInfo_t;
 
-typedef struct listBoxDef_s
-{
+typedef struct listBoxDef_s {
     sint startPos;
     sint endPos;
     sint drawPadding;
@@ -208,14 +202,12 @@ typedef struct listBoxDef_s
 }
 listBoxDef_t;
 
-typedef struct comboBoxDef_s
-{
+typedef struct comboBoxDef_s {
     sint cursorPos;
 }
 comboBoxDef_t;
 
-typedef struct editFieldDef_s
-{
+typedef struct editFieldDef_s {
     float32 minVal;                  //  edit field limits
     float32 maxVal;                  //
     float32 defVal;                  //
@@ -229,8 +221,7 @@ editFieldDef_t;
 
 #define MAX_MULTI_CVARS 32
 
-typedef struct multiDef_s
-{
+typedef struct multiDef_s {
     pointer cvarList[MAX_MULTI_CVARS];
     pointer cvarStr[MAX_MULTI_CVARS];
     float32 cvarValue[MAX_MULTI_CVARS];
@@ -239,21 +230,20 @@ typedef struct multiDef_s
 }
 multiDef_t;
 
-typedef struct modelDef_s
-{
+typedef struct modelDef_s {
     sint angle;
     vec3_t origin;
     float32 fov_x;
     float32 fov_y;
     sint rotationSpeed;
-    
+
     vec3_t axis;
-    
+
     sint   animated;
     sint   startframe;
     sint   numframes;
     sint   fps;
-    
+
     sint   frame;
     sint   oldframe;
     float32 backlerp;
@@ -266,8 +256,7 @@ modelDef_t;
 #define CVAR_SHOW      0x00000004
 #define CVAR_HIDE      0x00000008
 
-typedef struct itemDef_s
-{
+typedef struct itemDef_s {
     WinDow window;                 // common positional, border, style, layout info
     rectangle textRect;            // rectangle the text ( if any ) consumes
     sint type;                      // text, button, radiobutton, checkbox, textfield, listbox, combo
@@ -279,7 +268,7 @@ typedef struct itemDef_s
     float32 textscale;               // scale percentage from 72pts
     sint textStyle;                 // ( optional ) style, normal and shadowed are it for now
     pointer text;              // display text
-    void* parent;                  // menu owner
+    void *parent;                  // menu owner
     qhandle_t asset;               // handle to asset
     pointer mouseEnterText;    // mouse enter script
     pointer mouseExitText;     // mouse exit script
@@ -299,12 +288,11 @@ typedef struct itemDef_s
     float32 special;                 // float32 used for feeder id's etc.. diff per type
     sint modifier;                 // sint used for feeder id's etc.. diff per type
     sint cursorPos;                 // cursor position in characters
-    void* typeData;                // type specific data ptr's
+    void *typeData;                // type specific data ptr's
 }
 itemDef_t;
 
-typedef struct
-{
+typedef struct {
     WinDow window;
     pointer  font;                // font
     bool fullScreen;              // covers entire screen
@@ -319,15 +307,14 @@ typedef struct
     pointer onESC;                // run when the menu is closed
     pointer soundName;            // background loop sound for menu
     pointer listenCvar;           // Cvar to be executed as an uiscript
-    
+
     vec4_t focusColor;                // focus color for items
     vec4_t disableColor;              // focus color for items
-    itemDef_t* items[MAX_MENUITEMS];  // items this menu contains
+    itemDef_t *items[MAX_MENUITEMS];  // items this menu contains
 }
 menuDef_t;
 
-typedef struct
-{
+typedef struct {
     pointer fontStr;
     pointer cursorStr;
     pointer gradientStr;
@@ -368,73 +355,87 @@ typedef struct
 }
 cachedAssets_t;
 
-typedef struct
-{
+typedef struct {
     pointer name;
-    void ( *handler )( itemDef_t* item, valueType** args );
+    void (*handler)(itemDef_t *item, valueType **args);
 }
 commandDef_t;
 
-typedef struct
-{
-    qhandle_t ( *registerShaderNoMip )( pointer p );
-    void ( *setColor )( const vec4_t v );
-    void ( *drawHandlePic )( float32 x, float32 y, float32 w, float32 h, qhandle_t asset );
-    void ( *drawStretchPic )( float32 x, float32 y, float32 w, float32 h, float32 s1, float32 t1, float32 s2, float32 t2, qhandle_t hShader );
-    qhandle_t ( *registerModel )( pointer p );
-    void ( *modelBounds )( qhandle_t model, vec3_t min, vec3_t max );
-    void ( *fillRect )( float32 x, float32 y, float32 w, float32 h, const vec4_t color );
-    void ( *drawRect )( float32 x, float32 y, float32 w, float32 h, float32 size, const vec4_t color );
-    void ( *drawRoundedRect )( float32 x, float32 y, float32 w, float32 h, float32 size, const vec4_t color );
-    void ( *fillRoundedRect )( float32 x, float32 y, float32 w, float32 h, float32 size, const vec4_t color );
-    void ( *drawSides )( float32 x, float32 y, float32 w, float32 h, float32 size );
-    void ( *drawTopBottom )( float32 x, float32 y, float32 w, float32 h, float32 size );
-    void ( *clearScene )( void );
-    void ( *addRefEntityToScene )( const refEntity_t* re );
-    void ( *renderScene )( const refdef_t* fd );
-    void ( *registerFont )( pointer pFontname, sint pointSize, fontInfo_t* font );
-    void ( *ownerDrawItem )( float32 x, float32 y, float32 w, float32 h, float32 text_x,
-                             float32 text_y, sint ownerDraw, sint ownerDrawFlags,
-                             sint align, sint textalign, sint textvalign,
-                             float32 special, float32 scale, vec4_t foreColor,
-                             vec4_t backColor, qhandle_t shader, sint textStyle );
-    float32( *getValue )( sint ownerDraw );
-    bool ( *ownerDrawVisible )( sint flags );
-    void ( *runScript )( valueType** p );
-    void ( *getCVarString )( pointer cvar, valueType* buffer, uint64 bufsize );
-    float32( *getCVarValue )( pointer cvar );
-    void ( *setCVar )( pointer cvar, pointer value );
-    void ( *drawTextWithCursor )( float32 x, float32 y, float32 scale, vec4_t color, pointer text, sint cursorPos, valueType cursor, sint limit, sint style );
-    void ( *setOverstrikeMode )( bool b );
-    bool ( *getOverstrikeMode )( void );
-    void ( *startLocalSound )( sfxHandle_t sfx, sint channelNum );
-    bool ( *ownerDrawHandleKey )( sint ownerDraw, sint flags, float32* special, sint key );
-    sint( *feederCount )( float32 feederID );
-    pointer( *feederItemText )( float32 feederID, sint index, sint column, qhandle_t* handle );
-    qhandle_t ( *feederItemImage )( float32 feederID, sint index );
-    void ( *feederSelection )( float32 feederID, sint index );
-    sint( *feederInitialise )( float32 feederID );
-    void ( *keynumToStringBuf )( sint keynum, valueType* buf, sint buflen );
-    void ( *getBindingBuf )( sint keynum, valueType* buf, sint buflen );
-    void ( *setBinding )( sint keynum, pointer binding );
-    void ( *executeText )( sint exec_when, pointer text );
-    void ( *Error )( sint level, pointer error, ... );
-    void ( *Print )( pointer msg, ... );
-    void ( *Pause )( bool b );
-    sint( *ownerDrawWidth )( sint ownerDraw, float32 scale );
-    pointer( *ownerDrawText )( sint ownerDraw );
-    sfxHandle_t ( *registerSound )( pointer name );
-    void ( *startBackgroundTrack )( pointer intro, pointer loop );
-    void ( *stopBackgroundTrack )( void );
-    sint( *playCinematic )( pointer name, float32 x, float32 y, float32 w, float32 h );
-    void ( *stopCinematic )( sint handle );
-    void ( *drawCinematic )( sint handle, float32 x, float32 y, float32 w, float32 h );
-    void ( *runCinematicFrame )( sint handle );
-    sint( *getFileList )( pointer path, pointer extension, valueType* listbuf, sint bufsize );
-    valueType* ( *translateString )( pointer string );
-    void ( *checkAutoUpdate )();
-    void ( *getAutoUpdate )();
-    
+typedef struct {
+    qhandle_t (*registerShaderNoMip)(pointer p);
+    void (*setColor)(const vec4_t v);
+    void (*drawHandlePic)(float32 x, float32 y, float32 w, float32 h,
+                          qhandle_t asset);
+    void (*drawStretchPic)(float32 x, float32 y, float32 w, float32 h,
+                           float32 s1, float32 t1, float32 s2, float32 t2, qhandle_t hShader);
+    qhandle_t (*registerModel)(pointer p);
+    void (*modelBounds)(qhandle_t model, vec3_t min, vec3_t max);
+    void (*fillRect)(float32 x, float32 y, float32 w, float32 h,
+                     const vec4_t color);
+    void (*drawRect)(float32 x, float32 y, float32 w, float32 h, float32 size,
+                     const vec4_t color);
+    void (*drawRoundedRect)(float32 x, float32 y, float32 w, float32 h,
+                            float32 size, const vec4_t color);
+    void (*fillRoundedRect)(float32 x, float32 y, float32 w, float32 h,
+                            float32 size, const vec4_t color);
+    void (*drawSides)(float32 x, float32 y, float32 w, float32 h,
+                      float32 size);
+    void (*drawTopBottom)(float32 x, float32 y, float32 w, float32 h,
+                          float32 size);
+    void (*clearScene)(void);
+    void (*addRefEntityToScene)(const refEntity_t *re);
+    void (*renderScene)(const refdef_t *fd);
+    void (*registerFont)(pointer pFontname, sint pointSize, fontInfo_t *font);
+    void (*ownerDrawItem)(float32 x, float32 y, float32 w, float32 h,
+                          float32 text_x,
+                          float32 text_y, sint ownerDraw, sint ownerDrawFlags,
+                          sint align, sint textalign, sint textvalign,
+                          float32 special, float32 scale, vec4_t foreColor,
+                          vec4_t backColor, qhandle_t shader, sint textStyle);
+    float32(*getValue)(sint ownerDraw);
+    bool (*ownerDrawVisible)(sint flags);
+    void (*runScript)(valueType **p);
+    void (*getCVarString)(pointer cvar, valueType *buffer, uint64 bufsize);
+    float32(*getCVarValue)(pointer cvar);
+    void (*setCVar)(pointer cvar, pointer value);
+    void (*drawTextWithCursor)(float32 x, float32 y, float32 scale,
+                               vec4_t color, pointer text, sint cursorPos, valueType cursor, sint limit,
+                               sint style);
+    void (*setOverstrikeMode)(bool b);
+    bool (*getOverstrikeMode)(void);
+    void (*startLocalSound)(sfxHandle_t sfx, sint channelNum);
+    bool (*ownerDrawHandleKey)(sint ownerDraw, sint flags, float32 *special,
+                               sint key);
+    sint(*feederCount)(float32 feederID);
+    pointer(*feederItemText)(float32 feederID, sint index, sint column,
+                             qhandle_t *handle);
+    qhandle_t (*feederItemImage)(float32 feederID, sint index);
+    void (*feederSelection)(float32 feederID, sint index);
+    sint(*feederInitialise)(float32 feederID);
+    void (*keynumToStringBuf)(sint keynum, valueType *buf, sint buflen);
+    void (*getBindingBuf)(sint keynum, valueType *buf, sint buflen);
+    void (*setBinding)(sint keynum, pointer binding);
+    void (*executeText)(sint exec_when, pointer text);
+    void (*Error)(sint level, pointer error, ...);
+    void (*Print)(pointer msg, ...);
+    void (*Pause)(bool b);
+    sint(*ownerDrawWidth)(sint ownerDraw, float32 scale);
+    pointer(*ownerDrawText)(sint ownerDraw);
+    sfxHandle_t (*registerSound)(pointer name);
+    void (*startBackgroundTrack)(pointer intro, pointer loop);
+    void (*stopBackgroundTrack)(void);
+    sint(*playCinematic)(pointer name, float32 x, float32 y, float32 w,
+                         float32 h);
+    void (*stopCinematic)(sint handle);
+    void (*drawCinematic)(sint handle, float32 x, float32 y, float32 w,
+                          float32 h);
+    void (*runCinematicFrame)(sint handle);
+    sint(*getFileList)(pointer path, pointer extension, valueType *listbuf,
+                       sint bufsize);
+    valueType *(*translateString)(pointer string);
+    void (*checkAutoUpdate)();
+    void (*getAutoUpdate)();
+
     float32 yscale;
     float32 xscale;
     float32 aspectScale;
@@ -445,100 +446,105 @@ typedef struct
     float32 cursordx;
     float32 cursordy;
     bool debug;
-    
+
     cachedAssets_t Assets;
-    
+
     vidconfig_t glconfig;
     qhandle_t  whiteShader;
     qhandle_t gradientImage;
     qhandle_t cursor;
     float32 FPS;
-    
+
     bool  hudloading;
 }
 displayContextDef_t;
 
-pointer String_Alloc( pointer p );
-void String_Init( void );
-void String_Report( void );
-void Init_Display( displayContextDef_t* dc );
-void Display_ExpandMacros( valueType* buff );
-void Menu_Init( menuDef_t* menu );
-void Item_Init( itemDef_t* item );
-void Menu_PostParse( menuDef_t* menu );
-menuDef_t* Menu_GetFocused( void );
-void Menu_HandleKey( menuDef_t* menu, sint key, bool down );
-void Menu_HandleMouseMove( menuDef_t* menu, float32 x, float32 y );
-void Menu_ScrollFeeder( menuDef_t* menu, sint feeder, bool down );
-bool Float_Parse( valueType** p, float32* f );
-bool Color_Parse( valueType** p, vec4_t* c );
-bool Int_Parse( valueType** p, sint* i );
-bool Rect_Parse( valueType** p, rectDef_t* r );
-bool String_Parse( valueType** p, pointer* out );
-bool Script_Parse( valueType** p, pointer* out );
-bool PC_Float_Parse( sint handle, float32* f );
-bool PC_Color_Parse( sint handle, vec4_t* c );
-bool PC_Int_Parse( sint handle, sint* i );
-bool PC_Rect_Parse( sint handle, rectDef_t* r );
-bool PC_String_Parse( sint handle, pointer* out );
-bool PC_Script_Parse( sint handle, pointer* out );
-sint Menu_Count( void );
-void Menu_New( sint handle );
-void Menu_PaintAll( void );
-void Menu_Reset( void );
-bool Menus_AnyFullScreenVisible( void );
-menuDef_t* Menus_ActivateByName( pointer p );
-void Menus_Activate( menuDef_t* menu );
-menuDef_t* Menu_Get( sint handle );
+pointer String_Alloc(pointer p);
+void String_Init(void);
+void String_Report(void);
+void Init_Display(displayContextDef_t *dc);
+void Display_ExpandMacros(valueType *buff);
+void Menu_Init(menuDef_t *menu);
+void Item_Init(itemDef_t *item);
+void Menu_PostParse(menuDef_t *menu);
+menuDef_t *Menu_GetFocused(void);
+void Menu_HandleKey(menuDef_t *menu, sint key, bool down);
+void Menu_HandleMouseMove(menuDef_t *menu, float32 x, float32 y);
+void Menu_ScrollFeeder(menuDef_t *menu, sint feeder, bool down);
+bool Float_Parse(valueType **p, float32 *f);
+bool Color_Parse(valueType **p, vec4_t *c);
+bool Int_Parse(valueType **p, sint *i);
+bool Rect_Parse(valueType **p, rectDef_t *r);
+bool String_Parse(valueType **p, pointer *out);
+bool Script_Parse(valueType **p, pointer *out);
+bool PC_Float_Parse(sint handle, float32 *f);
+bool PC_Color_Parse(sint handle, vec4_t *c);
+bool PC_Int_Parse(sint handle, sint *i);
+bool PC_Rect_Parse(sint handle, rectDef_t *r);
+bool PC_String_Parse(sint handle, pointer *out);
+bool PC_Script_Parse(sint handle, pointer *out);
+sint Menu_Count(void);
+void Menu_New(sint handle);
+void Menu_PaintAll(void);
+void Menu_Reset(void);
+bool Menus_AnyFullScreenVisible(void);
+menuDef_t *Menus_ActivateByName(pointer p);
+void Menus_Activate(menuDef_t *menu);
+menuDef_t *Menu_Get(sint handle);
 
-displayContextDef_t* Display_GetContext( void );
-void* Display_CaptureItem( sint x, sint y );
-bool Display_MouseMove( void* p, float32 x, float32 y );
-sint Display_CursorType( sint x, sint y );
-bool Display_KeyBindPending( void );
-menuDef_t* Menus_FindByName( pointer p );
-itemDef_t* Menu_FindItemByName( menuDef_t* menu, pointer p );
-void Menus_CloseByName( pointer p );
-void Display_HandleKey( sint key, bool down, sint x, sint y );
-void LerpColor( vec4_t a, vec4_t b, vec4_t c, float32 t );
-void Menus_CloseAll( bool force );
-void Menu_Paint( menuDef_t* menu, bool forcePaint );
-void Menu_SetFeederSelection( menuDef_t* menu, sint feeder, sint index, pointer name );
-void Display_CacheAll( void );
+displayContextDef_t *Display_GetContext(void);
+void *Display_CaptureItem(sint x, sint y);
+bool Display_MouseMove(void *p, float32 x, float32 y);
+sint Display_CursorType(sint x, sint y);
+bool Display_KeyBindPending(void);
+menuDef_t *Menus_FindByName(pointer p);
+itemDef_t *Menu_FindItemByName(menuDef_t *menu, pointer p);
+void Menus_CloseByName(pointer p);
+void Display_HandleKey(sint key, bool down, sint x, sint y);
+void LerpColor(vec4_t a, vec4_t b, vec4_t c, float32 t);
+void Menus_CloseAll(bool force);
+void Menu_Paint(menuDef_t *menu, bool forcePaint);
+void Menu_SetFeederSelection(menuDef_t *menu, sint feeder, sint index,
+                             pointer name);
+void Display_CacheAll(void);
 
-typedef void ( CaptureFunc )( void* p );
+typedef void (CaptureFunc)(void *p);
 
-void UI_InstallCaptureFunc( CaptureFunc* f, void* data, sint timeout );
-void UI_RemoveCaptureFunc( void );
+void UI_InstallCaptureFunc(CaptureFunc *f, void *data, sint timeout);
+void UI_RemoveCaptureFunc(void);
 
-void* UI_Alloc( sint size );
-void UI_InitMemory( void );
-bool UI_OutOfMemory( void );
+void *UI_Alloc(sint size);
+void UI_InitMemory(void);
+bool UI_OutOfMemory(void);
 
-void Controls_GetConfig( void );
-void Controls_SetConfig( bool restart );
-void Controls_SetDefaults( void );
+void Controls_GetConfig(void);
+void Controls_SetConfig(bool restart);
+void Controls_SetDefaults(void);
 
 //for cg_draw.c
-void Item_Text_Wrapped_Paint( itemDef_t* item );
-void UI_DrawTextBlock( rectDef_t* rect, float32 text_x, float32 text_y, vec4_t color,
-                       float32 scale, sint textalign, sint textvalign,
-                       sint textStyle, pointer text );
-void UI_Text_Paint( float32 x, float32 y, float32 scale, vec4_t color, pointer text, float32 adjust, sint limit, sint style );
-void UI_Text_Paint_Limit( float32* maxX, float32 x, float32 y, float32 scale,
-                          vec4_t color, pointer text, float32 adjust, sint limit );
-float32 UI_Text_Width( pointer text, float32 scale, sint limit );
-float32 UI_Text_Height( pointer text, float32 scale, sint limit );
-float32 UI_Text_EmWidth( float32 scale );
-float32 UI_Text_EmHeight( float32 scale );
+void Item_Text_Wrapped_Paint(itemDef_t *item);
+void UI_DrawTextBlock(rectDef_t *rect, float32 text_x, float32 text_y,
+                      vec4_t color,
+                      float32 scale, sint textalign, sint textvalign,
+                      sint textStyle, pointer text);
+void UI_Text_Paint(float32 x, float32 y, float32 scale, vec4_t color,
+                   pointer text, float32 adjust, sint limit, sint style);
+void UI_Text_Paint_Limit(float32 *maxX, float32 x, float32 y,
+                         float32 scale,
+                         vec4_t color, pointer text, float32 adjust, sint limit);
+float32 UI_Text_Width(pointer text, float32 scale, sint limit);
+float32 UI_Text_Height(pointer text, float32 scale, sint limit);
+float32 UI_Text_EmWidth(float32 scale);
+float32 UI_Text_EmHeight(float32 scale);
 
-sint      trap_PC_AddGlobalDefine( valueType* define );
-sint      trap_PC_LoadSource( pointer filename );
-sint      trap_PC_FreeSource( sint handle );
-sint      trap_PC_ReadToken( sint handle, pc_token_t* pc_token );
-sint      trap_PC_SourceFileAndLine( sint handle, valueType* filename, sint* line );
+sint      trap_PC_AddGlobalDefine(valueType *define);
+sint      trap_PC_LoadSource(pointer filename);
+sint      trap_PC_FreeSource(sint handle);
+sint      trap_PC_ReadToken(sint handle, pc_token_t *pc_token);
+sint      trap_PC_SourceFileAndLine(sint handle, valueType *filename,
+                                    sint *line);
 
-void    BindingFromName( pointer cvar );
+void    BindingFromName(pointer cvar);
 extern valueType g_nameBind1[ 32 ];
 extern valueType g_nameBind2[ 32 ];
 

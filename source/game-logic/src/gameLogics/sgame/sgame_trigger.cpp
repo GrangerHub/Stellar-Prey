@@ -35,8 +35,7 @@
 idSGameTrigger::idSGameTrigger
 ===============
 */
-idSGameTrigger::idSGameTrigger( void )
-{
+idSGameTrigger::idSGameTrigger(void) {
 }
 
 /*
@@ -44,8 +43,7 @@ idSGameTrigger::idSGameTrigger( void )
 idSGameWeapons::~idSGameWeapons
 ===============
 */
-idSGameTrigger::~idSGameTrigger( void )
-{
+idSGameTrigger::~idSGameTrigger(void) {
 }
 
 /*
@@ -53,15 +51,14 @@ idSGameTrigger::~idSGameTrigger( void )
 idSGameTrigger::InitTrigger
 ===============
 */
-void idSGameTrigger::InitTrigger( gentity_t* self )
-{
-    if( !VectorCompare( self->s.angles, vec3_origin ) )
-    {
-        idSGameUtils::SetMovedir( self->s.angles, self->movedir );
+void idSGameTrigger::InitTrigger(gentity_t *self) {
+    if(!VectorCompare(self->s.angles, vec3_origin)) {
+        idSGameUtils::SetMovedir(self->s.angles, self->movedir);
     }
-    
-    trap_SetBrushModel( self, self->model );
-    self->r.contents = CONTENTS_TRIGGER;    // replaces the -1 from trap_SetBrushModel
+
+    trap_SetBrushModel(self, self->model);
+    self->r.contents =
+        CONTENTS_TRIGGER;    // replaces the -1 from trap_SetBrushModel
     self->r.svFlags = SVF_NOCLIENT;
 }
 
@@ -72,8 +69,7 @@ idSGameTrigger::multi_wait
 the wait time has passed, so set back up for another activation
 ===============
 */
-void idSGameTrigger::multi_wait( gentity_t* ent )
-{
+void idSGameTrigger::multi_wait(gentity_t *ent) {
     ent->nextthink = 0;
 }
 
@@ -86,37 +82,31 @@ ent->activator should be set to the activator so it can be held through a delay
 so wait for the delay time before firing
 ===============
 */
-void idSGameTrigger::multi_trigger( gentity_t* ent, gentity_t* activator )
-{
+void idSGameTrigger::multi_trigger(gentity_t *ent, gentity_t *activator) {
     ent->activator = activator;
-    
-    if( ent->nextthink )
-    {
+
+    if(ent->nextthink) {
         return;   // can't retrigger until the wait is over
     }
-    
-    if( activator->client )
-    {
-        if( ( ent->spawnflags & 1 ) && activator->client->ps.stats[STAT_TEAM] != TEAM_HUMANS )
-        {
+
+    if(activator->client) {
+        if((ent->spawnflags & 1) &&
+                activator->client->ps.stats[STAT_TEAM] != TEAM_HUMANS) {
             return;
         }
-        
-        if( ( ent->spawnflags & 2 ) && activator->client->ps.stats[STAT_TEAM] != TEAM_ALIENS )
-        {
+
+        if((ent->spawnflags & 2) &&
+                activator->client->ps.stats[STAT_TEAM] != TEAM_ALIENS) {
             return;
         }
     }
-    
-    idSGameUtils::UseTargets( ent, ent->activator );
-    
-    if( ent->wait > 0 )
-    {
+
+    idSGameUtils::UseTargets(ent, ent->activator);
+
+    if(ent->wait > 0) {
         ent->think = multi_wait;
-        ent->nextthink = level.time + ( ent->wait + ent->random * crandom( ) ) * 1000;
-    }
-    else
-    {
+        ent->nextthink = level.time + (ent->wait + ent->random * crandom()) * 1000;
+    } else {
         // we can't just remove (self) here, because this is a touch function
         // called while looping through area links...
         ent->touch = 0;
@@ -130,11 +120,10 @@ void idSGameTrigger::multi_trigger( gentity_t* ent, gentity_t* activator )
 idSGameTrigger::Use_Multi
 ===============
 */
-void idSGameTrigger::Use_Multi( gentity_t* ent, gentity_t* other, gentity_t* activator )
-{
-    if( activator )
-    {
-        multi_trigger( ent, activator );
+void idSGameTrigger::Use_Multi(gentity_t *ent, gentity_t *other,
+                               gentity_t *activator) {
+    if(activator) {
+        multi_trigger(ent, activator);
     }
 }
 
@@ -143,14 +132,13 @@ void idSGameTrigger::Use_Multi( gentity_t* ent, gentity_t* other, gentity_t* act
 idSGameTrigger::Touch_Multi
 ===============
 */
-void idSGameTrigger::Touch_Multi( gentity_t* self, gentity_t* other, trace_t* trace )
-{
-    if( !other->client && other->s.eType != ET_BUILDABLE )
-    {
+void idSGameTrigger::Touch_Multi(gentity_t *self, gentity_t *other,
+                                 trace_t *trace) {
+    if(!other->client && other->s.eType != ET_BUILDABLE) {
         return;
     }
-    
-    multi_trigger( self, other );
+
+    multi_trigger(self, other);
 }
 
 /*QUAKED trigger_multiple (.5 .5 .5) ?
@@ -160,22 +148,20 @@ Variable sized repeatable trigger.  Must be targeted at one or more entities.
 so, the basic time between firing is a random time between
 (wait - random) and (wait + random)
 */
-void idSGameTrigger::SP_trigger_multiple( gentity_t* ent )
-{
-    idSGameSpawn::SpawnFloat( "wait", "0.5", &ent->wait );
-    idSGameSpawn::SpawnFloat( "random", "0", &ent->random );
-    
-    if( ent->random >= ent->wait && ent->wait >= 0 )
-    {
+void idSGameTrigger::SP_trigger_multiple(gentity_t *ent) {
+    idSGameSpawn::SpawnFloat("wait", "0.5", &ent->wait);
+    idSGameSpawn::SpawnFloat("random", "0", &ent->random);
+
+    if(ent->random >= ent->wait && ent->wait >= 0) {
         ent->random = ent->wait - FRAMETIME;
-        idSGameMain::Printf( "trigger_multiple has random >= wait\n" );
+        idSGameMain::Printf("trigger_multiple has random >= wait\n");
     }
-    
+
     ent->touch = Touch_Multi;
     ent->use = Use_Multi;
-    
-    InitTrigger( ent );
-    trap_LinkEntity( ent );
+
+    InitTrigger(ent);
+    trap_LinkEntity(ent);
 }
 
 /*
@@ -191,17 +177,15 @@ trigger_always
 idSGameTrigger::trigger_always_think
 ===============
 */
-void idSGameTrigger::trigger_always_think( gentity_t* ent )
-{
-    idSGameUtils::UseTargets( ent, ent );
-    idSGameUtils::FreeEntity( ent );
+void idSGameTrigger::trigger_always_think(gentity_t *ent) {
+    idSGameUtils::UseTargets(ent, ent);
+    idSGameUtils::FreeEntity(ent);
 }
 
 /*QUAKED trigger_always (.5 .5 .5) (-8 -8 -8) (8 8 8)
 This trigger will always fire.  It is activated by the world.
 */
-void idSGameTrigger::SP_trigger_always( gentity_t* ent )
-{
+void idSGameTrigger::SP_trigger_always(gentity_t *ent) {
     // we must have some delay to make sure our use targets are present
     ent->nextthink = level.time + 300;
     ent->think = trigger_always_think;
@@ -216,17 +200,19 @@ trigger_push
 ==============================================================================
 */
 
-void idSGameTrigger::trigger_push_touch( gentity_t* self, gentity_t* other, trace_t* trace )
-{
-    if( !other->client )
-    {
-        if( other->s.pos.trType != TR_STATIONARY && other->s.pos.trType != TR_LINEAR_STOP && other->s.pos.trType != TR_NONLINEAR_STOP && VectorLengthSquared( other->s.pos.trDelta ) )
-        {
+void idSGameTrigger::trigger_push_touch(gentity_t *self, gentity_t *other,
+                                        trace_t *trace) {
+    if(!other->client) {
+        if(other->s.pos.trType != TR_STATIONARY &&
+                other->s.pos.trType != TR_LINEAR_STOP &&
+                other->s.pos.trType != TR_NONLINEAR_STOP &&
+                VectorLengthSquared(other->s.pos.trDelta)) {
             //already moving
-            VectorCopy( other->r.currentOrigin, other->s.pos.trBase );
-            VectorCopy( self->s.origin2, other->s.pos.trDelta );
+            VectorCopy(other->r.currentOrigin, other->s.pos.trBase);
+            VectorCopy(self->s.origin2, other->s.pos.trDelta);
             other->s.pos.trTime = level.time;
         }
+
         return;
     }
 }
@@ -239,41 +225,38 @@ idSGameTrigger::AimAtTarget
 Calculate origin2 so the target apogee will be hit
 =================
 */
-void idSGameTrigger::AimAtTarget( gentity_t* self )
-{
-    gentity_t* ent;
+void idSGameTrigger::AimAtTarget(gentity_t *self) {
+    gentity_t *ent;
     vec3_t origin;
     float32 height, gravity, time, forward, dist;
-    
-    VectorAdd( self->r.absmin, self->r.absmax, origin );
-    VectorScale( origin, 0.5, origin );
-    
-    ent = idSGameUtils::PickTarget( self->target );
-    
-    if( !ent )
-    {
-        idSGameUtils::FreeEntity( self );
+
+    VectorAdd(self->r.absmin, self->r.absmax, origin);
+    VectorScale(origin, 0.5, origin);
+
+    ent = idSGameUtils::PickTarget(self->target);
+
+    if(!ent) {
+        idSGameUtils::FreeEntity(self);
         return;
     }
-    
+
     height = ent->s.origin[ 2 ] - origin[ 2 ];
     gravity = g_gravity.value;
-    time = sqrt( height / ( 0.5 * gravity ) );
-    
-    if( !time )
-    {
-        idSGameUtils::FreeEntity( self );
+    time = sqrt(height / (0.5 * gravity));
+
+    if(!time) {
+        idSGameUtils::FreeEntity(self);
         return;
     }
-    
+
     // set s.origin2 to the push velocity
-    VectorSubtract( ent->s.origin, origin, self->s.origin2 );
+    VectorSubtract(ent->s.origin, origin, self->s.origin2);
     self->s.origin2[ 2 ] = 0;
-    dist = VectorNormalize( self->s.origin2 );
-    
+    dist = VectorNormalize(self->s.origin2);
+
     forward = dist / time;
-    VectorScale( self->s.origin2, forward, self->s.origin2 );
-    
+    VectorScale(self->s.origin2, forward, self->s.origin2);
+
     self->s.origin2[ 2 ] = time * gravity;
 }
 
@@ -281,18 +264,17 @@ void idSGameTrigger::AimAtTarget( gentity_t* self )
 Must point at a target_position, which will be the apex of the leap.
 This will be client side predicted, unlike target_push
 */
-void idSGameTrigger::SP_trigger_push( gentity_t* self )
-{
-    InitTrigger( self );
-    
+void idSGameTrigger::SP_trigger_push(gentity_t *self) {
+    InitTrigger(self);
+
     // unlike other triggers, we need to send this one to the client
     self->r.svFlags &= ~SVF_NOCLIENT;
-    
+
     self->s.eType = ET_PUSH_TRIGGER;
     self->touch = trigger_push_touch;
     self->think = AimAtTarget;
     self->nextthink = level.time + FRAMETIME;
-    trap_LinkEntity( self );
+    trap_LinkEntity(self);
 }
 
 /*
@@ -300,44 +282,39 @@ void idSGameTrigger::SP_trigger_push( gentity_t* self )
 idSGameTrigger::Use_target_push
 ===============
 */
-void idSGameTrigger::Use_target_push( gentity_t* self, gentity_t* other, gentity_t* activator )
-{
-    if( !activator->client )
-    {
+void idSGameTrigger::Use_target_push(gentity_t *self, gentity_t *other,
+                                     gentity_t *activator) {
+    if(!activator->client) {
         return;
     }
-    
-    if( activator->client->ps.pm_type != PM_NORMAL )
-    {
+
+    if(activator->client->ps.pm_type != PM_NORMAL) {
         return;
     }
-    
-    VectorCopy( self->s.origin2, activator->client->ps.velocity );
-    
+
+    VectorCopy(self->s.origin2, activator->client->ps.velocity);
+
 }
 
 /*QUAKED target_push (.5 .5 .5) (-8 -8 -8) (8 8 8)
 Pushes the activator in the direction.of angle, or towards a target apex.
 "speed"   defaults to 1000
 */
-void idSGameTrigger::SP_target_push( gentity_t* self )
-{
-    if( !self->speed )
-    {
+void idSGameTrigger::SP_target_push(gentity_t *self) {
+    if(!self->speed) {
         self->speed = 1000;
     }
-    
-    idSGameUtils::SetMovedir( self->s.angles, self->s.origin2 );
-    VectorScale( self->s.origin2, self->speed, self->s.origin2 );
-    
-    if( self->target )
-    {
-        VectorCopy( self->s.origin, self->r.absmin );
-        VectorCopy( self->s.origin, self->r.absmax );
+
+    idSGameUtils::SetMovedir(self->s.angles, self->s.origin2);
+    VectorScale(self->s.origin2, self->speed, self->s.origin2);
+
+    if(self->target) {
+        VectorCopy(self->s.origin, self->r.absmin);
+        VectorCopy(self->s.origin, self->r.absmax);
         self->think = AimAtTarget;
         self->nextthink = level.time + FRAMETIME;
     }
-    
+
     self->use = Use_target_push;
 }
 
@@ -354,40 +331,36 @@ trigger_teleport
 idSGameTrigger::trigger_teleporter_touch
 ===============
 */
-void idSGameTrigger::trigger_teleporter_touch( gentity_t* self, gentity_t* other, trace_t* trace )
-{
-    gentity_t* dest;
-    
-    if( self->s.eFlags & EF_NODRAW )
-    {
+void idSGameTrigger::trigger_teleporter_touch(gentity_t *self,
+        gentity_t *other, trace_t *trace) {
+    gentity_t *dest;
+
+    if(self->s.eFlags & EF_NODRAW) {
         return;
     }
-    
-    if( !other->client )
-    {
+
+    if(!other->client) {
         return;
     }
-    
-    if( other->client->ps.pm_type == PM_DEAD )
-    {
+
+    if(other->client->ps.pm_type == PM_DEAD) {
         return;
     }
-    
+
     // Spectators only?
-    if( ( self->spawnflags & 1 ) && other->client->sess.spectatorState == SPECTATOR_NOT )
-    {
+    if((self->spawnflags & 1) &&
+            other->client->sess.spectatorState == SPECTATOR_NOT) {
         return;
     }
-    
-    dest = idSGameUtils::PickTarget( self->target );
-    
-    if( !dest )
-    {
-        idSGameMain::Printf( "Couldn't find teleporter destination\n" );
+
+    dest = idSGameUtils::PickTarget(self->target);
+
+    if(!dest) {
+        idSGameMain::Printf("Couldn't find teleporter destination\n");
         return;
     }
-    
-    idSGameMisc::TeleportPlayer( other, dest->s.origin, dest->s.angles );
+
+    idSGameMisc::TeleportPlayer(other, dest->s.origin, dest->s.angles);
 }
 
 /*
@@ -395,8 +368,8 @@ void idSGameTrigger::trigger_teleporter_touch( gentity_t* self, gentity_t* other
 idSGameTrigger::trigger_teleport_use
 ===============
 */
-void idSGameTrigger::trigger_teleporter_use( gentity_t* ent, gentity_t* other, gentity_t* activator )
-{
+void idSGameTrigger::trigger_teleporter_use(gentity_t *ent,
+        gentity_t *other, gentity_t *activator) {
     ent->s.eFlags ^= EF_NODRAW;
 }
 
@@ -408,32 +381,27 @@ If spectator is set, only spectators can use this teleport
 Spectator teleporters are not normally placed in the editor, but are created
 automatically near doors to allow spectators to move through them
 */
-void idSGameTrigger::SP_trigger_teleport( gentity_t* self )
-{
-    InitTrigger( self );
-    
+void idSGameTrigger::SP_trigger_teleport(gentity_t *self) {
+    InitTrigger(self);
+
     // unlike other triggers, we need to send this one to the client
     // unless is a spectator trigger
-    if( self->spawnflags & 1 )
-    {
+    if(self->spawnflags & 1) {
         self->r.svFlags |= SVF_NOCLIENT;
-    }
-    else
-    {
+    } else {
         self->r.svFlags &= ~SVF_NOCLIENT;
     }
-    
+
     // SPAWN_DISABLED
-    if( self->spawnflags & 2 )
-    {
+    if(self->spawnflags & 2) {
         self->s.eFlags |= EF_NODRAW;
     }
-    
+
     self->s.eType = ET_TELEPORT_TRIGGER;
     self->touch = trigger_teleporter_touch;
     self->use = trigger_teleporter_use;
-    
-    trap_LinkEntity( self );
+
+    trap_LinkEntity(self);
 }
 
 
@@ -463,15 +431,12 @@ NO_PROTECTION *nothing* stops the damage
 idSGameTrigger::hurt_use
 ===============
 */
-void idSGameTrigger::hurt_use( gentity_t* self, gentity_t* other, gentity_t* activator )
-{
-    if( self->r.linked )
-    {
-        trap_UnlinkEntity( self );
-    }
-    else
-    {
-        trap_LinkEntity( self );
+void idSGameTrigger::hurt_use(gentity_t *self, gentity_t *other,
+                              gentity_t *activator) {
+    if(self->r.linked) {
+        trap_UnlinkEntity(self);
+    } else {
+        trap_LinkEntity(self);
     }
 }
 
@@ -480,45 +445,37 @@ void idSGameTrigger::hurt_use( gentity_t* self, gentity_t* other, gentity_t* act
 idSGameTrigger::hurt_touch
 ===============
 */
-void idSGameTrigger::hurt_touch( gentity_t* self, gentity_t* other, trace_t* trace )
-{
+void idSGameTrigger::hurt_touch(gentity_t *self, gentity_t *other,
+                                trace_t *trace) {
     sint dflags;
-    
-    if( !other->takedamage )
-    {
+
+    if(!other->takedamage) {
         return;
     }
-    
-    if( self->timestamp > level.time )
-    {
+
+    if(self->timestamp > level.time) {
         return;
     }
-    
-    if( self->spawnflags & 16 )
-    {
+
+    if(self->spawnflags & 16) {
         self->timestamp = level.time + 1000;
-    }
-    else
-    {
+    } else {
         self->timestamp = level.time + FRAMETIME;
     }
-    
+
     // play sound
-    if( !( self->spawnflags & 4 ) )
-    {
-        idSGameUtils::Sound( other, CHAN_AUTO, self->noise_index );
+    if(!(self->spawnflags & 4)) {
+        idSGameUtils::Sound(other, CHAN_AUTO, self->noise_index);
     }
-    
-    if( self->spawnflags & 8 )
-    {
+
+    if(self->spawnflags & 8) {
         dflags = DAMAGE_NO_PROTECTION;
-    }
-    else
-    {
+    } else {
         dflags = 0;
     }
-    
-    idSGameCombat::Damage( other, self, self, nullptr, nullptr, self->damage, dflags, MOD_TRIGGER_HURT );
+
+    idSGameCombat::Damage(other, self, self, nullptr, nullptr, self->damage,
+                          dflags, MOD_TRIGGER_HURT);
 }
 
 /*
@@ -526,29 +483,25 @@ void idSGameTrigger::hurt_touch( gentity_t* self, gentity_t* other, trace_t* tra
 v::SP_trigger_hurt
 ===============
 */
-void idSGameTrigger::SP_trigger_hurt( gentity_t* self )
-{
-    InitTrigger( self );
-    
-    self->noise_index = idSGameUtils::SoundIndex( "sound/misc/electro.wav" );
+void idSGameTrigger::SP_trigger_hurt(gentity_t *self) {
+    InitTrigger(self);
+
+    self->noise_index = idSGameUtils::SoundIndex("sound/misc/electro.wav");
     self->touch = hurt_touch;
-    
-    if( self->damage <= 0 )
-    {
+
+    if(self->damage <= 0) {
         self->damage = 5;
     }
-    
+
     self->r.contents = CONTENTS_TRIGGER;
-    
-    if( self->spawnflags & 2 )
-    {
+
+    if(self->spawnflags & 2) {
         self->use = hurt_use;
     }
-    
+
     // link in to the world if starting active
-    if( !( self->spawnflags & 1 ) )
-    {
-        trap_LinkEntity( self );
+    if(!(self->spawnflags & 1)) {
+        trap_LinkEntity(self);
     }
 }
 
@@ -579,12 +532,12 @@ so, the basic time between firing is a random time between
 idSGameTrigger::func_timer_think
 ===============
 */
-void idSGameTrigger::func_timer_think( gentity_t* self )
-{
-    idSGameUtils::UseTargets( self, self->activator );
-    
+void idSGameTrigger::func_timer_think(gentity_t *self) {
+    idSGameUtils::UseTargets(self, self->activator);
+
     // set time before next firing
-    self->nextthink = level.time + 1000 * ( self->wait + crandom( ) * self->random );
+    self->nextthink = level.time + 1000 * (self->wait + crandom() *
+                                           self->random);
 }
 
 /*
@@ -592,19 +545,18 @@ void idSGameTrigger::func_timer_think( gentity_t* self )
 idSGameTrigger::func_timer_use
 ===============
 */
-void idSGameTrigger::func_timer_use( gentity_t* self, gentity_t* other, gentity_t* activator )
-{
+void idSGameTrigger::func_timer_use(gentity_t *self, gentity_t *other,
+                                    gentity_t *activator) {
     self->activator = activator;
-    
+
     // if on, turn it off
-    if( self->nextthink )
-    {
+    if(self->nextthink) {
         self->nextthink = 0;
         return;
     }
-    
+
     // turn it on
-    func_timer_think( self );
+    func_timer_think(self);
 }
 
 /*
@@ -612,26 +564,24 @@ void idSGameTrigger::func_timer_use( gentity_t* self, gentity_t* other, gentity_
 idSGameTrigger::SP_func_timer
 ===============
 */
-void idSGameTrigger::SP_func_timer( gentity_t* self )
-{
-    idSGameSpawn::SpawnFloat( "random", "1", &self->random );
-    idSGameSpawn::SpawnFloat( "wait", "1", &self->wait );
-    
+void idSGameTrigger::SP_func_timer(gentity_t *self) {
+    idSGameSpawn::SpawnFloat("random", "1", &self->random);
+    idSGameSpawn::SpawnFloat("wait", "1", &self->wait);
+
     self->use = func_timer_use;
     self->think = func_timer_think;
-    
-    if( self->random >= self->wait )
-    {
+
+    if(self->random >= self->wait) {
         self->random = self->wait - FRAMETIME;
-        idSGameMain::Printf( "func_timer at %s has random >= wait\n", idSGameUtils::vtos( self->s.origin ) );
+        idSGameMain::Printf("func_timer at %s has random >= wait\n",
+                            idSGameUtils::vtos(self->s.origin));
     }
-    
-    if( self->spawnflags & 1 )
-    {
+
+    if(self->spawnflags & 1) {
         self->nextthink = level.time + FRAMETIME;
         self->activator = self;
     }
-    
+
     self->r.svFlags = SVF_NOCLIENT;
 }
 
@@ -643,23 +593,18 @@ idSGameTrigger::Checktrigger_stages
 Called when stages change
 ===============
 */
-void idSGameTrigger::Checktrigger_stages( team_t team, stage_t stage )
-{
+void idSGameTrigger::Checktrigger_stages(team_t team, stage_t stage) {
     sint i;
-    gentity_t* ent;
-    
-    for( i = 1, ent = g_entities + i ; i < level.num_entities ; i++, ent++ )
-    {
-        if( !ent->inuse )
-        {
+    gentity_t *ent;
+
+    for(i = 1, ent = g_entities + i ; i < level.num_entities ; i++, ent++) {
+        if(!ent->inuse) {
             continue;
         }
-        
-        if( !Q_stricmp( ent->classname, "trigger_stage" ) )
-        {
-            if( team == ent->stageTeam && stage == ent->stageStage )
-            {
-                ent->use( ent, ent, ent );
+
+        if(!Q_stricmp(ent->classname, "trigger_stage")) {
+            if(team == ent->stageTeam && stage == ent->stageStage) {
+                ent->use(ent, ent, ent);
             }
         }
     }
@@ -670,9 +615,9 @@ void idSGameTrigger::Checktrigger_stages( team_t team, stage_t stage )
 idSGameTrigger::trigger_stage_use
 ===============
 */
-void idSGameTrigger::trigger_stage_use( gentity_t* self, gentity_t* other, gentity_t* activator )
-{
-    idSGameUtils::UseTargets( self, self );
+void idSGameTrigger::trigger_stage_use(gentity_t *self, gentity_t *other,
+                                       gentity_t *activator) {
+    idSGameUtils::UseTargets(self, self);
 }
 
 /*
@@ -680,13 +625,12 @@ void idSGameTrigger::trigger_stage_use( gentity_t* self, gentity_t* other, genti
 idSGameTrigger::SP_trigger_stage
 ===============
 */
-void idSGameTrigger::SP_trigger_stage( gentity_t* self )
-{
-    idSGameSpawn::SpawnInt( "team", "0", ( sint* )&self->stageTeam );
-    idSGameSpawn::SpawnInt( "stage", "0", ( sint* )&self->stageStage );
-    
+void idSGameTrigger::SP_trigger_stage(gentity_t *self) {
+    idSGameSpawn::SpawnInt("team", "0", (sint *)&self->stageTeam);
+    idSGameSpawn::SpawnInt("stage", "0", (sint *)&self->stageStage);
+
     self->use = trigger_stage_use;
-    
+
     self->r.svFlags = SVF_NOCLIENT;
 }
 
@@ -695,9 +639,9 @@ void idSGameTrigger::SP_trigger_stage( gentity_t* self )
 idSGameTrigger::trigger_win
 ===============
 */
-void idSGameTrigger::trigger_win( gentity_t* self, gentity_t* other, gentity_t* activator )
-{
-    idSGameUtils::UseTargets( self, self );
+void idSGameTrigger::trigger_win(gentity_t *self, gentity_t *other,
+                                 gentity_t *activator) {
+    idSGameUtils::UseTargets(self, self);
 }
 
 /*
@@ -705,12 +649,11 @@ void idSGameTrigger::trigger_win( gentity_t* self, gentity_t* other, gentity_t* 
 idSGameTrigger::SP_trigger_win
 ===============
 */
-void idSGameTrigger::SP_trigger_win( gentity_t* self )
-{
-    idSGameSpawn::SpawnInt( "team", "0", ( sint* )&self->stageTeam );
-    
+void idSGameTrigger::SP_trigger_win(gentity_t *self) {
+    idSGameSpawn::SpawnInt("team", "0", (sint *)&self->stageTeam);
+
     self->use = trigger_win;
-    
+
     self->r.svFlags = SVF_NOCLIENT;
 }
 
@@ -719,27 +662,22 @@ void idSGameTrigger::SP_trigger_win( gentity_t* self )
 idSGameTrigger::trigger_buildable_match
 ===============
 */
-bool idSGameTrigger::trigger_buildable_match( gentity_t* self, gentity_t* activator )
-{
+bool idSGameTrigger::trigger_buildable_match(gentity_t *self,
+        gentity_t *activator) {
     sint i = 0;
-    
+
     //if there is no buildable list every buildable triggers
-    if( self->bTriggers[i] == BA_NONE )
-    {
+    if(self->bTriggers[i] == BA_NONE) {
         return true;
-    }
-    else
-    {
+    } else {
         //otherwise check against the list
-        for( i = 0; self->bTriggers[ i ] != BA_NONE; i++ )
-        {
-            if( activator->s.modelindex == self->bTriggers[i] )
-            {
+        for(i = 0; self->bTriggers[ i ] != BA_NONE; i++) {
+            if(activator->s.modelindex == self->bTriggers[i]) {
                 return true;
             }
         }
     }
-    
+
     return false;
 }
 
@@ -748,42 +686,33 @@ bool idSGameTrigger::trigger_buildable_match( gentity_t* self, gentity_t* activa
 v::trigger_buildable_trigger
 ===============
 */
-void idSGameTrigger::trigger_buildable_trigger( gentity_t* self, gentity_t* activator )
-{
+void idSGameTrigger::trigger_buildable_trigger(gentity_t *self,
+        gentity_t *activator) {
     self->activator = activator;
-    
-    if( self->s.eFlags & EF_NODRAW )
-    {
+
+    if(self->s.eFlags & EF_NODRAW) {
         return;
     }
-    
-    if( self->nextthink )
-    {
+
+    if(self->nextthink) {
         return;   // can't retrigger until the wait is over
     }
-    
-    if( self->s.eFlags & EF_DEAD )
-    {
-        if( !trigger_buildable_match( self, activator ) )
-        {
-            idSGameUtils::UseTargets( self, activator );
+
+    if(self->s.eFlags & EF_DEAD) {
+        if(!trigger_buildable_match(self, activator)) {
+            idSGameUtils::UseTargets(self, activator);
+        }
+    } else {
+        if(trigger_buildable_match(self, activator)) {
+            idSGameUtils::UseTargets(self, activator);
         }
     }
-    else
-    {
-        if( trigger_buildable_match( self, activator ) )
-        {
-            idSGameUtils::UseTargets( self, activator );
-        }
-    }
-    
-    if( self->wait > 0 )
-    {
+
+    if(self->wait > 0) {
         self->think = multi_wait;
-        self->nextthink = level.time + ( self->wait + self->random * crandom( ) ) * 1000;
-    }
-    else
-    {
+        self->nextthink = level.time + (self->wait + self->random * crandom()) *
+                          1000;
+    } else {
         // we can't just remove (self) here, because this is a touch function
         // called while looping through area links...
         self->touch = 0;
@@ -797,15 +726,14 @@ void idSGameTrigger::trigger_buildable_trigger( gentity_t* self, gentity_t* acti
 idSGameTrigger::trigger_buildable_touch
 ===============
 */
-void idSGameTrigger::trigger_buildable_touch( gentity_t* ent, gentity_t* other, trace_t* trace )
-{
+void idSGameTrigger::trigger_buildable_touch(gentity_t *ent,
+        gentity_t *other, trace_t *trace) {
     //only triggered by buildables
-    if( other->s.eType != ET_BUILDABLE )
-    {
+    if(other->s.eType != ET_BUILDABLE) {
         return;
     }
-    
-    trigger_buildable_trigger( ent, other );
+
+    trigger_buildable_trigger(ent, other);
 }
 
 /*
@@ -813,8 +741,8 @@ void idSGameTrigger::trigger_buildable_touch( gentity_t* ent, gentity_t* other, 
 idSGameTrigger::trigger_buildable_use
 ===============
 */
-void idSGameTrigger::trigger_buildable_use( gentity_t* ent, gentity_t* other, gentity_t* activator )
-{
+void idSGameTrigger::trigger_buildable_use(gentity_t *ent,
+        gentity_t *other, gentity_t *activator) {
     ent->s.eFlags ^= EF_NODRAW;
 }
 
@@ -823,40 +751,37 @@ void idSGameTrigger::trigger_buildable_use( gentity_t* ent, gentity_t* other, ge
 idSGameTrigger::SP_trigger_buildable
 ===============
 */
-void idSGameTrigger::SP_trigger_buildable( gentity_t* self )
-{
-    valueType* buffer;
-    
-    idSGameSpawn::SpawnFloat( "wait", "0.5", &self->wait );
-    idSGameSpawn::SpawnFloat( "random", "0", &self->random );
-    
-    if( self->random >= self->wait && self->wait >= 0 )
-    {
+void idSGameTrigger::SP_trigger_buildable(gentity_t *self) {
+    valueType *buffer;
+
+    idSGameSpawn::SpawnFloat("wait", "0.5", &self->wait);
+    idSGameSpawn::SpawnFloat("random", "0", &self->random);
+
+    if(self->random >= self->wait && self->wait >= 0) {
         self->random = self->wait - FRAMETIME;
-        idSGameMain::Printf( S_COLOR_YELLOW "WARNING: trigger_buildable has random >= wait\n" );
+        idSGameMain::Printf(S_COLOR_YELLOW
+                            "WARNING: trigger_buildable has random >= wait\n");
     }
-    
-    idSGameSpawn::SpawnString( "buildables", "", &buffer );
-    
-    bggame->ParseCSVBuildableList( buffer, self->bTriggers, BA_NUM_BUILDABLES );
-    
+
+    idSGameSpawn::SpawnString("buildables", "", &buffer);
+
+    bggame->ParseCSVBuildableList(buffer, self->bTriggers, BA_NUM_BUILDABLES);
+
     self->touch = trigger_buildable_touch;
     self->use = trigger_buildable_use;
-    
+
     // SPAWN_DISABLED
-    if( self->spawnflags & 1 )
-    {
+    if(self->spawnflags & 1) {
         self->s.eFlags |= EF_NODRAW;
     }
-    
+
     // NEGATE
-    if( self->spawnflags & 2 )
-    {
+    if(self->spawnflags & 2) {
         self->s.eFlags |= EF_DEAD;
     }
-    
-    InitTrigger( self );
-    trap_LinkEntity( self );
+
+    InitTrigger(self);
+    trap_LinkEntity(self);
 }
 
 
@@ -865,25 +790,22 @@ void idSGameTrigger::SP_trigger_buildable( gentity_t* self )
 idSGameTrigger::trigger_class_match
 ===============
 */
-bool idSGameTrigger::trigger_class_match( gentity_t* self, gentity_t* activator )
-{
+bool idSGameTrigger::trigger_class_match(gentity_t *self,
+        gentity_t *activator) {
     sint i = 0;
-    
+
     //if there is no class list every class triggers (stupid case)
-    if( self->cTriggers[i] == PCL_NONE )
-    {
+    if(self->cTriggers[i] == PCL_NONE) {
         return true;
-    }
-    else
-    {
+    } else {
         //otherwise check against the list
-        for( i = 0; self->cTriggers[ i ] != PCL_NONE; i++ )
-        {
-            if( activator->client->ps.stats[ STAT_CLASS ] == self->cTriggers[ i ] )
+        for(i = 0; self->cTriggers[ i ] != PCL_NONE; i++) {
+            if(activator->client->ps.stats[ STAT_CLASS ] == self->cTriggers[ i ]) {
                 return true;
+            }
         }
     }
-    
+
     return false;
 }
 
@@ -892,53 +814,42 @@ bool idSGameTrigger::trigger_class_match( gentity_t* self, gentity_t* activator 
 idSGameTrigger::trigger_class_trigger
 ===============
 */
-void idSGameTrigger::trigger_class_trigger( gentity_t* self, gentity_t* activator )
-{
+void idSGameTrigger::trigger_class_trigger(gentity_t *self,
+        gentity_t *activator) {
     //sanity check
-    if( !activator->client )
-    {
+    if(!activator->client) {
         return;
     }
-    
-    if( activator->client->ps.stats[STAT_TEAM] != TEAM_ALIENS )
-    {
+
+    if(activator->client->ps.stats[STAT_TEAM] != TEAM_ALIENS) {
         return;
     }
-    
-    if( self->s.eFlags & EF_NODRAW )
-    {
+
+    if(self->s.eFlags & EF_NODRAW) {
         return;
     }
-    
+
     self->activator = activator;
-    
-    if( self->nextthink )
-    {
+
+    if(self->nextthink) {
         return;   // can't retrigger until the wait is over
     }
-    
-    if( self->s.eFlags & EF_DEAD )
-    {
-        if( !trigger_class_match( self, activator ) )
-        {
-            idSGameUtils::UseTargets( self, activator );
+
+    if(self->s.eFlags & EF_DEAD) {
+        if(!trigger_class_match(self, activator)) {
+            idSGameUtils::UseTargets(self, activator);
+        }
+    } else {
+        if(trigger_class_match(self, activator)) {
+            idSGameUtils::UseTargets(self, activator);
         }
     }
-    else
-    {
-        if( trigger_class_match( self, activator ) )
-        {
-            idSGameUtils::UseTargets( self, activator );
-        }
-    }
-    
-    if( self->wait > 0 )
-    {
+
+    if(self->wait > 0) {
         self->think = multi_wait;
-        self->nextthink = level.time + ( self->wait + self->random * crandom( ) ) * 1000;
-    }
-    else
-    {
+        self->nextthink = level.time + (self->wait + self->random * crandom()) *
+                          1000;
+    } else {
         // we can't just remove (self) here, because this is a touch function
         // called while looping through area links...
         self->touch = 0;
@@ -952,15 +863,14 @@ void idSGameTrigger::trigger_class_trigger( gentity_t* self, gentity_t* activato
 idSGameTrigger::trigger_class_touch
 ===============
 */
-void idSGameTrigger::trigger_class_touch( gentity_t* ent, gentity_t* other, trace_t* trace )
-{
+void idSGameTrigger::trigger_class_touch(gentity_t *ent, gentity_t *other,
+        trace_t *trace) {
     //only triggered by clients
-    if( !other->client )
-    {
+    if(!other->client) {
         return;
     }
-    
-    trigger_class_trigger( ent, other );
+
+    trigger_class_trigger(ent, other);
 }
 
 /*
@@ -968,8 +878,8 @@ void idSGameTrigger::trigger_class_touch( gentity_t* ent, gentity_t* other, trac
 idSGameTrigger::trigger_class_use
 ===============
 */
-void idSGameTrigger::trigger_class_use( gentity_t* ent, gentity_t* other, gentity_t* activator )
-{
+void idSGameTrigger::trigger_class_use(gentity_t *ent, gentity_t *other,
+                                       gentity_t *activator) {
     ent->s.eFlags ^= EF_NODRAW;
 }
 
@@ -978,40 +888,37 @@ void idSGameTrigger::trigger_class_use( gentity_t* ent, gentity_t* other, gentit
 idSGameTrigger::SP_trigger_class
 ===============
 */
-void idSGameTrigger::SP_trigger_class( gentity_t* self )
-{
-    valueType* buffer;
-    
-    idSGameSpawn::SpawnFloat( "wait", "0.5", &self->wait );
-    idSGameSpawn::SpawnFloat( "random", "0", &self->random );
-    
-    if( self->random >= self->wait && self->wait >= 0 )
-    {
+void idSGameTrigger::SP_trigger_class(gentity_t *self) {
+    valueType *buffer;
+
+    idSGameSpawn::SpawnFloat("wait", "0.5", &self->wait);
+    idSGameSpawn::SpawnFloat("random", "0", &self->random);
+
+    if(self->random >= self->wait && self->wait >= 0) {
         self->random = self->wait - FRAMETIME;
-        idSGameMain::Printf( S_COLOR_YELLOW "WARNING: trigger_class has random >= wait\n" );
+        idSGameMain::Printf(S_COLOR_YELLOW
+                            "WARNING: trigger_class has random >= wait\n");
     }
-    
-    idSGameSpawn::SpawnString( "classes", "", &buffer );
-    
-    bggame->ParseCSVClassList( buffer, self->cTriggers, PCL_NUM_CLASSES );
-    
+
+    idSGameSpawn::SpawnString("classes", "", &buffer);
+
+    bggame->ParseCSVClassList(buffer, self->cTriggers, PCL_NUM_CLASSES);
+
     self->touch = trigger_class_touch;
     self->use = trigger_class_use;
-    
+
     // SPAWN_DISABLED
-    if( self->spawnflags & 1 )
-    {
+    if(self->spawnflags & 1) {
         self->s.eFlags |= EF_NODRAW;
     }
-    
+
     // NEGATE
-    if( self->spawnflags & 2 )
-    {
+    if(self->spawnflags & 2) {
         self->s.eFlags |= EF_DEAD;
     }
-    
-    InitTrigger( self );
-    trap_LinkEntity( self );
+
+    InitTrigger(self);
+    trap_LinkEntity(self);
 }
 
 
@@ -1020,35 +927,30 @@ void idSGameTrigger::SP_trigger_class( gentity_t* self )
 idSGameTrigger::trigger_equipment_match
 ===============
 */
-bool idSGameTrigger::trigger_equipment_match( gentity_t* self, gentity_t* activator )
-{
+bool idSGameTrigger::trigger_equipment_match(gentity_t *self,
+        gentity_t *activator) {
     sint i = 0;
-    
+
     //if there is no equipment list all equipment triggers (stupid case)
-    if( self->wTriggers[i] == WP_NONE && self->uTriggers[i] == UP_NONE )
-    {
+    if(self->wTriggers[i] == WP_NONE && self->uTriggers[i] == UP_NONE) {
         return true;
-    }
-    else
-    {
+    } else {
         //otherwise check against the lists
-        for( i = 0; self->wTriggers[ i ] != WP_NONE; i++ )
-        {
-            if( bggame->InventoryContainsWeapon( self->wTriggers[i], activator->client->ps.stats ) )
-            {
+        for(i = 0; self->wTriggers[ i ] != WP_NONE; i++) {
+            if(bggame->InventoryContainsWeapon(self->wTriggers[i],
+                                               activator->client->ps.stats)) {
                 return true;
             }
         }
-        
-        for( i = 0; self->uTriggers[ i ] != UP_NONE; i++ )
-        {
-            if( bggame->InventoryContainsUpgrade( self->uTriggers[i], activator->client->ps.stats ) )
-            {
+
+        for(i = 0; self->uTriggers[ i ] != UP_NONE; i++) {
+            if(bggame->InventoryContainsUpgrade(self->uTriggers[i],
+                                                activator->client->ps.stats)) {
                 return true;
             }
         }
     }
-    
+
     return false;
 }
 
@@ -1057,53 +959,42 @@ bool idSGameTrigger::trigger_equipment_match( gentity_t* self, gentity_t* activa
 idSGameTrigger::trigger_equipment_trigger
 ===============
 */
-void idSGameTrigger::trigger_equipment_trigger( gentity_t* self, gentity_t* activator )
-{
+void idSGameTrigger::trigger_equipment_trigger(gentity_t *self,
+        gentity_t *activator) {
     //sanity check
-    if( !activator->client )
-    {
+    if(!activator->client) {
         return;
     }
-    
-    if( activator->client->ps.stats[STAT_TEAM] != TEAM_HUMANS )
-    {
+
+    if(activator->client->ps.stats[STAT_TEAM] != TEAM_HUMANS) {
         return;
     }
-    
-    if( self->s.eFlags & EF_NODRAW )
-    {
+
+    if(self->s.eFlags & EF_NODRAW) {
         return;
     }
-    
+
     self->activator = activator;
-    
-    if( self->nextthink )
-    {
+
+    if(self->nextthink) {
         return;   // can't retrigger until the wait is over
     }
-    
-    if( self->s.eFlags & EF_DEAD )
-    {
-        if( !trigger_equipment_match( self, activator ) )
-        {
-            idSGameUtils::UseTargets( self, activator );
+
+    if(self->s.eFlags & EF_DEAD) {
+        if(!trigger_equipment_match(self, activator)) {
+            idSGameUtils::UseTargets(self, activator);
+        }
+    } else {
+        if(trigger_equipment_match(self, activator)) {
+            idSGameUtils::UseTargets(self, activator);
         }
     }
-    else
-    {
-        if( trigger_equipment_match( self, activator ) )
-        {
-            idSGameUtils::UseTargets( self, activator );
-        }
-    }
-    
-    if( self->wait > 0 )
-    {
+
+    if(self->wait > 0) {
         self->think = multi_wait;
-        self->nextthink = level.time + ( self->wait + self->random * crandom( ) ) * 1000;
-    }
-    else
-    {
+        self->nextthink = level.time + (self->wait + self->random * crandom()) *
+                          1000;
+    } else {
         // we can't just remove (self) here, because this is a touch function
         // called while looping through area links...
         self->touch = 0;
@@ -1117,15 +1008,14 @@ void idSGameTrigger::trigger_equipment_trigger( gentity_t* self, gentity_t* acti
 idSGameTrigger::trigger_equipment_touch
 ===============
 */
-void idSGameTrigger::trigger_equipment_touch( gentity_t* ent, gentity_t* other, trace_t* trace )
-{
+void idSGameTrigger::trigger_equipment_touch(gentity_t *ent,
+        gentity_t *other, trace_t *trace) {
     //only triggered by clients
-    if( !other->client )
-    {
+    if(!other->client) {
         return;
     }
-    
-    trigger_equipment_trigger( ent, other );
+
+    trigger_equipment_trigger(ent, other);
 }
 
 /*
@@ -1133,8 +1023,8 @@ void idSGameTrigger::trigger_equipment_touch( gentity_t* ent, gentity_t* other, 
 idSGameTrigger::trigger_equipment_use
 ===============
 */
-void idSGameTrigger::trigger_equipment_use( gentity_t* ent, gentity_t* other, gentity_t* activator )
-{
+void idSGameTrigger::trigger_equipment_use(gentity_t *ent,
+        gentity_t *other, gentity_t *activator) {
     ent->s.eFlags ^= EF_NODRAW;
 }
 
@@ -1143,40 +1033,38 @@ void idSGameTrigger::trigger_equipment_use( gentity_t* ent, gentity_t* other, ge
 idSGameTrigger::SP_trigger_equipment
 ===============
 */
-void idSGameTrigger::SP_trigger_equipment( gentity_t* self )
-{
-    valueType* buffer;
-    
-    idSGameSpawn::SpawnFloat( "wait", "0.5", &self->wait );
-    idSGameSpawn::SpawnFloat( "random", "0", &self->random );
-    
-    if( self->random >= self->wait && self->wait >= 0 )
-    {
+void idSGameTrigger::SP_trigger_equipment(gentity_t *self) {
+    valueType *buffer;
+
+    idSGameSpawn::SpawnFloat("wait", "0.5", &self->wait);
+    idSGameSpawn::SpawnFloat("random", "0", &self->random);
+
+    if(self->random >= self->wait && self->wait >= 0) {
         self->random = self->wait - FRAMETIME;
-        idSGameMain::Printf( S_COLOR_YELLOW "WARNING: trigger_equipment has random >= wait\n" );
+        idSGameMain::Printf(S_COLOR_YELLOW
+                            "WARNING: trigger_equipment has random >= wait\n");
     }
-    
-    idSGameSpawn::SpawnString( "equipment", "", &buffer );
-    
-    bggame->ParseCSVEquipmentList( buffer, self->wTriggers, WP_NUM_WEAPONS, self->uTriggers, UP_NUM_UPGRADES );
-    
+
+    idSGameSpawn::SpawnString("equipment", "", &buffer);
+
+    bggame->ParseCSVEquipmentList(buffer, self->wTriggers, WP_NUM_WEAPONS,
+                                  self->uTriggers, UP_NUM_UPGRADES);
+
     self->touch = trigger_equipment_touch;
     self->use = trigger_equipment_use;
-    
+
     // SPAWN_DISABLED
-    if( self->spawnflags & 1 )
-    {
+    if(self->spawnflags & 1) {
         self->s.eFlags |= EF_NODRAW;
     }
-    
+
     // NEGATE
-    if( self->spawnflags & 2 )
-    {
+    if(self->spawnflags & 2) {
         self->s.eFlags |= EF_DEAD;
     }
-    
-    InitTrigger( self );
-    trap_LinkEntity( self );
+
+    InitTrigger(self);
+    trap_LinkEntity(self);
 }
 
 /*
@@ -1184,14 +1072,13 @@ void idSGameTrigger::SP_trigger_equipment( gentity_t* self )
 idSGameTrigger::trigger_gravity_touch
 ===============
 */
-void idSGameTrigger::trigger_gravity_touch( gentity_t* ent, gentity_t* other, trace_t* trace )
-{
+void idSGameTrigger::trigger_gravity_touch(gentity_t *ent,
+        gentity_t *other, trace_t *trace) {
     //only triggered by clients
-    if( !other->client )
-    {
+    if(!other->client) {
         return;
     }
-    
+
     other->client->ps.gravity = ent->triggerGravity;
 }
 
@@ -1200,15 +1087,12 @@ void idSGameTrigger::trigger_gravity_touch( gentity_t* ent, gentity_t* other, tr
 v::trigger_gravity_use
 ===============
 */
-void idSGameTrigger::trigger_gravity_use( gentity_t* ent, gentity_t* other, gentity_t* activator )
-{
-    if( ent->r.linked )
-    {
-        trap_UnlinkEntity( ent );
-    }
-    else
-    {
-        trap_LinkEntity( ent );
+void idSGameTrigger::trigger_gravity_use(gentity_t *ent, gentity_t *other,
+        gentity_t *activator) {
+    if(ent->r.linked) {
+        trap_UnlinkEntity(ent);
+    } else {
+        trap_LinkEntity(ent);
     }
 }
 
@@ -1217,15 +1101,14 @@ void idSGameTrigger::trigger_gravity_use( gentity_t* ent, gentity_t* other, gent
 idSGameTrigger::SP_trigger_gravity
 ===============
 */
-void idSGameTrigger::SP_trigger_gravity( gentity_t* self )
-{
-    idSGameSpawn::SpawnInt( "gravity", "800", &self->triggerGravity );
-    
+void idSGameTrigger::SP_trigger_gravity(gentity_t *self) {
+    idSGameSpawn::SpawnInt("gravity", "800", &self->triggerGravity);
+
     self->touch = trigger_gravity_touch;
     self->use = trigger_gravity_use;
-    
-    InitTrigger( self );
-    trap_LinkEntity( self );
+
+    InitTrigger(self);
+    trap_LinkEntity(self);
 }
 
 /*
@@ -1233,15 +1116,12 @@ void idSGameTrigger::SP_trigger_gravity( gentity_t* self )
 idSGameTrigger::trigger_heal_use
 ===============
 */
-void idSGameTrigger::trigger_heal_use( gentity_t* self, gentity_t* other, gentity_t* activator )
-{
-    if( self->r.linked )
-    {
-        trap_UnlinkEntity( self );
-    }
-    else
-    {
-        trap_LinkEntity( self );
+void idSGameTrigger::trigger_heal_use(gentity_t *self, gentity_t *other,
+                                      gentity_t *activator) {
+    if(self->r.linked) {
+        trap_UnlinkEntity(self);
+    } else {
+        trap_LinkEntity(self);
     }
 }
 
@@ -1250,38 +1130,32 @@ void idSGameTrigger::trigger_heal_use( gentity_t* self, gentity_t* other, gentit
 idSGameTrigger::trigger_heal_touch
 ===============
 */
-void idSGameTrigger::trigger_heal_touch( gentity_t* self, gentity_t* other, trace_t* trace )
-{
+void idSGameTrigger::trigger_heal_touch(gentity_t *self, gentity_t *other,
+                                        trace_t *trace) {
     sint max;
-    
-    if( !other->client )
-    {
+
+    if(!other->client) {
         return;
     }
-    
-    if( self->timestamp > level.time )
-    {
+
+    if(self->timestamp > level.time) {
         return;
     }
-    
-    if( self->spawnflags & 2 )
-    {
+
+    if(self->spawnflags & 2) {
         self->timestamp = level.time + 1000;
-    }
-    else
-    {
+    } else {
         self->timestamp = level.time + FRAMETIME;
     }
-    
+
     max = other->client->ps.stats[ STAT_MAX_HEALTH ];
-    
+
     other->health += self->damage;
-    
-    if( other->health > max )
-    {
+
+    if(other->health > max) {
         other->health = max;
     }
-    
+
     other->client->ps.stats[ STAT_HEALTH ] = other->health;
 }
 
@@ -1290,25 +1164,23 @@ void idSGameTrigger::trigger_heal_touch( gentity_t* self, gentity_t* other, trac
 idSGameTrigger::SP_trigger_heal
 ===============
 */
-void idSGameTrigger::SP_trigger_heal( gentity_t* self )
-{
-    idSGameSpawn::SpawnInt( "heal", "5", &self->damage );
-    
-    if( self->damage <= 0 )
-    {
+void idSGameTrigger::SP_trigger_heal(gentity_t *self) {
+    idSGameSpawn::SpawnInt("heal", "5", &self->damage);
+
+    if(self->damage <= 0) {
         self->damage = 1;
-        idSGameMain::Printf( S_COLOR_YELLOW "WARNING: trigger_heal with negative damage key\n" );
+        idSGameMain::Printf(S_COLOR_YELLOW
+                            "WARNING: trigger_heal with negative damage key\n");
     }
-    
+
     self->touch = trigger_heal_touch;
     self->use = trigger_heal_use;
-    
-    InitTrigger( self );
-    
+
+    InitTrigger(self);
+
     // link in to the world if starting active
-    if( !( self->spawnflags & 1 ) )
-    {
-        trap_LinkEntity( self );
+    if(!(self->spawnflags & 1)) {
+        trap_LinkEntity(self);
     }
 }
 
@@ -1317,66 +1189,53 @@ void idSGameTrigger::SP_trigger_heal( gentity_t* self )
 idSGameTrigger::trigger_ammo_touch
 ===============
 */
-void idSGameTrigger::trigger_ammo_touch( gentity_t* self, gentity_t* other, trace_t* trace )
-{
+void idSGameTrigger::trigger_ammo_touch(gentity_t *self, gentity_t *other,
+                                        trace_t *trace) {
     sint maxClips, maxAmmo;
-    
-    if( !other->client )
-    {
+
+    if(!other->client) {
         return;
     }
-    
-    if( other->client->ps.stats[STAT_TEAM] != TEAM_HUMANS )
-    {
+
+    if(other->client->ps.stats[STAT_TEAM] != TEAM_HUMANS) {
         return;
     }
-    
-    if( self->timestamp > level.time )
-    {
+
+    if(self->timestamp > level.time) {
         return;
     }
-    
-    if( other->client->ps.weaponstate != WEAPON_READY )
-    {
+
+    if(other->client->ps.weaponstate != WEAPON_READY) {
         return;
     }
-    
-    if( bggame->Weapon( ( weapon_t )other->client->ps.weapon )->usesEnergy && self->spawnflags & 2 )
-    {
+
+    if(bggame->Weapon((weapon_t)other->client->ps.weapon)->usesEnergy &&
+            self->spawnflags & 2) {
         return;
     }
-    
-    if( !bggame->Weapon( ( weapon_t )other->client->ps.weapon )->usesEnergy && self->spawnflags & 4 )
-    {
+
+    if(!bggame->Weapon((weapon_t)other->client->ps.weapon)->usesEnergy &&
+            self->spawnflags & 4) {
         return;
     }
-    
-    if( self->spawnflags & 1 )
-    {
+
+    if(self->spawnflags & 1) {
         self->timestamp = level.time + 1000;
-    }
-    else
-    {
+    } else {
         self->timestamp = level.time + FRAMETIME;
     }
-    
-    maxAmmo = bggame->Weapon( ( weapon_t )other->client->ps.weapon )->maxAmmo;
-    maxClips = bggame->Weapon( ( weapon_t )other->client->ps.weapon )->maxClips;
-    
-    if( ( other->client->ps.ammo + self->damage ) > maxAmmo )
-    {
-        if( other->client->ps.clips < maxClips )
-        {
+
+    maxAmmo = bggame->Weapon((weapon_t)other->client->ps.weapon)->maxAmmo;
+    maxClips = bggame->Weapon((weapon_t)other->client->ps.weapon)->maxClips;
+
+    if((other->client->ps.ammo + self->damage) > maxAmmo) {
+        if(other->client->ps.clips < maxClips) {
             other->client->ps.clips++;
             other->client->ps.ammo = 1;
-        }
-        else
-        {
+        } else {
             other->client->ps.ammo = maxAmmo;
         }
-    }
-    else
-    {
+    } else {
         other->client->ps.ammo += self->damage;
     }
 }
@@ -1386,18 +1245,17 @@ void idSGameTrigger::trigger_ammo_touch( gentity_t* self, gentity_t* other, trac
 idSGameTrigger::SP_trigger_ammo
 ===============
 */
-void idSGameTrigger::SP_trigger_ammo( gentity_t* self )
-{
-    idSGameSpawn::SpawnInt( "ammo", "1", &self->damage );
-    
-    if( self->damage <= 0 )
-    {
+void idSGameTrigger::SP_trigger_ammo(gentity_t *self) {
+    idSGameSpawn::SpawnInt("ammo", "1", &self->damage);
+
+    if(self->damage <= 0) {
         self->damage = 1;
-        idSGameMain::Printf( S_COLOR_YELLOW "WARNING: trigger_ammo with negative ammo key\n" );
+        idSGameMain::Printf(S_COLOR_YELLOW
+                            "WARNING: trigger_ammo with negative ammo key\n");
     }
-    
+
     self->touch = trigger_ammo_touch;
-    
-    InitTrigger( self );
-    trap_LinkEntity( self );
+
+    InitTrigger(self);
+    trap_LinkEntity(self);
 }

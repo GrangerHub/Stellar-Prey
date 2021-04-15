@@ -31,17 +31,18 @@
 
 class idCGameLocal;
 
-class idCGameAnimMapObj : public idCGameLocal
-{
+class idCGameAnimMapObj : public idCGameLocal {
 public:
     idCGameAnimMapObj();
     ~idCGameAnimMapObj();
-    
-    static void DoorAnimation( centity_t* cent, sint* old, sint* now, float32* backLerp );
-    static void ModelDoor( centity_t* cent );
-    static void AMOAnimation( centity_t* cent, sint* old, sint* now, float32* backLerp );
-    static void AnimMapObj( centity_t* cent );
-    
+
+    static void DoorAnimation(centity_t *cent, sint *old, sint *now,
+                              float32 *backLerp);
+    static void ModelDoor(centity_t *cent);
+    static void AMOAnimation(centity_t *cent, sint *old, sint *now,
+                             float32 *backLerp);
+    static void AnimMapObj(centity_t *cent);
+
     friend class idCGameAnimation;
 };
 

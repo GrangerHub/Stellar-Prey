@@ -31,19 +31,18 @@
 
 class idCGameSnapshot;
 
-class idCGameSnapshot : public idCGameLocal
-{
+class idCGameSnapshot : public idCGameLocal {
 public:
     idCGameSnapshot();
     ~idCGameSnapshot();
-    
-    static void ResetEntity( centity_t* cent );
-    static void TransitionEntity( centity_t* cent );
-    static void SetInitialSnapshot( snapshot_t* snap );
-    static void TransitionSnapshot( void );
-    static void SetNextSnap( snapshot_t* snap );
-    static snapshot_t* ReadNextSnapshot( void );
-    static void ProcessSnapshots( void );
+
+    static void ResetEntity(centity_t *cent);
+    static void TransitionEntity(centity_t *cent);
+    static void SetInitialSnapshot(snapshot_t *snap);
+    static void TransitionSnapshot(void);
+    static void SetNextSnap(snapshot_t *snap);
+    static snapshot_t *ReadNextSnapshot(void);
+    static void ProcessSnapshots(void);
 };
 
 #endif //!__CGAME_SNAPSHOT_H__

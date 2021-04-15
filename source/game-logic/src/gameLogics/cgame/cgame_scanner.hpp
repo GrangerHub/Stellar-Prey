@@ -31,17 +31,16 @@
 
 class idCGameLocal;
 
-class idCGameScanner : public idCGameLocal
-{
+class idCGameScanner : public idCGameLocal {
 public:
     idCGameScanner();
     ~idCGameScanner();
-    
-    static void UpdateEntityPositions( void );
-    static void DrawBlips( rectDef_t* rect, vec3_t origin, vec4_t colour );
-    static void DrawDir( rectDef_t* rect, vec3_t origin, vec4_t colour );
-    static void AlienSense( rectDef_t* rect );
-    static void Scanner( rectDef_t* rect, qhandle_t shader, vec4_t color );
+
+    static void UpdateEntityPositions(void);
+    static void DrawBlips(rectDef_t *rect, vec3_t origin, vec4_t colour);
+    static void DrawDir(rectDef_t *rect, vec3_t origin, vec4_t colour);
+    static void AlienSense(rectDef_t *rect);
+    static void Scanner(rectDef_t *rect, qhandle_t shader, vec4_t color);
 };
 
 #endif //!__CGAME_SCANNER_H__

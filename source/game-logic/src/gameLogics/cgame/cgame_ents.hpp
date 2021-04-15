@@ -31,35 +31,38 @@
 
 class idCGameLocal;
 
-class idCGameEnts : public idCGameLocal
-{
+class idCGameEnts : public idCGameLocal {
 public:
     idCGameEnts();
     ~idCGameEnts();
-    
-    static void DrawBoxFace( vec3_t a, vec3_t b, vec3_t c, vec3_t d );
-    static void DrawBoundingBox( vec3_t origin, vec3_t mins, vec3_t maxs );
-    static void PositionEntityOnTag( refEntity_t* entity, const refEntity_t* parent, qhandle_t parentModel, valueType* tagName );
-    static void PositionRotatedEntityOnTag( refEntity_t* entity, const refEntity_t* parent, qhandle_t parentModel, valueType* tagName );
-    static void SetEntitySoundPosition( centity_t* cent );
-    static void EntityEffects( centity_t* cent );
-    static void General( centity_t* cent );
-    static void Speaker( centity_t* cent );
-    static void LaunchMissile( centity_t* cent );
-    static void Missile( centity_t* cent );
-    static void Mover( centity_t* cent );
-    static void Beam( centity_t* cent );
-    static void Portal( centity_t* cent );
-    static void LightFlare( centity_t* cent );
-    static void AdjustPositionForMover( const vec3_t in, sint moverNum, sint fromTime, sint toTime, vec3_t out );
-    static void InterpolateEntityPosition( centity_t* cent );
-    static void CalcEntityLerpPositions( centity_t* cent );
-    static void CEntityPVSEnter( centity_t* cent );
-    static void CEntityPVSLeave( centity_t* cent );
-    static void AddCEntity( centity_t* cent );
-    static void AddPacketEntities( void );
-    static void LinkLocation( centity_t* cent );
-    static bool InFOV( vec3_t spot, vec3_t from, vec3_t fromAngles, sint hFOV, sint vFOV );
+
+    static void DrawBoxFace(vec3_t a, vec3_t b, vec3_t c, vec3_t d);
+    static void DrawBoundingBox(vec3_t origin, vec3_t mins, vec3_t maxs);
+    static void PositionEntityOnTag(refEntity_t *entity,
+                                    const refEntity_t *parent, qhandle_t parentModel, valueType *tagName);
+    static void PositionRotatedEntityOnTag(refEntity_t *entity,
+                                           const refEntity_t *parent, qhandle_t parentModel, valueType *tagName);
+    static void SetEntitySoundPosition(centity_t *cent);
+    static void EntityEffects(centity_t *cent);
+    static void General(centity_t *cent);
+    static void Speaker(centity_t *cent);
+    static void LaunchMissile(centity_t *cent);
+    static void Missile(centity_t *cent);
+    static void Mover(centity_t *cent);
+    static void Beam(centity_t *cent);
+    static void Portal(centity_t *cent);
+    static void LightFlare(centity_t *cent);
+    static void AdjustPositionForMover(const vec3_t in, sint moverNum,
+                                       sint fromTime, sint toTime, vec3_t out);
+    static void InterpolateEntityPosition(centity_t *cent);
+    static void CalcEntityLerpPositions(centity_t *cent);
+    static void CEntityPVSEnter(centity_t *cent);
+    static void CEntityPVSLeave(centity_t *cent);
+    static void AddCEntity(centity_t *cent);
+    static void AddPacketEntities(void);
+    static void LinkLocation(centity_t *cent);
+    static bool InFOV(vec3_t spot, vec3_t from, vec3_t fromAngles, sint hFOV,
+                      sint vFOV);
 };
 
 #endif //!__CGAME_ENTS_H__

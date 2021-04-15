@@ -31,24 +31,23 @@
 
 class idCGameLocal;
 
-class idCGameConsoleCmds : public idCGameLocal
-{
+class idCGameConsoleCmds : public idCGameLocal {
 public:
     idCGameConsoleCmds();
     ~idCGameConsoleCmds();
-    
-    static void SizeUp_f( void );
-    static void SizeDown_f( void );
-    static void Viewpos_f( void );
-    static bool RequestScores( void );
-    static void scrollScoresDown_f( void );
-    static void scrollScoresUp_f( void );
-    static void ScoresDown_f( void );
-    static void ScoresUp_f( void );
-    static void TellTarget_f( void );
-    static void TellAttacker_f( void );
-    static void SquadMark_f( void );
-    static void InitConsoleCommands( void );
+
+    static void SizeUp_f(void);
+    static void SizeDown_f(void);
+    static void Viewpos_f(void);
+    static bool RequestScores(void);
+    static void scrollScoresDown_f(void);
+    static void scrollScoresUp_f(void);
+    static void ScoresDown_f(void);
+    static void ScoresUp_f(void);
+    static void TellTarget_f(void);
+    static void TellAttacker_f(void);
+    static void SquadMark_f(void);
+    static void InitConsoleCommands(void);
 };
 
 #endif //!__CGAME_CONSOLECMDS_H__

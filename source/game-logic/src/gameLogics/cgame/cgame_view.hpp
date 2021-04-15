@@ -31,32 +31,33 @@
 
 class idCGameLocal;
 
-class idCGameView : public idCGameLocal
-{
+class idCGameView : public idCGameLocal {
 public:
     idCGameView();
     ~idCGameView();
-    
-    static void TestModel_f( void );
-    static void TestGun_f( void );
-    static void TestModelNextFrame_f( void );
-    static void TestModelPrevFrame_f( void );
-    static void TestModelNextSkin_f( void );
-    static void TestModelPrevSkin_f( void );
-    static void AddTestModel( void );
-    static void CalcVrect( void );
-    static void OffsetThirdPersonView( void );
-    static void OffsetShoulderView( void );
-    static void OffsetFirstPersonView( void );
-    static void StepOffset( void );
-    static sint CalcFov( void );
-    static void DrawSurfNormal( void );
-    static void addSmoothOp( vec3_t rotAxis, float32 rotAngle, float32 timeMod );
-    static void smoothWWTransitions( playerState_t* ps, const vec3_t in, vec3_t out );
-    static void smoothWJTransitions( playerState_t* ps, const vec3_t in, vec3_t out );
-    static sint CalcViewValues( void );
-    static void AddBufferedSound( sfxHandle_t sfx );
-    static void PlayBufferedSounds( void );
+
+    static void TestModel_f(void);
+    static void TestGun_f(void);
+    static void TestModelNextFrame_f(void);
+    static void TestModelPrevFrame_f(void);
+    static void TestModelNextSkin_f(void);
+    static void TestModelPrevSkin_f(void);
+    static void AddTestModel(void);
+    static void CalcVrect(void);
+    static void OffsetThirdPersonView(void);
+    static void OffsetShoulderView(void);
+    static void OffsetFirstPersonView(void);
+    static void StepOffset(void);
+    static sint CalcFov(void);
+    static void DrawSurfNormal(void);
+    static void addSmoothOp(vec3_t rotAxis, float32 rotAngle, float32 timeMod);
+    static void smoothWWTransitions(playerState_t *ps, const vec3_t in,
+                                    vec3_t out);
+    static void smoothWJTransitions(playerState_t *ps, const vec3_t in,
+                                    vec3_t out);
+    static sint CalcViewValues(void);
+    static void AddBufferedSound(sfxHandle_t sfx);
+    static void PlayBufferedSounds(void);
 };
 
 #endif //!__CGAME_VIEW_H__

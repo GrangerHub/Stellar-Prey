@@ -31,41 +31,40 @@
 
 class idCGameServerCmds;
 
-class idCGameServerCmds : public idCGameLocal
-{
+class idCGameServerCmds : public idCGameLocal {
 public:
     idCGameServerCmds();
     ~idCGameServerCmds();
-    
-    static void ParseScores( void );
-    static void ParseTeamInfo( void );
-    static void ParseServerinfo( void );
-    static void ParseWarmup( void );
-    static void SetConfigValues( void );
-    static void ShaderStateChanged( void );
-    static void AnnounceAlienStageTransistion( stage_t from, stage_t to );
-    static void AnnounceHumanStageTransistion( stage_t from, stage_t to );
-    static void ConfigStringModified( void );
-    static void MapRestart( void );
-    static void Menu( sint menu, sint arg );
-    static void Say( sint clientNum, valueType* text );
-    static void SayTeam( sint clientNum, valueType* text );
-    static voiceTrack_t* VoiceTrack( valueType* voice, sint cmd, sint track );
-    static void ParseVoice( void );
-    static void CenterPrint_f( void );
-    static void Print_f( void );
-    static void Chat_f( void );
-    static void ClientLevelShot_f( void );
-    static void ServerMenu_f( void );
-    static void ServerCloseMenus_f( void );
-    static void PoisonCloud_f( void );
-    static void PTRRequest_f( void );
-    static void PTRIssue_f( void );
-    static void PTRConfirm_f( void );
-    static void ServerCommand( void );
-    static void ExecuteNewServerCommands( sint latestSequence );
-    static void PlaySound( void );
-    static void SpawnServer( void );
+
+    static void ParseScores(void);
+    static void ParseTeamInfo(void);
+    static void ParseServerinfo(void);
+    static void ParseWarmup(void);
+    static void SetConfigValues(void);
+    static void ShaderStateChanged(void);
+    static void AnnounceAlienStageTransistion(stage_t from, stage_t to);
+    static void AnnounceHumanStageTransistion(stage_t from, stage_t to);
+    static void ConfigStringModified(void);
+    static void MapRestart(void);
+    static void Menu(sint menu, sint arg);
+    static void Say(sint clientNum, valueType *text);
+    static void SayTeam(sint clientNum, valueType *text);
+    static voiceTrack_t *VoiceTrack(valueType *voice, sint cmd, sint track);
+    static void ParseVoice(void);
+    static void CenterPrint_f(void);
+    static void Print_f(void);
+    static void Chat_f(void);
+    static void ClientLevelShot_f(void);
+    static void ServerMenu_f(void);
+    static void ServerCloseMenus_f(void);
+    static void PoisonCloud_f(void);
+    static void PTRRequest_f(void);
+    static void PTRIssue_f(void);
+    static void PTRConfirm_f(void);
+    static void ServerCommand(void);
+    static void ExecuteNewServerCommands(sint latestSequence);
+    static void PlaySound(void);
+    static void SpawnServer(void);
 };
 
 #endif //!__CGAME_SERVERCMDS_H__

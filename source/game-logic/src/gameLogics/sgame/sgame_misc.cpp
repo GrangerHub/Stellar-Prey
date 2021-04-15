@@ -35,8 +35,7 @@
 idSGameMissile::idSGameMissile
 ===============
 */
-idSGameMisc::idSGameMisc( void )
-{
+idSGameMisc::idSGameMisc(void) {
 }
 
 /*
@@ -44,8 +43,7 @@ idSGameMisc::idSGameMisc( void )
 idSGameMisc::~idSGameMisc
 ===============
 */
-idSGameMisc::~idSGameMisc( void )
-{
+idSGameMisc::~idSGameMisc(void) {
 }
 
 /*QUAKED func_group (0 0 0) ?
@@ -56,9 +54,8 @@ Used to group brushes together just for editor convenience.  They are turned int
 /*QUAKED info_null (0 0.5 0) (-4 -4 -4) (4 4 4)
 Used as a positional target for calculations in the utilities (spotlights, etc), but removed during gameplay.
 */
-void idSGameMisc::SP_info_null( gentity_t* self )
-{
-    idSGameUtils::FreeEntity( self );
+void idSGameMisc::SP_info_null(gentity_t *self) {
+    idSGameUtils::FreeEntity(self);
 }
 
 
@@ -66,9 +63,8 @@ void idSGameMisc::SP_info_null( gentity_t* self )
 Used as a positional target for in-game calculation, like jumppad targets.
 target_position does the same thing
 */
-void idSGameMisc::SP_info_notnull( gentity_t* self )
-{
-    idSGameUtils::SetOrigin( self, self->s.origin );
+void idSGameMisc::SP_info_notnull(gentity_t *self) {
+    idSGameUtils::SetOrigin(self, self->s.origin);
 }
 
 /*QUAKED light (0 1 0) (-8 -8 -8) (8 8 8) linear
@@ -78,9 +74,8 @@ Linear checbox gives linear falloff instead of inverse square
 Lights pointed at a target will be spotlights.
 "radius" overrides the default 64 unit radius of a spotlight at the target point.
 */
-void idSGameMisc::SP_light( gentity_t* self )
-{
-    idSGameUtils::FreeEntity( self );
+void idSGameMisc::SP_light(gentity_t *self) {
+    idSGameUtils::FreeEntity(self);
 }
 
 /*
@@ -91,42 +86,40 @@ TELEPORTERS
 =================================================================================
 */
 
-void idSGameMisc::TeleportPlayer( gentity_t* player, vec3_t origin, vec3_t angles )
-{
+void idSGameMisc::TeleportPlayer(gentity_t *player, vec3_t origin,
+                                 vec3_t angles) {
     // unlink to make sure it can't possibly interfere with idSGameMisc::KillBox
-    trap_UnlinkEntity( player );
-    
-    VectorCopy( origin, player->client->ps.origin );
+    trap_UnlinkEntity(player);
+
+    VectorCopy(origin, player->client->ps.origin);
     player->client->ps.origin[2] += 1;
-    
+
     // spit the player out
-    AngleVectors( angles, player->client->ps.velocity, nullptr, nullptr );
-    VectorScale( player->client->ps.velocity, 400, player->client->ps.velocity );
+    AngleVectors(angles, player->client->ps.velocity, nullptr, nullptr);
+    VectorScale(player->client->ps.velocity, 400, player->client->ps.velocity);
     player->client->ps.pm_time = 160;   // hold time
     player->client->ps.pm_flags |= PMF_TIME_KNOCKBACK;
-    
+
     // toggle the teleport bit so the client knows to not lerp
     player->client->ps.eFlags ^= EF_TELEPORT_BIT;
-    idSGameActive::UnlaggedClear( player );
-    
+    idSGameActive::UnlaggedClear(player);
+
     // set angles
-    idSGameClient::SetClientViewAngle( player, angles );
-    
+    idSGameClient::SetClientViewAngle(player, angles);
+
     // kill anything at the destination
-    if( player->client->sess.spectatorState == SPECTATOR_NOT )
-    {
-        idSGameUtils::KillBox( player );
+    if(player->client->sess.spectatorState == SPECTATOR_NOT) {
+        idSGameUtils::KillBox(player);
     }
-    
+
     // save results of pmove
-    bggame->PlayerStateToEntityState( &player->client->ps, &player->s, true );
-    
+    bggame->PlayerStateToEntityState(&player->client->ps, &player->s, true);
+
     // use the precise origin for linking
-    VectorCopy( player->client->ps.origin, player->r.currentOrigin );
-    
-    if( player->client->sess.spectatorState == SPECTATOR_NOT )
-    {
-        trap_LinkEntity( player );
+    VectorCopy(player->client->ps.origin, player->r.currentOrigin);
+
+    if(player->client->sess.spectatorState == SPECTATOR_NOT) {
+        trap_LinkEntity(player);
     }
 }
 
@@ -136,8 +129,7 @@ Point teleporters at these.
 Now that we don't have teleport destination pads, this is just
 an info_notnull
 */
-void idSGameMisc::SP_misc_teleporter_dest( gentity_t* ent )
-{
+void idSGameMisc::SP_misc_teleporter_dest(gentity_t *ent) {
 }
 
 
@@ -146,90 +138,85 @@ void idSGameMisc::SP_misc_teleporter_dest( gentity_t* ent )
 /*QUAKED misc_model (1 0 0) (-16 -16 -16) (16 16 16)
 "model"   arbitrary .md3 file to display
 */
-void idSGameMisc::SP_misc_model( gentity_t* ent )
-{
+void idSGameMisc::SP_misc_model(gentity_t *ent) {
 #if 0
-    ent->s.modelindex = idSGameUtils::ModelIndex( ent->model );
-    VectorSet( ent->mins, -16, -16, -16 );
-    VectorSet( ent->maxs, 16, 16, 16 );
-    trap_LinkEntity( ent );
-    
-    idSGameUtils::SetOrigin( ent, ent->s.origin );
-    VectorCopy( ent->s.angles, ent->s.apos.trBase );
+    ent->s.modelindex = idSGameUtils::ModelIndex(ent->model);
+    VectorSet(ent->mins, -16, -16, -16);
+    VectorSet(ent->maxs, 16, 16, 16);
+    trap_LinkEntity(ent);
+
+    idSGameUtils::SetOrigin(ent, ent->s.origin);
+    VectorCopy(ent->s.angles, ent->s.apos.trBase);
 #else
-    idSGameUtils::FreeEntity( ent );
+    idSGameUtils::FreeEntity(ent);
 #endif
 }
 
 //===========================================================
 
-void idSGameMisc::locateCamera( gentity_t* ent )
-{
+void idSGameMisc::locateCamera(gentity_t *ent) {
     vec3_t    dir;
-    gentity_t* target;
-    gentity_t* owner;
-    
-    owner = idSGameUtils::PickTarget( ent->target );
-    if( !owner )
-    {
-        idSGameMain::Printf( "Couldn't find target for misc_portal_surface\n" );
-        idSGameUtils::FreeEntity( ent );
+    gentity_t *target;
+    gentity_t *owner;
+
+    owner = idSGameUtils::PickTarget(ent->target);
+
+    if(!owner) {
+        idSGameMain::Printf("Couldn't find target for misc_portal_surface\n");
+        idSGameUtils::FreeEntity(ent);
         return;
     }
+
     ent->r.ownerNum = owner->s.number;
-    
+
     // frame holds the rotate speed
-    if( owner->spawnflags & 1 )
+    if(owner->spawnflags & 1) {
         ent->s.frame = 25;
-    else if( owner->spawnflags & 2 )
+    } else if(owner->spawnflags & 2) {
         ent->s.frame = 75;
-        
+    }
+
     // swing camera ?
-    if( owner->spawnflags & 4 )
-    {
+    if(owner->spawnflags & 4) {
         // set to 0 for no rotation at all
         ent->s.misc = 0;
-    }
-    else
+    } else {
         ent->s.misc = 1;
-        
+    }
+
     // clientNum holds the rotate offset
     ent->s.clientNum = owner->s.clientNum;
-    
-    VectorCopy( owner->s.origin, ent->s.origin2 );
-    
+
+    VectorCopy(owner->s.origin, ent->s.origin2);
+
     // see if the portal_camera has a target
-    target = idSGameUtils::PickTarget( owner->target );
-    if( target )
-    {
-        VectorSubtract( target->s.origin, owner->s.origin, dir );
-        VectorNormalize( dir );
+    target = idSGameUtils::PickTarget(owner->target);
+
+    if(target) {
+        VectorSubtract(target->s.origin, owner->s.origin, dir);
+        VectorNormalize(dir);
+    } else {
+        idSGameUtils::SetMovedir(owner->s.angles, dir);
     }
-    else
-        idSGameUtils::SetMovedir( owner->s.angles, dir );
-        
-    ent->s.eventParm = DirToByte( dir );
+
+    ent->s.eventParm = DirToByte(dir);
 }
 
 /*QUAKED misc_portal_surface (0 0 1) (-8 -8 -8) (8 8 8)
 The portal surface nearest this entity will show a view from the targeted misc_portal_camera, or a mirror view if untargeted.
 This must be within 64 world units of the surface!
 */
-void idSGameMisc::SP_misc_portal_surface( gentity_t* ent )
-{
-    VectorClear( ent->r.mins );
-    VectorClear( ent->r.maxs );
-    trap_LinkEntity( ent );
-    
+void idSGameMisc::SP_misc_portal_surface(gentity_t *ent) {
+    VectorClear(ent->r.mins);
+    VectorClear(ent->r.maxs);
+    trap_LinkEntity(ent);
+
     ent->r.svFlags = SVF_PORTAL;
     ent->s.eType = ET_PORTAL;
-    
-    if( !ent->target )
-    {
-        VectorCopy( ent->s.origin, ent->s.origin2 );
-    }
-    else
-    {
+
+    if(!ent->target) {
+        VectorCopy(ent->s.origin, ent->s.origin2);
+    } else {
         ent->think = locateCamera;
         ent->nextthink = level.time + 100;
     }
@@ -240,24 +227,22 @@ void idSGameMisc::SP_misc_portal_surface( gentity_t* ent )
 The target for a misc_portal_director.  You can set either angles or target another entity to determine the direction of view.
 "roll" an angle modifier to orient the camera around the target vector;
 */
-void idSGameMisc::SP_misc_portal_camera( gentity_t* ent )
-{
+void idSGameMisc::SP_misc_portal_camera(gentity_t *ent) {
     float32 roll;
-    
-    VectorClear( ent->r.mins );
-    VectorClear( ent->r.maxs );
-    trap_LinkEntity( ent );
-    
-    idSGameSpawn::SpawnFloat( "roll", "0", &roll );
-    
+
+    VectorClear(ent->r.mins);
+    VectorClear(ent->r.maxs);
+    trap_LinkEntity(ent);
+
+    idSGameSpawn::SpawnFloat("roll", "0", &roll);
+
     ent->s.clientNum = roll / 360.0f * 256;
 }
 
-void idSGameMisc::SP_toggle_particle_system( gentity_t* self )
-{
+void idSGameMisc::SP_toggle_particle_system(gentity_t *self) {
     //toggle EF_NODRAW
     self->s.eFlags ^= EF_NODRAW;
-    
+
     self->nextthink = 0;
 }
 
@@ -268,14 +253,13 @@ SP_use_particle_system
 Use function for particle_system
 ===============
 */
-void idSGameMisc::SP_use_particle_system( gentity_t* self, gentity_t* other, gentity_t* activator )
-{
-    SP_toggle_particle_system( self );
-    
-    if( self->wait > 0.0f )
-    {
+void idSGameMisc::SP_use_particle_system(gentity_t *self, gentity_t *other,
+        gentity_t *activator) {
+    SP_toggle_particle_system(self);
+
+    if(self->wait > 0.0f) {
         self->think = SP_toggle_particle_system;
-        self->nextthink = level.time + ( sint )( self->wait * 1000 );
+        self->nextthink = level.time + (sint)(self->wait * 1000);
     }
 }
 
@@ -286,24 +270,24 @@ SP_spawn_particle_system
 Spawn function for particle system
 ===============
 */
-void idSGameMisc::SP_misc_particle_system( gentity_t* self )
-{
-    valueType*  s;
-    
-    idSGameUtils::SetOrigin( self, self->s.origin );
-    
-    idSGameSpawn::SpawnString( "psName", "", &s );
-    idSGameSpawn::SpawnFloat( "wait", "0", &self->wait );
-    
+void idSGameMisc::SP_misc_particle_system(gentity_t *self) {
+    valueType  *s;
+
+    idSGameUtils::SetOrigin(self, self->s.origin);
+
+    idSGameSpawn::SpawnString("psName", "", &s);
+    idSGameSpawn::SpawnFloat("wait", "0", &self->wait);
+
     //add the particle system to the client precache list
-    self->s.modelindex = idSGameUtils::ParticleSystemIndex( s );
-    
-    if( self->spawnflags & 1 )
+    self->s.modelindex = idSGameUtils::ParticleSystemIndex(s);
+
+    if(self->spawnflags & 1) {
         self->s.eFlags |= EF_NODRAW;
-        
+    }
+
     self->use = SP_use_particle_system;
     self->s.eType = ET_PARTICLE_SYSTEM;
-    trap_LinkEntity( self );
+    trap_LinkEntity(self);
 }
 
 /*
@@ -313,25 +297,24 @@ SP_use_anim_model
 Use function for anim model
 ===============
 */
-void idSGameMisc::SP_use_anim_model( gentity_t* self, gentity_t* other, gentity_t* activator )
-{
-    if( self->spawnflags & 1 )
-    {
+void idSGameMisc::SP_use_anim_model(gentity_t *self, gentity_t *other,
+                                    gentity_t *activator) {
+    if(self->spawnflags & 1) {
         //if spawnflag 1 is set
         //toggle EF_NODRAW
-        if( self->s.eFlags & EF_NODRAW )
+        if(self->s.eFlags & EF_NODRAW) {
             self->s.eFlags &= ~EF_NODRAW;
-        else
+        } else {
             self->s.eFlags |= EF_NODRAW;
-    }
-    else
-    {
+        }
+    } else {
         //if the animation loops then toggle the animation
         //toggle EF_MOVER_STOP
-        if( self->s.eFlags & EF_MOVER_STOP )
+        if(self->s.eFlags & EF_MOVER_STOP) {
             self->s.eFlags &= ~EF_MOVER_STOP;
-        else
+        } else {
             self->s.eFlags |= EF_MOVER_STOP;
+        }
     }
 }
 
@@ -342,27 +325,27 @@ idSGameMisc::SP_misc_anim_model
 Spawn function for anim model
 ===============
 */
-void idSGameMisc::SP_misc_anim_model( gentity_t* self )
-{
-    self->s.misc      = ( sint )self->animation[ 0 ];
-    self->s.weapon    = ( sint )self->animation[ 1 ];
-    self->s.torsoAnim = ( sint )self->animation[ 2 ];
-    self->s.legsAnim  = ( sint )self->animation[ 3 ];
-    
+void idSGameMisc::SP_misc_anim_model(gentity_t *self) {
+    self->s.misc      = (sint)self->animation[ 0 ];
+    self->s.weapon    = (sint)self->animation[ 1 ];
+    self->s.torsoAnim = (sint)self->animation[ 2 ];
+    self->s.legsAnim  = (sint)self->animation[ 3 ];
+
     self->s.angles2[ 0 ] = self->pos2[ 0 ];
-    
+
     //add the model to the client precache list
-    self->s.modelindex = idSGameUtils::ModelIndex( self->model );
-    
+    self->s.modelindex = idSGameUtils::ModelIndex(self->model);
+
     self->use = SP_use_anim_model;
-    
+
     self->s.eType = ET_ANIMMAPOBJ;
-    
+
     // spawn with animation stopped
-    if( self->spawnflags & 2 )
+    if(self->spawnflags & 2) {
         self->s.eFlags |= EF_MOVER_STOP;
-        
-    trap_LinkEntity( self );
+    }
+
+    trap_LinkEntity(self);
 }
 
 /*
@@ -372,8 +355,8 @@ SP_use_light_flare
 Use function for light flare
 ===============
 */
-void idSGameMisc::SP_use_light_flare( gentity_t* self, gentity_t* other, gentity_t* activator )
-{
+void idSGameMisc::SP_use_light_flare(gentity_t *self, gentity_t *other,
+                                     gentity_t *activator) {
     self->s.eFlags ^= EF_NODRAW;
 }
 
@@ -384,42 +367,38 @@ findEmptySpot
 Finds an empty spot radius units from origin
 ==============
 */
-void idSGameMisc::findEmptySpot( vec3_t origin, float32 radius, vec3_t spot )
-{
+void idSGameMisc::findEmptySpot(vec3_t origin, float32 radius,
+                                vec3_t spot) {
     sint     i, j, k;
     vec3_t  delta, test, total;
     trace_t tr;
-    
-    VectorClear( total );
-    
+
+    VectorClear(total);
+
     //54(!) traces to test for empty spots
-    for( i = -1; i <= 1; i++ )
-    {
-        for( j = -1; j <= 1; j++ )
-        {
-            for( k = -1; k <= 1; k++ )
-            {
-                VectorSet( delta, ( i * radius ),
-                           ( j * radius ),
-                           ( k * radius ) );
-                           
-                VectorAdd( origin, delta, test );
-                
-                trap_Trace( &tr, test, nullptr, nullptr, test, -1, MASK_SOLID );
-                
-                if( !tr.allsolid )
-                {
-                    trap_Trace( &tr, test, nullptr, nullptr, origin, -1, MASK_SOLID );
-                    VectorScale( delta, tr.fraction, delta );
-                    VectorAdd( total, delta, total );
+    for(i = -1; i <= 1; i++) {
+        for(j = -1; j <= 1; j++) {
+            for(k = -1; k <= 1; k++) {
+                VectorSet(delta, (i * radius),
+                          (j * radius),
+                          (k * radius));
+
+                VectorAdd(origin, delta, test);
+
+                trap_Trace(&tr, test, nullptr, nullptr, test, -1, MASK_SOLID);
+
+                if(!tr.allsolid) {
+                    trap_Trace(&tr, test, nullptr, nullptr, origin, -1, MASK_SOLID);
+                    VectorScale(delta, tr.fraction, delta);
+                    VectorAdd(total, delta, total);
                 }
             }
         }
     }
-    
-    VectorNormalize( total );
-    VectorScale( total, radius, total );
-    VectorAdd( origin, total, spot );
+
+    VectorNormalize(total);
+    VectorScale(total, radius, total);
+    VectorAdd(origin, total, spot);
 }
 
 /*
@@ -429,27 +408,27 @@ SP_misc_light_flare
 Spawn function for light flare
 ===============
 */
-void idSGameMisc::SP_misc_light_flare( gentity_t* self )
-{
+void idSGameMisc::SP_misc_light_flare(gentity_t *self) {
     self->s.eType = ET_LIGHTFLARE;
-    self->s.modelindex = idSGameUtils::ShaderIndex( self->targetShaderName );
-    VectorCopy( self->pos2, self->s.origin2 );
-    
+    self->s.modelindex = idSGameUtils::ShaderIndex(self->targetShaderName);
+    VectorCopy(self->pos2, self->s.origin2);
+
     //try to find a spot near to the flare which is empty. This
     //is used to facilitate visibility testing
-    findEmptySpot( self->s.origin, 8.0f, self->s.angles2 );
-    
+    findEmptySpot(self->s.origin, 8.0f, self->s.angles2);
+
     self->use = SP_use_light_flare;
-    
-    idSGameSpawn::SpawnFloat( "speed", "200", &self->speed );
+
+    idSGameSpawn::SpawnFloat("speed", "200", &self->speed);
     self->s.time = self->speed;
-    
-    idSGameSpawn::SpawnInt( "mindist", "0", &self->s.generic1 );
-    
-    if( self->spawnflags & 1 )
+
+    idSGameSpawn::SpawnInt("mindist", "0", &self->s.generic1);
+
+    if(self->spawnflags & 1) {
         self->s.eFlags |= EF_NODRAW;
-        
-    trap_LinkEntity( self );
+    }
+
+    trap_LinkEntity(self);
 }
 
 /*
@@ -457,9 +436,8 @@ void idSGameMisc::SP_misc_light_flare( gentity_t* self )
 SP_misc_cubemap
 ===============
 */
-void idSGameMisc::SP_misc_cubemap( gentity_t* ent )
-{
-    idSGameUtils::FreeEntity( ent );
+void idSGameMisc::SP_misc_cubemap(gentity_t *ent) {
+    idSGameUtils::FreeEntity(ent);
 }
 
 /*
@@ -467,9 +445,9 @@ void idSGameMisc::SP_misc_cubemap( gentity_t* ent )
 idSGameMisc::Sound_Think
 ===================
 */
-void idSGameMisc::Sound_Think( gentity_t* ent )
-{
-    trap_SendServerCommand( -1, va( "playsound %s %f %f %f\n", ent->sound, ent->s.origin[0], ent->s.origin[1], ent->s.origin[2] ) );
+void idSGameMisc::Sound_Think(gentity_t *ent) {
+    trap_SendServerCommand(-1, va("playsound %s %f %f %f\n", ent->sound,
+                                  ent->s.origin[0], ent->s.origin[1], ent->s.origin[2]));
     ent->nextthink = level.time + 5000;
 }
 
@@ -478,13 +456,12 @@ void idSGameMisc::Sound_Think( gentity_t* ent )
 idSGameMisc::func_sound
 ===================
 */
-void idSGameMisc::SP_func_sound( gentity_t* ent )
-{
-    trap_LinkEntity( ent );
-    
-    idSGameUtils::SetOrigin( ent, ent->s.origin );
-    VectorCopy( ent->s.angles, ent->s.apos.trBase );
-    
+void idSGameMisc::SP_func_sound(gentity_t *ent) {
+    trap_LinkEntity(ent);
+
+    idSGameUtils::SetOrigin(ent, ent->s.origin);
+    VectorCopy(ent->s.angles, ent->s.apos.trBase);
+
     ent->think = Sound_Think;
     ent->nextthink = level.time + 1000;
 }

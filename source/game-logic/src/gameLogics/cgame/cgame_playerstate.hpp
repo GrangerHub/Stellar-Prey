@@ -31,18 +31,17 @@
 
 class idCGameLocal;
 
-class idCGamePlayerState : public idCGameLocal
-{
+class idCGamePlayerState : public idCGameLocal {
 public:
     idCGamePlayerState();
     ~idCGamePlayerState();
-    
-    static void DamageFeedback( sint yawByte, sint pitchByte, sint damage );
-    static void Respawn( void );
-    static void CheckPlayerstateEvents( playerState_t* ps, playerState_t* ops );
-    void CheckChangedPredictableEvents( playerState_t* ps );
-    static void CheckLocalSounds( playerState_t* ps, playerState_t* ops );
-    static void TransitionPlayerState( playerState_t* ps, playerState_t* ops );
+
+    static void DamageFeedback(sint yawByte, sint pitchByte, sint damage);
+    static void Respawn(void);
+    static void CheckPlayerstateEvents(playerState_t *ps, playerState_t *ops);
+    void CheckChangedPredictableEvents(playerState_t *ps);
+    static void CheckLocalSounds(playerState_t *ps, playerState_t *ops);
+    static void TransitionPlayerState(playerState_t *ps, playerState_t *ops);
 };
 
 #endif //!__CGAME_PLAYERSTATE_H__

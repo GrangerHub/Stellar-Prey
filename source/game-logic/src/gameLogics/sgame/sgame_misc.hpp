@@ -33,32 +33,35 @@
 
 class idSGameLocal;
 
-class idSGameMisc : public idSGameLocal
-{
+class idSGameMisc : public idSGameLocal {
 public:
     idSGameMisc();
     ~idSGameMisc();
-    
-    static void SP_info_null( gentity_t* self );
-    static void SP_info_notnull( gentity_t* self );
-    static void SP_func_sound( gentity_t* self );
-    static void SP_light( gentity_t* self );
-    static void SP_misc_teleporter_dest( gentity_t* ent );
-    static void SP_misc_model( gentity_t* ent );
-    static void locateCamera( gentity_t* ent );
-    static void SP_misc_portal_surface( gentity_t* ent );
-    static void SP_misc_portal_camera( gentity_t* ent );
-    static void SP_toggle_particle_system( gentity_t* self );
-    static void SP_use_particle_system( gentity_t* self, gentity_t* other, gentity_t* activator );
-    static void SP_misc_particle_system( gentity_t* self );
-    static void SP_use_anim_model( gentity_t* self, gentity_t* other, gentity_t* activator );
-    static void SP_misc_anim_model( gentity_t* self );
-    static void SP_use_light_flare( gentity_t* self, gentity_t* other, gentity_t* activator );
-    static void findEmptySpot( vec3_t origin, float32 radius, vec3_t spot );
-    static void SP_misc_light_flare( gentity_t* self );
-    static void SP_misc_cubemap( gentity_t* ent );
-    static void Sound_Think( gentity_t* ent );
-    static void TeleportPlayer( gentity_t* player, vec3_t origin, vec3_t angles );
+
+    static void SP_info_null(gentity_t *self);
+    static void SP_info_notnull(gentity_t *self);
+    static void SP_func_sound(gentity_t *self);
+    static void SP_light(gentity_t *self);
+    static void SP_misc_teleporter_dest(gentity_t *ent);
+    static void SP_misc_model(gentity_t *ent);
+    static void locateCamera(gentity_t *ent);
+    static void SP_misc_portal_surface(gentity_t *ent);
+    static void SP_misc_portal_camera(gentity_t *ent);
+    static void SP_toggle_particle_system(gentity_t *self);
+    static void SP_use_particle_system(gentity_t *self, gentity_t *other,
+                                       gentity_t *activator);
+    static void SP_misc_particle_system(gentity_t *self);
+    static void SP_use_anim_model(gentity_t *self, gentity_t *other,
+                                  gentity_t *activator);
+    static void SP_misc_anim_model(gentity_t *self);
+    static void SP_use_light_flare(gentity_t *self, gentity_t *other,
+                                   gentity_t *activator);
+    static void findEmptySpot(vec3_t origin, float32 radius, vec3_t spot);
+    static void SP_misc_light_flare(gentity_t *self);
+    static void SP_misc_cubemap(gentity_t *ent);
+    static void Sound_Think(gentity_t *ent);
+    static void TeleportPlayer(gentity_t *player, vec3_t origin,
+                               vec3_t angles);
 };
 
 #endif // !__SGAME_MISC_H__

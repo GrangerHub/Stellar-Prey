@@ -88,24 +88,21 @@
 
 // important note: QVM does not seem to allow a single valueType to be a
 // member of a struct at init time.  flag has been converted to valueType*
-typedef struct g_admin_cmd
-{
-    valueType* keyword;
-    bool( * handler )( gentity_t* ent, sint skiparg );
-    valueType* flag;
-    valueType* function;  // used for !help
-    valueType* syntax;  // used for !help
+typedef struct g_admin_cmd {
+    valueType *keyword;
+    bool(* handler)(gentity_t *ent, sint skiparg);
+    valueType *flag;
+    valueType *function;  // used for !help
+    valueType *syntax;  // used for !help
 } g_admin_cmd_t;
 
-typedef struct g_admin_level
-{
+typedef struct g_admin_level {
     sint level;
     valueType name[ MAX_NAME_LENGTH ];
     valueType flags[ MAX_ADMIN_FLAGS ];
 } g_admin_level_t;
 
-typedef struct g_admin_admin
-{
+typedef struct g_admin_admin {
     valueType guid[ 33 ];
     valueType name[ MAX_NAME_LENGTH ];
     sint level;
@@ -113,8 +110,7 @@ typedef struct g_admin_admin
     sint counter;
 } g_admin_admin_t;
 
-typedef struct g_admin_ban
-{
+typedef struct g_admin_ban {
     valueType name[ MAX_NAME_LENGTH ];
     valueType guid[ 33 ];
     valueType ip[ 40 ];
@@ -124,16 +120,14 @@ typedef struct g_admin_ban
     valueType banner[ MAX_NAME_LENGTH ];
 } g_admin_ban_t;
 
-typedef struct g_admin_command
-{
+typedef struct g_admin_command {
     valueType command[ MAX_ADMIN_CMD_LEN ];
     valueType exec[ MAX_QPATH ];
     valueType desc[ 50 ];
     sint levels[ MAX_ADMIN_LEVELS + 1 ];
 } g_admin_command_t;
 
-typedef struct g_admin_namelog
-{
+typedef struct g_admin_namelog {
     valueType name[ MAX_ADMIN_NAMELOG_NAMES ][MAX_NAME_LENGTH ];
     valueType ip[ 40 ];
     valueType guid[ 33 ];
@@ -141,8 +135,7 @@ typedef struct g_admin_namelog
     bool banned;
 } g_admin_namelog_t;
 
-typedef struct g_admin_adminlog
-{
+typedef struct g_admin_adminlog {
     valueType name[MAX_NAME_LENGTH];
     valueType command[MAX_ADMIN_CMD_LEN];
     valueType args[MAX_ADMIN_ADMINLOG_ARGS];
@@ -155,64 +148,65 @@ typedef struct g_admin_adminlog
 //
 // idAdminLocal
 //
-class idAdminLocal
-{
+class idAdminLocal {
 public:
-    bool AdminBanCheck( valueType* userinfo, valueType* reason, sint rlen );
-    bool AdminCmdCheck( gentity_t* ent, bool say );
-    static bool AdminReadconfig( gentity_t* ent, sint skiparg );
-    void AdminWriteConfig( void );
-    bool AdminPermission( gentity_t* ent, valueType flag );
-    bool AdminNameCheck( gentity_t* ent, valueType* name, valueType* err, sint len );
-    void AdminNamelogUpdate( gclient_t* ent, bool disconnect );
-    g_admin_admin_t* Admin( gentity_t* ent );
-    sint AdminParseTime( pointer time );
-    
-    static bool AdminTime( gentity_t* ent, sint skiparg );
-    static bool AdminSetlevel( gentity_t* ent, sint skiparg );
-    static bool AdminKick( gentity_t* ent, sint skiparg );
-    static bool AdminAdjustBan( gentity_t* ent, sint skiparg );
-    static bool AdminBan( gentity_t* ent, sint skiparg );
-    static bool AdminUnBan( gentity_t* ent, sint skiparg );
-    static bool AdminPutTeam( gentity_t* ent, sint skiparg );
-    static bool AdminListAdmins( gentity_t* ent, sint skiparg );
-    static bool AdminListLayouts( gentity_t* ent, sint skiparg );
-    static bool AdminListPlayers( gentity_t* ent, sint skiparg );
-    static bool AdminMap( gentity_t* ent, sint skiparg );
-    static bool AdminMute( gentity_t* ent, sint skiparg );
-    static bool AdminDenyBuild( gentity_t* ent, sint skiparg );
-    static bool AdminShowBans( gentity_t* ent, sint skiparg );
-    static bool AdminHelp( gentity_t* ent, sint skiparg );
-    static bool AdminAdminTest( gentity_t* ent, sint skiparg );
-    static bool AdminAllReady( gentity_t* ent, sint skiparg );
-    static bool AdminCancelVote( gentity_t* ent, sint skiparg );
-    static bool AdminPassVote( gentity_t* ent, sint skiparg );
-    static bool AdminSpec999( gentity_t* ent, sint skiparg );
-    static bool AdminRename( gentity_t* ent, sint skiparg );
-    static bool AdminRestart( gentity_t* ent, sint skiparg );
-    static bool AdminNextmap( gentity_t* ent, sint skiparg );
-    static bool AdminNameLog( gentity_t* ent, sint skiparg );
-    static bool AdminLock( gentity_t* ent, sint skiparg );
-    static bool AdminUnlock( gentity_t* ent, sint skiparg );
-    void AdminPrint( gentity_t* ent, valueType* m );
-    void AdminBufferPrint( gentity_t* ent, valueType* m );
-    void AdminBufferBegin( void );
-    void AdminBufferEnd( gentity_t* ent );
-    void AdminDuration( sint secs, valueType* duration, sint dursize );
-    void AdminCleanup( void );
-    void AdminNamelogCleanup( void );
-    bool AdminCreateBan( gentity_t* ent, valueType* netname, valueType* guid, valueType* ip, sint seconds, valueType* reason );
-    bool AdminHigherGuid( valueType* admin_guid, valueType* victim_guid );
-    bool AdminHigher( gentity_t* admin, gentity_t* victim );
-    void AdminWriteConfigString( valueType* s, fileHandle_t f );
-    void AdminWriteConfigInt( sint v, fileHandle_t f );
-    void AdminReadConfigString( valueType** cnf, valueType* s, sint size );
-    void AdminReadConfigInt( valueType** cnf, sint* v );
-    void AdminDefaultLevels( void );
-    bool AdminCommandPermission( gentity_t* ent, valueType* command );
-    void AdminLog( gentity_t* admin, valueType* cmd, sint skiparg );
-    sint AdminListAdmins( gentity_t* ent, sint start, valueType* search );
-    
+    bool AdminBanCheck(valueType *userinfo, valueType *reason, sint rlen);
+    bool AdminCmdCheck(gentity_t *ent, bool say);
+    static bool AdminReadconfig(gentity_t *ent, sint skiparg);
+    void AdminWriteConfig(void);
+    bool AdminPermission(gentity_t *ent, valueType flag);
+    bool AdminNameCheck(gentity_t *ent, valueType *name, valueType *err,
+                        sint len);
+    void AdminNamelogUpdate(gclient_t *ent, bool disconnect);
+    g_admin_admin_t *Admin(gentity_t *ent);
+    sint AdminParseTime(pointer time);
+
+    static bool AdminTime(gentity_t *ent, sint skiparg);
+    static bool AdminSetlevel(gentity_t *ent, sint skiparg);
+    static bool AdminKick(gentity_t *ent, sint skiparg);
+    static bool AdminAdjustBan(gentity_t *ent, sint skiparg);
+    static bool AdminBan(gentity_t *ent, sint skiparg);
+    static bool AdminUnBan(gentity_t *ent, sint skiparg);
+    static bool AdminPutTeam(gentity_t *ent, sint skiparg);
+    static bool AdminListAdmins(gentity_t *ent, sint skiparg);
+    static bool AdminListLayouts(gentity_t *ent, sint skiparg);
+    static bool AdminListPlayers(gentity_t *ent, sint skiparg);
+    static bool AdminMap(gentity_t *ent, sint skiparg);
+    static bool AdminMute(gentity_t *ent, sint skiparg);
+    static bool AdminDenyBuild(gentity_t *ent, sint skiparg);
+    static bool AdminShowBans(gentity_t *ent, sint skiparg);
+    static bool AdminHelp(gentity_t *ent, sint skiparg);
+    static bool AdminAdminTest(gentity_t *ent, sint skiparg);
+    static bool AdminAllReady(gentity_t *ent, sint skiparg);
+    static bool AdminCancelVote(gentity_t *ent, sint skiparg);
+    static bool AdminPassVote(gentity_t *ent, sint skiparg);
+    static bool AdminSpec999(gentity_t *ent, sint skiparg);
+    static bool AdminRename(gentity_t *ent, sint skiparg);
+    static bool AdminRestart(gentity_t *ent, sint skiparg);
+    static bool AdminNextmap(gentity_t *ent, sint skiparg);
+    static bool AdminNameLog(gentity_t *ent, sint skiparg);
+    static bool AdminLock(gentity_t *ent, sint skiparg);
+    static bool AdminUnlock(gentity_t *ent, sint skiparg);
+    void AdminPrint(gentity_t *ent, valueType *m);
+    void AdminBufferPrint(gentity_t *ent, valueType *m);
+    void AdminBufferBegin(void);
+    void AdminBufferEnd(gentity_t *ent);
+    void AdminDuration(sint secs, valueType *duration, sint dursize);
+    void AdminCleanup(void);
+    void AdminNamelogCleanup(void);
+    bool AdminCreateBan(gentity_t *ent, valueType *netname, valueType *guid,
+                        valueType *ip, sint seconds, valueType *reason);
+    bool AdminHigherGuid(valueType *admin_guid, valueType *victim_guid);
+    bool AdminHigher(gentity_t *admin, gentity_t *victim);
+    void AdminWriteConfigString(valueType *s, fileHandle_t f);
+    void AdminWriteConfigInt(sint v, fileHandle_t f);
+    void AdminReadConfigString(valueType **cnf, valueType *s, sint size);
+    void AdminReadConfigInt(valueType **cnf, sint *v);
+    void AdminDefaultLevels(void);
+    bool AdminCommandPermission(gentity_t *ent, valueType *command);
+    void AdminLog(gentity_t *admin, valueType *cmd, sint skiparg);
+    sint AdminListAdmins(gentity_t *ent, sint start, valueType *search);
+
 public:
 #define AP(x) trap_SendServerCommand(-1, x)
 #define CP(x) trap_SendServerCommand(ent-g_entities, x)

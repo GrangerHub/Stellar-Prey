@@ -33,27 +33,31 @@
 
 class idSGameLocal;
 
-class idSGameMissile : public idSGameLocal
-{
+class idSGameMissile : public idSGameLocal {
 public:
     idSGameMissile();
     ~idSGameMissile();
-    
-    static void BounceMissile( gentity_t* ent, trace_t* trace );
-    static void ExplodeMissile( gentity_t* ent );
-    static void MissileImpact( gentity_t* ent, trace_t* trace );
-    static void AHive_SearchAndDestroy( gentity_t* self );
-    static gentity_t* fire_flamer( gentity_t* self, vec3_t start, vec3_t aimdir );
-    static gentity_t* fire_blaster( gentity_t* self, vec3_t start, vec3_t dir );
-    static gentity_t* fire_pulseRifle( gentity_t* self, vec3_t start, vec3_t dir );
-    static gentity_t* fire_luciferCannon( gentity_t* self, vec3_t start, vec3_t dir, sint damage, sint radius, sint speed );
-    static gentity_t* fire_lockblob( gentity_t* self, vec3_t start, vec3_t dir );
-    static gentity_t* fire_slowBlob( gentity_t* self, vec3_t start, vec3_t dir );
-    static gentity_t* fire_bounceBall( gentity_t* self, vec3_t start, vec3_t dir );
-    static gentity_t* fire_hive( gentity_t* self, vec3_t start, vec3_t dir );
-    static gentity_t* launch_grenade( gentity_t* self, vec3_t start, vec3_t dir );
-    static void RunMissile( gentity_t* ent );
-    
+
+    static void BounceMissile(gentity_t *ent, trace_t *trace);
+    static void ExplodeMissile(gentity_t *ent);
+    static void MissileImpact(gentity_t *ent, trace_t *trace);
+    static void AHive_SearchAndDestroy(gentity_t *self);
+    static gentity_t *fire_flamer(gentity_t *self, vec3_t start,
+                                  vec3_t aimdir);
+    static gentity_t *fire_blaster(gentity_t *self, vec3_t start, vec3_t dir);
+    static gentity_t *fire_pulseRifle(gentity_t *self, vec3_t start,
+                                      vec3_t dir);
+    static gentity_t *fire_luciferCannon(gentity_t *self, vec3_t start,
+                                         vec3_t dir, sint damage, sint radius, sint speed);
+    static gentity_t *fire_lockblob(gentity_t *self, vec3_t start, vec3_t dir);
+    static gentity_t *fire_slowBlob(gentity_t *self, vec3_t start, vec3_t dir);
+    static gentity_t *fire_bounceBall(gentity_t *self, vec3_t start,
+                                      vec3_t dir);
+    static gentity_t *fire_hive(gentity_t *self, vec3_t start, vec3_t dir);
+    static gentity_t *launch_grenade(gentity_t *self, vec3_t start,
+                                     vec3_t dir);
+    static void RunMissile(gentity_t *ent);
+
 };
 
 #endif // !__SGAME_MISSILE_H__

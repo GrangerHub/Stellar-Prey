@@ -35,8 +35,7 @@
 idSGamePtr::idSGamePtr
 ===============
 */
-idSGamePtr::idSGamePtr( void )
-{
+idSGamePtr::idSGamePtr(void) {
 }
 
 /*
@@ -44,8 +43,7 @@ idSGamePtr::idSGamePtr( void )
 idSGamePtr::~idSGamePtr
 ===============
 */
-idSGamePtr::~idSGamePtr( void )
-{
+idSGamePtr::~idSGamePtr(void) {
 }
 
 /*
@@ -55,23 +53,19 @@ idSGamePtr::CheckForUniquePTRC
 Callback to detect ptrc clashes
 ===============
 */
-bool idSGamePtr::CheckForUniquePTRC( sint code )
-{
+bool idSGamePtr::CheckForUniquePTRC(sint code) {
     sint i;
-    
-    if( code == 0 )
-    {
+
+    if(code == 0) {
         return false;
     }
-    
-    for( i = 0; i < MAX_CLIENTS; i++ )
-    {
-        if( connections[i].ptrCode == code )
-        {
+
+    for(i = 0; i < MAX_CLIENTS; i++) {
+        if(connections[i].ptrCode == code) {
             return false;
         }
     }
-    
+
     return true;
 }
 
@@ -82,18 +76,14 @@ idSGamePtr::UpdatePTRConnection
 Update the data in a connection record
 ===============
 */
-void idSGamePtr::UpdatePTRConnection( gclient_t* client )
-{
-    if( client && client->pers.connection )
-    {
+void idSGamePtr::UpdatePTRConnection(gclient_t *client) {
+    if(client && client->pers.connection) {
         client->pers.connection->oldClient = client - level.clients;
         client->pers.connection->clientTeam = client->pers.teamSelection;
-        if( client->pers.teamSelection == TEAM_NONE )
-        {
+
+        if(client->pers.teamSelection == TEAM_NONE) {
             client->pers.connection->clientCredit = client->pers.savedCredit;
-        }
-        else
-        {
+        } else {
             client->pers.connection->clientCredit = client->ps.persistant[PERS_CREDIT];
         }
     }
@@ -106,35 +96,30 @@ idSGamePtr::GenerateNewConnection
 Generates a new connection
 ===============
 */
-connectionRecord_t* idSGamePtr::GenerateNewConnection( gclient_t* client )
-{
+connectionRecord_t *idSGamePtr::GenerateNewConnection(gclient_t *client) {
     sint i, code = 0;
-    
+
     // this should be really random
-    srand( trap_Milliseconds( ) );
-    
+    srand(trap_Milliseconds());
+
     // there is a very very small possibility that this
     // will loop infinitely
-    do
-    {
-        code = rand( );
-    }
-    while( !CheckForUniquePTRC( code ) );
-    
-    for( i = 0; i < MAX_CLIENTS; i++ )
-    {
+    do {
+        code = rand();
+    } while(!CheckForUniquePTRC(code));
+
+    for(i = 0; i < MAX_CLIENTS; i++) {
         //found an unused slot
-        if( !connections[ i ].ptrCode )
-        {
+        if(!connections[ i ].ptrCode) {
             connections[ i ].ptrCode = code;
             connections[ i ].clientNum = client->ps.clientNum;
             client->pers.connection = &connections[ i ];
-            UpdatePTRConnection( client );
-            
+            UpdatePTRConnection(client);
+
             return &connections[ i ];
         }
     }
-    
+
     return nullptr;
 }
 
@@ -145,23 +130,19 @@ idSGamePtr::FindConnectionForCode
 Finds a connection for a given code
 ===============
 */
-connectionRecord_t* idSGamePtr::FindConnectionForCode( sint code )
-{
+connectionRecord_t *idSGamePtr::FindConnectionForCode(sint code) {
     sint i;
-    
-    if( code == 0 )
-    {
+
+    if(code == 0) {
         return nullptr;
     }
-    
-    for( i = 0; i < MAX_CLIENTS; i++ )
-    {
-        if( connections[i].ptrCode == code )
-        {
+
+    for(i = 0; i < MAX_CLIENTS; i++) {
+        if(connections[i].ptrCode == code) {
             return &connections[i];
         }
     }
-    
+
     return nullptr;
 }
 
@@ -172,7 +153,6 @@ idSGamePtr::ResetPTRConnections
 Invalidate any existing codes
 ===============
 */
-void idSGamePtr::ResetPTRConnections( void )
-{
-    ::memset( connections, 0, sizeof( connectionRecord_t ) * MAX_CLIENTS );
+void idSGamePtr::ResetPTRConnections(void) {
+    ::memset(connections, 0, sizeof(connectionRecord_t) * MAX_CLIENTS);
 }

@@ -31,43 +31,54 @@
 
 class idCGameLocal;
 
-class idCGameWeapons : public idCGameLocal
-{
+class idCGameWeapons : public idCGameLocal {
 public:
     idCGameWeapons();
     ~idCGameWeapons();
-    
-    static void RegisterUpgrade( sint upgradeNum );
-    static void InitUpgrades( void );
-    static bool ParseWeaponAnimationFile( pointer filename, weaponInfo_t* weapon );
-    static bool ParseWeaponModeSection( weaponInfoMode_t* wim, valueType** text_p );
-    static bool ParseWeaponFile( pointer filename, weaponInfo_t* wi );
-    static void RegisterWeapon( sint weaponNum );
-    static void InitWeapons( void );
-    static void SetWeaponLerpFrameAnimation( weapon_t weapon, lerpFrame_t* lf, sint newAnimation );
-    static void WeaponAnimation( centity_t* cent, sint* old, sint* now, float32* backLerp );
-    static sint MapTorsoToWeaponFrame( clientInfo_t* ci, sint frame );
-    static void CalculateWeaponPosition( vec3_t origin, vec3_t angles );
-    static float32 MachinegunSpinAngle( centity_t* cent, bool firing );
-    static void AddPlayerWeapon( refEntity_t* parent, playerState_t* ps, centity_t* cent );
-    static void AddViewWeapon( playerState_t* ps );
-    static bool WeaponSelectable( weapon_t weapon );
-    static bool UpgradeSelectable( upgrade_t upgrade );
-    static void DrawItemSelect( rectDef_t* rect, vec4_t color );
-    static void DrawItemSelectText( rectDef_t* rect, float32 scale, sint textStyle );
-    static void NextWeapon_f( void );
-    static void PrevWeapon_f( void );
-    static void Weapon_f( void );
-    static void FireWeapon( centity_t* cent, weaponMode_t weaponMode );
-    static void HandleAlienFeedback( centity_t* cent, alienFeedback_t feedbackType );
-    static void MissileHitWall( weapon_t weaponNum, weaponMode_t weaponMode, sint clientNum, vec3_t origin, vec3_t dir, impactSound_t soundType, sint charge );
-    static void MissileHitPlayer( weapon_t weaponNum, weaponMode_t weaponMode, vec3_t origin, vec3_t dir, sint entityNum, sint charge );
-    static void MassDriverFire( entityState_t* es );
-    static void Tracer( vec3_t source, vec3_t dest );
-    static bool CalcMuzzlePoint( sint entityNum, vec3_t muzzle );
-    static void Bullet( vec3_t end, sint sourceEntityNum, vec3_t normal, bool flesh, sint fleshEntityNum );
-    static void ShotgunPattern( vec3_t origin, vec3_t origin2, sint seed, sint otherEntNum );
-    static void ShotgunFire( entityState_t* es );
+
+    static void RegisterUpgrade(sint upgradeNum);
+    static void InitUpgrades(void);
+    static bool ParseWeaponAnimationFile(pointer filename,
+                                         weaponInfo_t *weapon);
+    static bool ParseWeaponModeSection(weaponInfoMode_t *wim,
+                                       valueType **text_p);
+    static bool ParseWeaponFile(pointer filename, weaponInfo_t *wi);
+    static void RegisterWeapon(sint weaponNum);
+    static void InitWeapons(void);
+    static void SetWeaponLerpFrameAnimation(weapon_t weapon, lerpFrame_t *lf,
+                                            sint newAnimation);
+    static void WeaponAnimation(centity_t *cent, sint *old, sint *now,
+                                float32 *backLerp);
+    static sint MapTorsoToWeaponFrame(clientInfo_t *ci, sint frame);
+    static void CalculateWeaponPosition(vec3_t origin, vec3_t angles);
+    static float32 MachinegunSpinAngle(centity_t *cent, bool firing);
+    static void AddPlayerWeapon(refEntity_t *parent, playerState_t *ps,
+                                centity_t *cent);
+    static void AddViewWeapon(playerState_t *ps);
+    static bool WeaponSelectable(weapon_t weapon);
+    static bool UpgradeSelectable(upgrade_t upgrade);
+    static void DrawItemSelect(rectDef_t *rect, vec4_t color);
+    static void DrawItemSelectText(rectDef_t *rect, float32 scale,
+                                   sint textStyle);
+    static void NextWeapon_f(void);
+    static void PrevWeapon_f(void);
+    static void Weapon_f(void);
+    static void FireWeapon(centity_t *cent, weaponMode_t weaponMode);
+    static void HandleAlienFeedback(centity_t *cent,
+                                    alienFeedback_t feedbackType);
+    static void MissileHitWall(weapon_t weaponNum, weaponMode_t weaponMode,
+                               sint clientNum, vec3_t origin, vec3_t dir, impactSound_t soundType,
+                               sint charge);
+    static void MissileHitPlayer(weapon_t weaponNum, weaponMode_t weaponMode,
+                                 vec3_t origin, vec3_t dir, sint entityNum, sint charge);
+    static void MassDriverFire(entityState_t *es);
+    static void Tracer(vec3_t source, vec3_t dest);
+    static bool CalcMuzzlePoint(sint entityNum, vec3_t muzzle);
+    static void Bullet(vec3_t end, sint sourceEntityNum, vec3_t normal,
+                       bool flesh, sint fleshEntityNum);
+    static void ShotgunPattern(vec3_t origin, vec3_t origin2, sint seed,
+                               sint otherEntNum);
+    static void ShotgunFire(entityState_t *es);
 };
 
 #endif //!__CGAME_WEAPONS_H__

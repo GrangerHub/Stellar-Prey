@@ -31,14 +31,13 @@
 
 class idCGameLocal;
 
-class idCGamePtr : public idCGameLocal
-{
+class idCGamePtr : public idCGameLocal {
 public:
     idCGamePtr();
     ~idCGamePtr();
-    
-    static sint ReadPTRCode( void );
-    static void WritePTRCode( sint code );
+
+    static sint ReadPTRCode(void);
+    static void WritePTRCode(sint code);
 };
 
 #endif //!__CGAME_PTR_H__

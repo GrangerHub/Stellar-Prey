@@ -36,8 +36,7 @@
 idSGameSession::idSGameSession
 ===============
 */
-idSGameSession::idSGameSession( void )
-{
+idSGameSession::idSGameSession(void) {
 }
 
 /*
@@ -45,8 +44,7 @@ idSGameSession::idSGameSession( void )
 idSGameSession::~idSGameSession
 ===============
 */
-idSGameSession::~idSGameSession( void )
-{
+idSGameSession::~idSGameSession(void) {
 }
 
 /*
@@ -56,22 +54,21 @@ idSGameSession::WriteClientSessionData
 Called on game shutdown
 ================
 */
-void idSGameSession::WriteClientSessionData( gclient_t* client )
-{
+void idSGameSession::WriteClientSessionData(gclient_t *client) {
     pointer  s;
     pointer  var;
-    
-    s = va( "%i %i %i %i %s",
-            client->sess.spectatorTime,
-            client->sess.spectatorState,
-            client->sess.spectatorClient,
-            client->sess.restartTeam,
-            Com_ClientListString( &client->sess.ignoreList )
+
+    s = va("%i %i %i %i %s",
+           client->sess.spectatorTime,
+           client->sess.spectatorState,
+           client->sess.spectatorClient,
+           client->sess.restartTeam,
+           Com_ClientListString(&client->sess.ignoreList)
           );
-          
-    var = va( "session%i", ( sint )( client - level.clients ) );
-    
-    trap_Cvar_Set( var, s );
+
+    var = va("session%i", (sint)(client - level.clients));
+
+    trap_Cvar_Set(var, s);
 }
 
 /*
@@ -81,28 +78,27 @@ idSGameSession::ReadSessionData
 Called on a reconnect
 ================
 */
-void idSGameSession::ReadSessionData( gclient_t* client )
-{
+void idSGameSession::ReadSessionData(gclient_t *client) {
     valueType        s[MAX_STRING_CHARS];
     pointer  var;
     sint         spectatorState;
     sint         restartTeam;
     valueType        ignorelist[17];
-    
-    var = va( "session%i", ( sint )( client - level.clients ) );
-    trap_Cvar_VariableStringBuffer( var, s, sizeof( s ) );
-    
-    sscanf( s, "%i %i %i %i %16s",
-            &client->sess.spectatorTime,
-            &spectatorState,
-            &client->sess.spectatorClient,
-            &restartTeam,
-            ignorelist
+
+    var = va("session%i", (sint)(client - level.clients));
+    trap_Cvar_VariableStringBuffer(var, s, sizeof(s));
+
+    sscanf(s, "%i %i %i %i %16s",
+           &client->sess.spectatorTime,
+           &spectatorState,
+           &client->sess.spectatorClient,
+           &restartTeam,
+           ignorelist
           );
-          
-    client->sess.spectatorState = ( spectatorState_t )spectatorState;
-    client->sess.restartTeam = ( team_t )restartTeam;
-    Com_ClientListParse( &client->sess.ignoreList, ignorelist );
+
+    client->sess.spectatorState = (spectatorState_t)spectatorState;
+    client->sess.restartTeam = (team_t)restartTeam;
+    Com_ClientListParse(&client->sess.ignoreList, ignorelist);
 }
 
 
@@ -113,39 +109,35 @@ idSGameSession::InitSessionData
 Called on a first-time connect
 ================
 */
-void idSGameSession::InitSessionData( gclient_t* client, valueType* userinfo )
-{
-    clientSession_t* sess;
+void idSGameSession::InitSessionData(gclient_t *client,
+                                     valueType *userinfo) {
+    clientSession_t *sess;
     pointer value;
-    
+
     sess = &client->sess;
-    
+
     // initial team determination
-    value = Info_ValueForKey( userinfo, "team" );
-    if( value[0] == 's' )
-    {
+    value = Info_ValueForKey(userinfo, "team");
+
+    if(value[0] == 's') {
         // a willing spectator, not a waiting-in-line
         sess->spectatorState = SPECTATOR_FREE;
-    }
-    else
-    {
-        if( g_maxGameClients.integer > 0 && level.numNonSpectatorClients >= g_maxGameClients.integer )
-        {
+    } else {
+        if(g_maxGameClients.integer > 0 &&
+                level.numNonSpectatorClients >= g_maxGameClients.integer) {
             sess->spectatorState = SPECTATOR_FREE;
-        }
-        else
-        {
+        } else {
             sess->spectatorState = SPECTATOR_NOT;
         }
     }
-    
+
     sess->restartTeam = TEAM_NONE;
     sess->spectatorState = SPECTATOR_FREE;
     sess->spectatorTime = level.time;
     sess->spectatorClient = -1;
-    ::memset( &sess->ignoreList, 0, sizeof( sess->ignoreList ) );
-    
-    WriteClientSessionData( client );
+    ::memset(&sess->ignoreList, 0, sizeof(sess->ignoreList));
+
+    WriteClientSessionData(client);
 }
 
 
@@ -154,18 +146,17 @@ void idSGameSession::InitSessionData( gclient_t* client, valueType* userinfo )
 idSGameSession::WriteSessionData
 ==================
 */
-void idSGameSession::WriteSessionData( void )
-{
+void idSGameSession::WriteSessionData(void) {
     sint i;
-    
-    for( i = 0 ; i < level.maxclients ; i++ )
-    {
-        if( level.clients[i].pers.connected == CON_CONNECTED )
-        {
-            WriteClientSessionData( &level.clients[i] );
+
+    for(i = 0 ; i < level.maxclients ; i++) {
+        if(level.clients[i].pers.connected == CON_CONNECTED) {
+            WriteClientSessionData(&level.clients[i]);
         }
     }
-    
+
     // write values for sv_maxclients and sv_democlients because they invalidate session data
-    trap_Cvar_Set( "session", va( "%i %i", trap_Cvar_VariableIntegerValue( "sv_maxclients" ), trap_Cvar_VariableIntegerValue( "sv_democlients" ) ) );
+    trap_Cvar_Set("session", va("%i %i",
+                                trap_Cvar_VariableIntegerValue("sv_maxclients"),
+                                trap_Cvar_VariableIntegerValue("sv_democlients")));
 }

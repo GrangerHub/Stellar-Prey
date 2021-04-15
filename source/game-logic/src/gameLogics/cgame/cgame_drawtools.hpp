@@ -31,31 +31,40 @@
 
 class idCGameLocal;
 
-class idCGameDrawTools : public idCGameLocal
-{
+class idCGameDrawTools : public idCGameLocal {
 public:
     idCGameDrawTools();
     ~idCGameDrawTools();
-    
-    void DrawPlane( vec3_t origin, vec3_t down, vec3_t right, qhandle_t shader );
-    static void AdjustFrom640( float32* x, float32* y, float32* w, float32* h );
-    static void DrawSides( float32 x, float32 y, float32 w, float32 h, float32 size );
-    static void DrawTopBottom( float32 x, float32 y, float32 w, float32 h, float32 size );
-    static void DrawCorners( float32 x, float32 y, float32 w, float32 h, float32 size, qhandle_t pic );
-    static void DrawRect( float32 x, float32 y, float32 width, float32 height, float32 size, const float32* color );
-    static void DrawRoundedRect( float32 x, float32 y, float32 width, float32 height, float32 size, const float32* color );
-    static void FillRect( float32 x, float32 y, float32 width, float32 height, const float32* color );
-    static void FillRoundedRect( float32 x, float32 y, float32 width, float32 height, float32 size, const float32* color );
-    static void DrawPic( float32 x, float32 y, float32 width, float32 height, qhandle_t hShader );
-    void DrawFadePic( float32 x, float32 y, float32 width, float32 height, vec4_t fcolor, vec4_t tcolor, float32 amount, qhandle_t hShader );
-    static sint DrawStrlen( pointer str );
-    static void TileClearBox( sint x, sint y, sint w, sint h, qhandle_t hShader );
-    static void TileClear( void );
-    static float32* FadeColor( sint startMsec, sint totalMsec );
-    static bool WorldToScreen( vec3_t poS32, float32* x, float32* y );
-    static bool WorldToScreenWrap( vec3_t poS32, float32* x, float32* y );
-    static valueType* KeyBinding( pointer bind );
-    
+
+    void DrawPlane(vec3_t origin, vec3_t down, vec3_t right, qhandle_t shader);
+    static void AdjustFrom640(float32 *x, float32 *y, float32 *w, float32 *h);
+    static void DrawSides(float32 x, float32 y, float32 w, float32 h,
+                          float32 size);
+    static void DrawTopBottom(float32 x, float32 y, float32 w, float32 h,
+                              float32 size);
+    static void DrawCorners(float32 x, float32 y, float32 w, float32 h,
+                            float32 size, qhandle_t pic);
+    static void DrawRect(float32 x, float32 y, float32 width, float32 height,
+                         float32 size, const float32 *color);
+    static void DrawRoundedRect(float32 x, float32 y, float32 width,
+                                float32 height, float32 size, const float32 *color);
+    static void FillRect(float32 x, float32 y, float32 width, float32 height,
+                         const float32 *color);
+    static void FillRoundedRect(float32 x, float32 y, float32 width,
+                                float32 height, float32 size, const float32 *color);
+    static void DrawPic(float32 x, float32 y, float32 width, float32 height,
+                        qhandle_t hShader);
+    void DrawFadePic(float32 x, float32 y, float32 width, float32 height,
+                     vec4_t fcolor, vec4_t tcolor, float32 amount, qhandle_t hShader);
+    static sint DrawStrlen(pointer str);
+    static void TileClearBox(sint x, sint y, sint w, sint h,
+                             qhandle_t hShader);
+    static void TileClear(void);
+    static float32 *FadeColor(sint startMsec, sint totalMsec);
+    static bool WorldToScreen(vec3_t poS32, float32 *x, float32 *y);
+    static bool WorldToScreenWrap(vec3_t poS32, float32 *x, float32 *y);
+    static valueType *KeyBinding(pointer bind);
+
 };
 
 #endif //!__CGAME_DRAWTOOLS_H__

@@ -37,17 +37,17 @@
 #endif // !GAMEDLL
 
 idBothGamesLocal bgLocal;
-bgGame* bggame = &bgLocal;
+bgGame *bggame = &bgLocal;
 
-sint trap_FS_FOpenFile( pointer qpath, fileHandle_t* f, fsMode_t mode );
-void trap_FS_Read( void* buffer, sint len, fileHandle_t f );
-sint trap_FS_Write( const void* buffer, sint len, fileHandle_t f );
-void trap_FS_FCloseFile( fileHandle_t f );
-sint trap_FS_Seek( fileHandle_t f, sint32 offset, sint origin );
-sint trap_FS_GetFileList( pointer path, pointer extension, valueType* listbuf, sint bufsize );
+sint trap_FS_FOpenFile(pointer qpath, fileHandle_t *f, fsMode_t mode);
+void trap_FS_Read(void *buffer, sint len, fileHandle_t f);
+sint trap_FS_Write(const void *buffer, sint len, fileHandle_t f);
+void trap_FS_FCloseFile(fileHandle_t f);
+sint trap_FS_Seek(fileHandle_t f, sint32 offset, sint origin);
+sint trap_FS_GetFileList(pointer path, pointer extension,
+                         valueType *listbuf, sint bufsize);
 
-static const buildableAttributes_t bg_buildableList[ ] =
-{
+static const buildableAttributes_t bg_buildableList[ ] = {
     {
         BA_A_SPAWN,            //int       buildNum;
         "eggpod",              //char      *buildName;
@@ -59,14 +59,14 @@ static const buildableAttributes_t bg_buildableList[ ] =
         TR_GRAVITY,            //trType_t  traj;
         0.0,                   //float     bounce;
         ASPAWN_BP,             //int       buildPoints;
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),       //int  stages
         ASPAWN_HEALTH,         //int       health;
         ASPAWN_REGEN,          //int       regenRate;
         ASPAWN_SPLASHDAMAGE,   //int       splashDamage;
         ASPAWN_SPLASHRADIUS,   //int       splashRadius;
         MOD_ASPAWN,            //int       meansOfDeath;
         TEAM_ALIENS,           //int       team;
-        ( weapon_t )( ( 1 << WP_ABUILD ) | ( 1 << WP_ABUILD2 ) ), //weapon_t  buildWeapon;
+        (weapon_t)((1 << WP_ABUILD) | (1 << WP_ABUILD2)),         //weapon_t  buildWeapon;
         BANIM_IDLE1,           //int       idleAnim;
         100,                   //int       nextthink;
         ASPAWN_BT,             //int       buildTime;
@@ -94,14 +94,14 @@ static const buildableAttributes_t bg_buildableList[ ] =
         TR_GRAVITY,            //trType_t  traj;
         0.0,                   //float     bounce;
         OVERMIND_BP,           //int       buildPoints;
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),       //int  stages
         OVERMIND_HEALTH,       //int       health;
         OVERMIND_REGEN,        //int       regenRate;
         OVERMIND_SPLASHDAMAGE, //int       splashDamage;
         OVERMIND_SPLASHRADIUS, //int       splashRadius;
         MOD_ASPAWN,            //int       meansOfDeath;
         TEAM_ALIENS,           //int       team;
-        ( weapon_t )( ( 1 << WP_ABUILD ) | ( 1 << WP_ABUILD2 ) ), //weapon_t  buildWeapon;
+        (weapon_t)((1 << WP_ABUILD) | (1 << WP_ABUILD2)),         //weapon_t  buildWeapon;
         BANIM_IDLE1,           //int       idleAnim;
         OVERMIND_ATTACK_REPEAT,//int       nextthink;
         OVERMIND_BT,           //int       buildTime;
@@ -129,14 +129,14 @@ static const buildableAttributes_t bg_buildableList[ ] =
         TR_GRAVITY,            //trType_t  traj;
         0.0,                   //float     bounce;
         BARRICADE_BP,          //int       buildPoints;
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),       //int  stages
         BARRICADE_HEALTH,      //int       health;
         BARRICADE_REGEN,       //int       regenRate;
         BARRICADE_SPLASHDAMAGE,//int       splashDamage;
         BARRICADE_SPLASHRADIUS,//int       splashRadius;
         MOD_ASPAWN,            //int       meansOfDeath;
         TEAM_ALIENS,           //int       team;
-        ( weapon_t )( ( 1 << WP_ABUILD ) | ( 1 << WP_ABUILD2 ) ), //weapon_t  buildWeapon;
+        (weapon_t)((1 << WP_ABUILD) | (1 << WP_ABUILD2)),         //weapon_t  buildWeapon;
         BANIM_IDLE1,           //int       idleAnim;
         100,                   //int       nextthink;
         BARRICADE_BT,          //int       buildTime;
@@ -164,14 +164,14 @@ static const buildableAttributes_t bg_buildableList[ ] =
         TR_GRAVITY,            //trType_t  traj;
         0.0,                   //float     bounce;
         ACIDTUBE_BP,           //int       buildPoints;
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),       //int  stages
         ACIDTUBE_HEALTH,       //int       health;
         ACIDTUBE_REGEN,        //int       regenRate;
         ACIDTUBE_SPLASHDAMAGE, //int       splashDamage;
         ACIDTUBE_SPLASHRADIUS, //int       splashRadius;
         MOD_ATUBE, //FIXME: hmm //int       meansOfDeath;
         TEAM_ALIENS,           //int       team;
-        ( weapon_t )( ( 1 << WP_ABUILD ) | ( 1 << WP_ABUILD2 ) ), //weapon_t  buildWeapon;
+        (weapon_t)((1 << WP_ABUILD) | (1 << WP_ABUILD2)),         //weapon_t  buildWeapon;
         BANIM_IDLE1,           //int       idleAnim;
         200,                   //int       nextthink;
         ACIDTUBE_BT,           //int       buildTime;
@@ -199,14 +199,14 @@ static const buildableAttributes_t bg_buildableList[ ] =
         TR_GRAVITY,            //trType_t  traj;
         0.0,                   //float     bounce;
         TRAPPER_BP,            //int       buildPoints;
-        ( 1 << S2 ) | ( 1 << S3 ), //int  stages //NEEDS ADV BUILDER SO S2 AND UP
+        (1 << S2) | (1 << S3),     //int  stages //NEEDS ADV BUILDER SO S2 AND UP
         TRAPPER_HEALTH,        //int       health;
         TRAPPER_REGEN,         //int       regenRate;
         TRAPPER_SPLASHDAMAGE,  //int       splashDamage;
         TRAPPER_SPLASHRADIUS,  //int       splashRadius;
         MOD_ASPAWN,            //int       meansOfDeath;
         TEAM_ALIENS,           //int       team;
-        ( weapon_t )( 1 << WP_ABUILD2 ),   //weapon_t  buildWeapon;
+        (weapon_t)(1 << WP_ABUILD2),       //weapon_t  buildWeapon;
         BANIM_IDLE1,           //int       idleAnim;
         100,                   //int       nextthink;
         TRAPPER_BT,            //int       buildTime;
@@ -235,14 +235,14 @@ static const buildableAttributes_t bg_buildableList[ ] =
         TR_GRAVITY,            //trType_t  traj;
         0.0,                   //float     bounce;
         BOOSTER_BP,            //int       buildPoints;
-        ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S2) | (1 << S3),     //int  stages
         BOOSTER_HEALTH,        //int       health;
         BOOSTER_REGEN,         //int       regenRate;
         BOOSTER_SPLASHDAMAGE,  //int       splashDamage;
         BOOSTER_SPLASHRADIUS,  //int       splashRadius;
         MOD_ASPAWN,            //int       meansOfDeath;
         TEAM_ALIENS,           //int       team;
-        ( weapon_t )( 1 << WP_ABUILD2 ),   //weapon_t  buildWeapon;
+        (weapon_t)(1 << WP_ABUILD2),       //weapon_t  buildWeapon;
         BANIM_IDLE1,           //int       idleAnim;
         100,                   //int       nextthink;
         BOOSTER_BT,            //int       buildTime;
@@ -269,14 +269,14 @@ static const buildableAttributes_t bg_buildableList[ ] =
         TR_GRAVITY,            //trType_t  traj;
         0.0,                   //float     bounce;
         HIVE_BP,               //int       buildPoints;
-        ( 1 << S3 ),           //int  stages
+        (1 << S3),             //int  stages
         HIVE_HEALTH,           //int       health;
         HIVE_REGEN,            //int       regenRate;
         HIVE_SPLASHDAMAGE,     //int       splashDamage;
         HIVE_SPLASHRADIUS,     //int       splashRadius;
         MOD_ASPAWN,            //int       meansOfDeath;
         TEAM_ALIENS,           //int       team;
-        ( weapon_t )( 1 << WP_ABUILD2 ),   //weapon_t  buildWeapon;
+        (weapon_t)(1 << WP_ABUILD2),       //weapon_t  buildWeapon;
         BANIM_IDLE1,           //int       idleAnim;
         500,                   //int       nextthink;
         HIVE_BT,               //int       buildTime;
@@ -304,14 +304,14 @@ static const buildableAttributes_t bg_buildableList[ ] =
         TR_GRAVITY,            //trType_t  traj;
         0.0,                   //float     bounce;
         HOVEL_BP,              //int       buildPoints;
-        ( 1 << S3 ),           //int  stages
+        (1 << S3),             //int  stages
         HOVEL_HEALTH,          //int       health;
         HOVEL_REGEN,           //int       regenRate;
         HOVEL_SPLASHDAMAGE,    //int       splashDamage;
         HOVEL_SPLASHRADIUS,    //int       splashRadius;
         MOD_ASPAWN,            //int       meansOfDeath;
         TEAM_ALIENS,           //int       team;
-        ( weapon_t )( 1 << WP_ABUILD2 ),   //weapon_t  buildWeapon;
+        (weapon_t)(1 << WP_ABUILD2),       //weapon_t  buildWeapon;
         BANIM_IDLE1,           //int       idleAnim;
         150,                   //int       nextthink;
         HOVEL_BT,              //int       buildTime;
@@ -339,14 +339,14 @@ static const buildableAttributes_t bg_buildableList[ ] =
         TR_GRAVITY,            //trType_t  traj;
         0.0,                   //float     bounce;
         HSPAWN_BP,             //int       buildPoints;
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),       //int  stages
         HSPAWN_HEALTH,         //int       health;
         0,                     //int       regenRate;
         HSPAWN_SPLASHDAMAGE,   //int       splashDamage;
         HSPAWN_SPLASHRADIUS,   //int       splashRadius;
         MOD_HSPAWN,            //int       meansOfDeath;
         TEAM_HUMANS,           //int       team;
-        ( weapon_t )( 1 << WP_HBUILD ),    //weapon_t  buildWeapon;
+        (weapon_t)(1 << WP_HBUILD),        //weapon_t  buildWeapon;
         BANIM_IDLE1,           //int       idleAnim;
         100,                   //int       nextthink;
         HSPAWN_BT,             //int       buildTime;
@@ -374,14 +374,14 @@ static const buildableAttributes_t bg_buildableList[ ] =
         TR_GRAVITY,            //trType_t  traj;
         0.0,                   //float     bounce;
         MGTURRET_BP,           //int       buildPoints;
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),       //int  stages
         MGTURRET_HEALTH,       //int       health;
         0,                     //int       regenRate;
         MGTURRET_SPLASHDAMAGE, //int       splashDamage;
         MGTURRET_SPLASHRADIUS, //int       splashRadius;
         MOD_HSPAWN,            //int       meansOfDeath;
         TEAM_HUMANS,           //int       team;
-        ( weapon_t )( 1 << WP_HBUILD ),   //weapon_t  buildWeapon;
+        (weapon_t)(1 << WP_HBUILD),       //weapon_t  buildWeapon;
         BANIM_IDLE1,           //int       idleAnim;
         50,                    //int       nextthink;
         MGTURRET_BT,           //int       buildTime;
@@ -409,14 +409,14 @@ static const buildableAttributes_t bg_buildableList[ ] =
         TR_GRAVITY,            //trType_t  traj;
         0.0,                   //float     bounce;
         TESLAGEN_BP,           //int       buildPoints;
-        ( 1 << S3 ),           //int       stages
+        (1 << S3),             //int       stages
         TESLAGEN_HEALTH,       //int       health;
         0,                     //int       regenRate;
         TESLAGEN_SPLASHDAMAGE, //int       splashDamage;
         TESLAGEN_SPLASHRADIUS, //int       splashRadius;
         MOD_HSPAWN,            //int       meansOfDeath;
         TEAM_HUMANS,           //int       team;
-        ( weapon_t )( 1 << WP_HBUILD ),    //weapon_t  buildWeapon;
+        (weapon_t)(1 << WP_HBUILD),        //weapon_t  buildWeapon;
         BANIM_IDLE1,           //int       idleAnim;
         150,                   //int       nextthink;
         TESLAGEN_BT,           //int       buildTime;
@@ -444,14 +444,14 @@ static const buildableAttributes_t bg_buildableList[ ] =
         TR_GRAVITY,            //trType_t  traj;
         0.0,                   //float     bounce;
         ARMOURY_BP,            //int       buildPoints;
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),       //int  stages
         ARMOURY_HEALTH,        //int       health;
         0,                     //int       regenRate;
         ARMOURY_SPLASHDAMAGE,  //int       splashDamage;
         ARMOURY_SPLASHRADIUS,  //int       splashRadius;
         MOD_HSPAWN,            //int       meansOfDeath;
         TEAM_HUMANS,           //int       team;
-        ( weapon_t )( 1 << WP_HBUILD ),    //weapon_t  buildWeapon;
+        (weapon_t)(1 << WP_HBUILD),        //weapon_t  buildWeapon;
         BANIM_IDLE1,           //int       idleAnim;
         100,                   //int       nextthink;
         ARMOURY_BT,            //int       buildTime;
@@ -479,14 +479,14 @@ static const buildableAttributes_t bg_buildableList[ ] =
         TR_GRAVITY,            //trType_t  traj;
         0.0,                   //float     bounce;
         DC_BP,                 //int       buildPoints;
-        ( 1 << S2 ) | ( 1 << S3 ), //int       stages
+        (1 << S2) | (1 << S3),     //int       stages
         DC_HEALTH,             //int       health;
         0,                     //int       regenRate;
         DC_SPLASHDAMAGE,       //int       splashDamage;
         DC_SPLASHRADIUS,       //int       splashRadius;
         MOD_HSPAWN,            //int       meansOfDeath;
         TEAM_HUMANS,           //int       team;
-        ( weapon_t )( 1 << WP_HBUILD ),    //weapon_t  buildWeapon;
+        (weapon_t)(1 << WP_HBUILD),        //weapon_t  buildWeapon;
         BANIM_IDLE1,           //int       idleAnim;
         100,                   //int       nextthink;
         DC_BT,                 //int       buildTime;
@@ -515,14 +515,14 @@ static const buildableAttributes_t bg_buildableList[ ] =
         TR_GRAVITY,            //trType_t  traj;
         0.0,                   //float     bounce;
         MEDISTAT_BP,           //int       buildPoints;
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),       //int  stages
         MEDISTAT_HEALTH,       //int       health;
         0,                     //int       regenRate;
         MEDISTAT_SPLASHDAMAGE, //int       splashDamage;
         MEDISTAT_SPLASHRADIUS, //int       splashRadius;
         MOD_HSPAWN,            //int       meansOfDeath;
         TEAM_HUMANS,           //int       team;
-        ( weapon_t )( 1 << WP_HBUILD ),    //weapon_t  buildWeapon;
+        (weapon_t)(1 << WP_HBUILD),        //weapon_t  buildWeapon;
         BANIM_IDLE1,           //int       idleAnim;
         100,                   //int       nextthink;
         MEDISTAT_BT,           //int       buildTime;
@@ -550,14 +550,14 @@ static const buildableAttributes_t bg_buildableList[ ] =
         TR_GRAVITY,            //trType_t  traj;
         0.0,                   //float     bounce;
         REACTOR_BP,            //int       buildPoints;
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),       //int  stages
         REACTOR_HEALTH,        //int       health;
         0,                     //int       regenRate;
         REACTOR_SPLASHDAMAGE,  //int       splashDamage;
         REACTOR_SPLASHRADIUS,  //int       splashRadius;
         MOD_HSPAWN,            //int       meansOfDeath;
         TEAM_HUMANS,           //int       team;
-        ( weapon_t )( 1 << WP_HBUILD ),    //weapon_t  buildWeapon;
+        (weapon_t)(1 << WP_HBUILD),        //weapon_t  buildWeapon;
         BANIM_IDLE1,           //int       idleAnim;
         REACTOR_ATTACK_DCC_REPEAT, //int       nextthink;
         REACTOR_BT,            //int       buildTime;
@@ -585,14 +585,14 @@ static const buildableAttributes_t bg_buildableList[ ] =
         TR_GRAVITY,            //trType_t  traj;
         0.0,                   //float     bounce;
         REPEATER_BP,           //int       buildPoints;
-        ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S2) | (1 << S3),     //int  stages
         REPEATER_HEALTH,       //int       health;
         0,                     //int       regenRate;
         REPEATER_SPLASHDAMAGE, //int       splashDamage;
         REPEATER_SPLASHRADIUS, //int       splashRadius;
         MOD_HSPAWN,            //int       meansOfDeath;
         TEAM_HUMANS,           //int       team;
-        ( weapon_t )( 1 << WP_HBUILD ),    //weapon_t  buildWeapon;
+        (weapon_t)(1 << WP_HBUILD),        //weapon_t  buildWeapon;
         BANIM_IDLE1,           //int       idleAnim;
         100,                   //int       nextthink;
         REPEATER_BT,           //int       buildTime;
@@ -611,27 +611,26 @@ static const buildableAttributes_t bg_buildableList[ ] =
     }
 };
 
-sint bg_numBuildables = sizeof( bg_buildableList ) / sizeof( bg_buildableList[ 0 ] );
+sint bg_numBuildables = sizeof(bg_buildableList) / sizeof(
+                            bg_buildableList[ 0 ]);
 
-static const buildableAttributes_t nullBuildable = { ( buildable_t )0 };
+static const buildableAttributes_t nullBuildable = { (buildable_t)0 };
 
 /*
 ==============
 idBothGamesLocal::BuildableByName
 ==============
 */
-const buildableAttributes_t* idBothGamesLocal::BuildableByName( pointer name )
-{
+const buildableAttributes_t *idBothGamesLocal::BuildableByName(
+    pointer name) {
     sint i;
-    
-    for( i = 0; i < bg_numBuildables; i++ )
-    {
-        if( !Q_stricmp( bg_buildableList[i].name, name ) )
-        {
+
+    for(i = 0; i < bg_numBuildables; i++) {
+        if(!Q_stricmp(bg_buildableList[i].name, name)) {
             return &bg_buildableList[i];
         }
     }
-    
+
     return &nullBuildable;
 }
 
@@ -640,18 +639,16 @@ const buildableAttributes_t* idBothGamesLocal::BuildableByName( pointer name )
 idBothGamesLocal::BuildableByEntityName
 ==============
 */
-const buildableAttributes_t* idBothGamesLocal::BuildableByEntityName( pointer name )
-{
+const buildableAttributes_t *idBothGamesLocal::BuildableByEntityName(
+    pointer name) {
     sint i;
-    
-    for( i = 0; i < bg_numBuildables; i++ )
-    {
-        if( !Q_stricmp( bg_buildableList[i].entityName, name ) )
-        {
+
+    for(i = 0; i < bg_numBuildables; i++) {
+        if(!Q_stricmp(bg_buildableList[i].entityName, name)) {
             return &bg_buildableList[i];
         }
     }
-    
+
     return &nullBuildable;
 }
 
@@ -660,9 +657,11 @@ const buildableAttributes_t* idBothGamesLocal::BuildableByEntityName( pointer na
 idBothGamesLocal::Buildable
 ==============
 */
-const buildableAttributes_t* idBothGamesLocal::Buildable( buildable_t buildable )
-{
-    return ( buildable > BA_NONE && buildable < BA_NUM_BUILDABLES ) ? &bg_buildableList[ buildable - 1 ] : &nullBuildable;
+const buildableAttributes_t *idBothGamesLocal::Buildable(
+    buildable_t buildable) {
+    return (buildable > BA_NONE &&
+            buildable < BA_NUM_BUILDABLES) ? &bg_buildableList[ buildable - 1 ] :
+           &nullBuildable;
 }
 
 /*
@@ -670,16 +669,13 @@ const buildableAttributes_t* idBothGamesLocal::Buildable( buildable_t buildable 
 idBothGamesLocal::BuildableAllowedInStage
 ==============
 */
-bool idBothGamesLocal::BuildableAllowedInStage( buildable_t buildable, stage_t stage )
-{
-    sint stages = Buildable( buildable )->stages;
-    
-    if( stages & ( 1 << stage ) )
-    {
+bool idBothGamesLocal::BuildableAllowedInStage(buildable_t buildable,
+        stage_t stage) {
+    sint stages = Buildable(buildable)->stages;
+
+    if(stages & (1 << stage)) {
         return true;
-    }
-    else
-    {
+    } else {
         return false;
     }
 }
@@ -691,8 +687,8 @@ static buildableConfig_t bg_buildableConfigList[ BA_NUM_BUILDABLES ];
 idBothGamesLocal::BuildableConfig
 ==============
 */
-buildableConfig_t* idBothGamesLocal::BuildableConfig( buildable_t buildable )
-{
+buildableConfig_t *idBothGamesLocal::BuildableConfig(
+    buildable_t buildable) {
     return &bg_buildableConfigList[ buildable ];
 }
 
@@ -701,18 +697,16 @@ buildableConfig_t* idBothGamesLocal::BuildableConfig( buildable_t buildable )
 idBothGamesLocal::BuildableBoundingBox
 ==============
 */
-void idBothGamesLocal::BuildableBoundingBox( buildable_t buildable, vec3_t mins, vec3_t maxs )
-{
-    buildableConfig_t* buildableConfig = BuildableConfig( buildable );
-    
-    if( mins != nullptr )
-    {
-        VectorCopy( buildableConfig->mins, mins );
+void idBothGamesLocal::BuildableBoundingBox(buildable_t buildable,
+        vec3_t mins, vec3_t maxs) {
+    buildableConfig_t *buildableConfig = BuildableConfig(buildable);
+
+    if(mins != nullptr) {
+        VectorCopy(buildableConfig->mins, mins);
     }
-    
-    if( maxs != nullptr )
-    {
-        VectorCopy( buildableConfig->maxs, maxs );
+
+    if(maxs != nullptr) {
+        VectorCopy(buildableConfig->maxs, maxs);
     }
 }
 
@@ -723,199 +717,169 @@ idBothGamesLocal::ParseBuildableFile
 Parses a configuration file describing a buildable
 ======================
 */
-bool idBothGamesLocal::ParseBuildableFile( pointer filename, buildableConfig_t* bc )
-{
-    valueType* text_p;
+bool idBothGamesLocal::ParseBuildableFile(pointer filename,
+        buildableConfig_t *bc) {
+    valueType *text_p;
     sint i, len;
-    valueType* token;
+    valueType *token;
     valueType text[ 20000 ];
     fileHandle_t f;
     float32 scale;
     sint defined = 0;
-    enum
-    {
+    enum {
         MODEL         = 1 << 0,
         MODELSCALE    = 1 << 1,
         MINS          = 1 << 2,
         MAXS          = 1 << 3,
         ZOFFSET       = 1 << 4
     };
-    
+
     // load the file
-    len = trap_FS_FOpenFile( filename, &f, FS_READ );
-    if( len < 0 )
-    {
-        Com_Printf( S_COLOR_RED "ERROR: Buildable file %s doesn't exist\n", filename );
+    len = trap_FS_FOpenFile(filename, &f, FS_READ);
+
+    if(len < 0) {
+        Com_Printf(S_COLOR_RED "ERROR: Buildable file %s doesn't exist\n",
+                   filename);
         return false;
     }
-    
-    if( len == 0 || len >= sizeof( text ) - 1 )
-    {
-        trap_FS_FCloseFile( f );
-        Com_Printf( S_COLOR_RED "ERROR: Buildable file %s is %s\n", filename, len == 0 ? "empty" : "too long" );
+
+    if(len == 0 || len >= sizeof(text) - 1) {
+        trap_FS_FCloseFile(f);
+        Com_Printf(S_COLOR_RED "ERROR: Buildable file %s is %s\n", filename,
+                   len == 0 ? "empty" : "too long");
         return false;
     }
-    
-    trap_FS_Read( text, len, f );
+
+    trap_FS_Read(text, len, f);
     text[ len ] = 0;
-    trap_FS_FCloseFile( f );
-    
+    trap_FS_FCloseFile(f);
+
     // parse the text
     text_p = text;
-    
+
     // read optional parameters
-    while( 1 )
-    {
-        token = COM_Parse( &text_p );
-        
-        if( !token )
-        {
+    while(1) {
+        token = COM_Parse(&text_p);
+
+        if(!token) {
             break;
         }
-        
-        if( !Q_stricmp( token, "" ) )
-        {
+
+        if(!Q_stricmp(token, "")) {
             break;
         }
-        
-        if( !Q_stricmp( token, "model" ) )
-        {
+
+        if(!Q_stricmp(token, "model")) {
             sint index = 0;
-            
-            token = COM_Parse( &text_p );
-            if( !token )
-            {
+
+            token = COM_Parse(&text_p);
+
+            if(!token) {
                 break;
             }
-            
-            index = atoi( token );
-            
-            if( index < 0 )
-            {
+
+            index = atoi(token);
+
+            if(index < 0) {
                 index = 0;
-            }
-            else if( index > 3 )
-            {
+            } else if(index > 3) {
                 index = 3;
             }
-            
-            token = COM_Parse( &text_p );
-            if( !token )
-            {
+
+            token = COM_Parse(&text_p);
+
+            if(!token) {
                 break;
             }
-            
-            Q_strncpyz( bc->models[ index ], token, sizeof( bc->models[ 0 ] ) );
-            
+
+            Q_strncpyz(bc->models[ index ], token, sizeof(bc->models[ 0 ]));
+
             defined |= MODEL;
             continue;
-        }
-        else if( !Q_stricmp( token, "modelScale" ) )
-        {
-            token = COM_Parse( &text_p );
-            if( !token )
-            {
+        } else if(!Q_stricmp(token, "modelScale")) {
+            token = COM_Parse(&text_p);
+
+            if(!token) {
                 break;
             }
-            
-            scale = atof( token );
-            
-            if( scale < 0.0f )
-            {
+
+            scale = atof(token);
+
+            if(scale < 0.0f) {
                 scale = 0.0f;
             }
-            
+
             bc->modelScale = scale;
-            
+
             defined |= MODELSCALE;
             continue;
-        }
-        else if( !Q_stricmp( token, "mins" ) )
-        {
-            for( i = 0; i <= 2; i++ )
-            {
-                token = COM_Parse( &text_p );
-                if( !token )
-                {
+        } else if(!Q_stricmp(token, "mins")) {
+            for(i = 0; i <= 2; i++) {
+                token = COM_Parse(&text_p);
+
+                if(!token) {
                     break;
                 }
-                
-                bc->mins[ i ] = atof( token );
+
+                bc->mins[ i ] = atof(token);
             }
-            
+
             defined |= MINS;
             continue;
-        }
-        else if( !Q_stricmp( token, "maxs" ) )
-        {
-            for( i = 0; i <= 2; i++ )
-            {
-                token = COM_Parse( &text_p );
-                if( !token )
-                {
+        } else if(!Q_stricmp(token, "maxs")) {
+            for(i = 0; i <= 2; i++) {
+                token = COM_Parse(&text_p);
+
+                if(!token) {
                     break;
                 }
-                
-                bc->maxs[ i ] = atof( token );
+
+                bc->maxs[ i ] = atof(token);
             }
-            
+
             defined |= MAXS;
             continue;
-        }
-        else if( !Q_stricmp( token, "zOffset" ) )
-        {
+        } else if(!Q_stricmp(token, "zOffset")) {
             float32 offset;
-            
-            token = COM_Parse( &text_p );
-            if( !token )
-            {
+
+            token = COM_Parse(&text_p);
+
+            if(!token) {
                 break;
             }
-            
-            offset = atof( token );
-            
+
+            offset = atof(token);
+
             bc->zOffset = offset;
-            
+
             defined |= ZOFFSET;
             continue;
         }
-        
-        
-        Com_Printf( S_COLOR_RED "ERROR: unknown token '%s'\n", token );
+
+
+        Com_Printf(S_COLOR_RED "ERROR: unknown token '%s'\n", token);
         return false;
     }
-    
-    if( !( defined & MODEL ) )
-    {
+
+    if(!(defined & MODEL)) {
         token = "model";
-    }
-    else if( !( defined & MODELSCALE ) )
-    {
+    } else if(!(defined & MODELSCALE)) {
         token = "modelScale";
-    }
-    else if( !( defined & MINS ) )
-    {
+    } else if(!(defined & MINS)) {
         token = "mins";
-    }
-    else if( !( defined & MAXS ) )
-    {
+    } else if(!(defined & MAXS)) {
         token = "maxs";
-    }
-    else if( !( defined & ZOFFSET ) )
-    {
+    } else if(!(defined & ZOFFSET)) {
         token = "zOffset";
-    }
-    else
-    {
+    } else {
         token = "";
     }
-    
-    if( strlen( token ) > 0 )
-    {
-        Com_Printf( S_COLOR_RED "ERROR: %s not defined in %s\n", token, filename );
+
+    if(strlen(token) > 0) {
+        Com_Printf(S_COLOR_RED "ERROR: %s not defined in %s\n", token, filename);
         return false;
     }
-    
+
     return true;
 }
 
@@ -924,29 +888,27 @@ bool idBothGamesLocal::ParseBuildableFile( pointer filename, buildableConfig_t* 
 idBothGamesLocal::InitBuildableConfigs
 ===============
 */
-void idBothGamesLocal::InitBuildableConfigs( void )
-{
+void idBothGamesLocal::InitBuildableConfigs(void) {
     sint               i;
-    buildableConfig_t* bc;
-    
-    for( i = BA_NONE + 1; i < BA_NUM_BUILDABLES; i++ )
-    {
-        bc = BuildableConfig( ( buildable_t )i );
-        ::memset( bc, 0, sizeof( buildableConfig_t ) );
-        
-        ParseBuildableFile( va( "configs/buildables/%s.cfg", Buildable( ( buildable_t )i )->name ), bc );
+    buildableConfig_t *bc;
+
+    for(i = BA_NONE + 1; i < BA_NUM_BUILDABLES; i++) {
+        bc = BuildableConfig((buildable_t)i);
+        ::memset(bc, 0, sizeof(buildableConfig_t));
+
+        ParseBuildableFile(va("configs/buildables/%s.cfg",
+                              Buildable((buildable_t)i)->name), bc);
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-static const classAttributes_t bg_classList[ ] =
-{
+static const classAttributes_t bg_classList[ ] = {
     {
         PCL_NONE,                                       //int     classnum;
         "spectator",                                    //char    *className;
         "",
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ),        //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),              //int  stages
         0,                                              //int     health;
         0.0f,                                           //float   fallDamage;
         0.0f,                                           //float   regenRate;
@@ -973,7 +935,7 @@ static const classAttributes_t bg_classList[ ] =
         "builder",                                      //char    *className;
         "Responsible for building and maintaining all the alien structures. "
         "Has a weak melee slash attack.",
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ),        //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),              //int  stages
         ABUILDER_HEALTH,                                //int     health;
         0.2f,                                           //float   fallDamage;
         ABUILDER_REGEN,                                 //float   regenRate;
@@ -1001,7 +963,7 @@ static const classAttributes_t bg_classList[ ] =
         "Similar to the base Granger, except that in addition to "
         "being able to build structures it has a spit attack "
         "that slows victims and the ability to crawl on walls.",
-        ( 1 << S2 ) | ( 1 << S3 ),                      //int  stages
+        (1 << S2) | (1 << S3),                          //int  stages
         ABUILDER_UPG_HEALTH,                            //int     health;
         0.2f,                                           //float   fallDamage;
         ABUILDER_UPG_REGEN,                             //float   regenRate;
@@ -1028,7 +990,7 @@ static const classAttributes_t bg_classList[ ] =
         "level0",                                       //char    *classname;
         "Has a lethal reflexive bite and the ability to crawl on "
         "walls and ceilings.",
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ),        //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),              //int  stages
         LEVEL0_HEALTH,                                  //int     health;
         0.0f,                                           //float   fallDamage;
         LEVEL0_REGEN,                                   //float   regenRate;
@@ -1057,7 +1019,7 @@ static const classAttributes_t bg_classList[ ] =
         "attack is most effective when combined with the ability to grab "
         "and hold its victims in place. Provides a weak healing aura "
         "that accelerates the healing rate of nearby aliens.",
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ),        //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),              //int  stages
         LEVEL1_HEALTH,                                  //int     health;
         0.0f,                                           //float   fallDamage;
         LEVEL1_REGEN,                                   //float   regenRate;
@@ -1086,7 +1048,7 @@ static const classAttributes_t bg_classList[ ] =
         "Basilisk sprays a poisonous gas which disorients any "
         "nearby humans. Has a strong healing aura that "
         "that accelerates the healing rate of nearby aliens.",
-        ( 1 << S2 ) | ( 1 << S3 ),                      //int  stages
+        (1 << S2) | (1 << S3),                          //int  stages
         LEVEL1_UPG_HEALTH,                              //int     health;
         0.0f,                                           //float   fallDamage;
         LEVEL1_UPG_REGEN,                               //float   regenRate;
@@ -1113,7 +1075,7 @@ static const classAttributes_t bg_classList[ ] =
         "level2",                                       //char    *classname;
         "Has a melee attack and the ability to jump off walls. This "
         "allows the Marauder to gather great speed in enclosed areas.",
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ),        //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),              //int  stages
         LEVEL2_HEALTH,                                  //int     health;
         0.0f,                                           //float   fallDamage;
         LEVEL2_REGEN,                                   //float   regenRate;
@@ -1140,7 +1102,7 @@ static const classAttributes_t bg_classList[ ] =
         "level2upg",                                    //char    *classname;
         "The Advanced Marauder has all the abilities of the basic Marauder "
         "with the addition of an area effect electric shock attack.",
-        ( 1 << S2 ) | ( 1 << S3 ),                      //int  stages
+        (1 << S2) | (1 << S3),                          //int  stages
         LEVEL2_UPG_HEALTH,                              //int     health;
         0.0f,                                           //float   fallDamage;
         LEVEL2_UPG_REGEN,                               //float   regenRate;
@@ -1168,7 +1130,7 @@ static const classAttributes_t bg_classList[ ] =
         "Possesses a melee attack and the pounce ability, which may "
         "be used as both an attack and a means to reach remote "
         "locations inaccessible from the ground.",
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ),        //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),              //int  stages
         LEVEL3_HEALTH,                                  //int     health;
         0.0f,                                           //float   fallDamage;
         LEVEL3_REGEN,                                   //float   regenRate;
@@ -1196,7 +1158,7 @@ static const classAttributes_t bg_classList[ ] =
         "In addition to the basic Dragoon abilities, the Advanced "
         "Dragoon has 3 barbs which may be used to attack humans "
         "from a distance.",
-        ( 1 << S2 ) | ( 1 << S3 ),                                  //int  stages
+        (1 << S2) | (1 << S3),                                      //int  stages
         LEVEL3_UPG_HEALTH,                              //int     health;
         0.0f,                                           //float   fallDamage;
         LEVEL3_UPG_REGEN,                               //float   regenRate;
@@ -1225,7 +1187,7 @@ static const classAttributes_t bg_classList[ ] =
         "also charge at enemy humans and structures, inflicting "
         "great damage. Any humans or their structures caught under "
         "a falling Tyrant will be crushed by its weight.",
-        ( 1 << S3 ),                                    //int  stages
+        (1 << S3),                                      //int  stages
         LEVEL4_HEALTH,                                  //int     health;
         0.0f,                                           //float   fallDamage;
         LEVEL4_REGEN,                                   //float   regenRate;
@@ -1251,7 +1213,7 @@ static const classAttributes_t bg_classList[ ] =
         PCL_HUMAN,                                      //int     classnum;
         "human_base",                                   //char    *classname;
         "",
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ),        //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),              //int  stages
         100,                                            //int     health;
         1.0f,                                           //float   fallDamage;
         0.0f,                                           //float   regenRate;
@@ -1277,7 +1239,7 @@ static const classAttributes_t bg_classList[ ] =
         PCL_HUMAN_BSUIT,                                //int     classnum;
         "human_bsuit",                                  //char    *classname;
         "",
-        ( 1 << S3 ),                                    //int  stages
+        (1 << S3),                                      //int  stages
         100,                                            //int     health;
         1.0f,                                           //float   fallDamage;
         0.0f,                                           //float   regenRate;
@@ -1302,27 +1264,24 @@ static const classAttributes_t bg_classList[ ] =
     },
 };
 
-sint bg_numClasses = sizeof( bg_classList ) / sizeof( bg_classList[ 0 ] );
+sint bg_numClasses = sizeof(bg_classList) / sizeof(bg_classList[ 0 ]);
 
-static const classAttributes_t nullClass = { ( class_t )0 };
+static const classAttributes_t nullClass = { (class_t)0 };
 
 /*
 ==============
 idBothGamesLocal::ClassByName
 ==============
 */
-const classAttributes_t* idBothGamesLocal::ClassByName( pointer name )
-{
+const classAttributes_t *idBothGamesLocal::ClassByName(pointer name) {
     sint i;
-    
-    for( i = 0; i < bg_numClasses; i++ )
-    {
-        if( !Q_stricmp( bg_classList[i].name, name ) )
-        {
+
+    for(i = 0; i < bg_numClasses; i++) {
+        if(!Q_stricmp(bg_classList[i].name, name)) {
             return &bg_classList[i];
         }
     }
-    
+
     return &nullClass;
 }
 
@@ -1331,9 +1290,9 @@ const classAttributes_t* idBothGamesLocal::ClassByName( pointer name )
 idBothGamesLocal::Class
 ==============
 */
-const classAttributes_t* idBothGamesLocal::Class( class_t _class )
-{
-    return ( _class >= PCL_NONE && _class < PCL_NUM_CLASSES ) ? &bg_classList[_class] : &nullClass;
+const classAttributes_t *idBothGamesLocal::Class(class_t _class) {
+    return (_class >= PCL_NONE &&
+            _class < PCL_NUM_CLASSES) ? &bg_classList[_class] : &nullClass;
 }
 
 /*
@@ -1341,11 +1300,10 @@ const classAttributes_t* idBothGamesLocal::Class( class_t _class )
 idBothGamesLocal::ClassAllowedInStage
 ==============
 */
-bool idBothGamesLocal::ClassAllowedInStage( class_t _class, stage_t stage )
-{
-    sint stages = Class( _class )->stages;
-    
-    return stages & ( 1 << stage );
+bool idBothGamesLocal::ClassAllowedInStage(class_t _class, stage_t stage) {
+    sint stages = Class(_class)->stages;
+
+    return stages & (1 << stage);
 }
 
 static classConfig_t bg_classConfigList[ PCL_NUM_CLASSES ];
@@ -1355,8 +1313,7 @@ static classConfig_t bg_classConfigList[ PCL_NUM_CLASSES ];
 idBothGamesLocal::ClassConfig
 ==============
 */
-classConfig_t* idBothGamesLocal::ClassConfig( class_t _class )
-{
+classConfig_t *idBothGamesLocal::ClassConfig(class_t _class) {
     return &bg_classConfigList[_class];
 }
 
@@ -1365,33 +1322,28 @@ classConfig_t* idBothGamesLocal::ClassConfig( class_t _class )
 idBothGamesLocal::ClassBoundingBox
 ==============
 */
-void idBothGamesLocal::ClassBoundingBox( class_t _class, vec3_t mins, vec3_t maxs, vec3_t cmaxs, vec3_t dmins, vec3_t dmaxs )
-{
-    classConfig_t* classConfig = ClassConfig( _class );
-    
-    if( mins != nullptr )
-    {
-        VectorCopy( classConfig->mins, mins );
+void idBothGamesLocal::ClassBoundingBox(class_t _class, vec3_t mins,
+                                        vec3_t maxs, vec3_t cmaxs, vec3_t dmins, vec3_t dmaxs) {
+    classConfig_t *classConfig = ClassConfig(_class);
+
+    if(mins != nullptr) {
+        VectorCopy(classConfig->mins, mins);
     }
-    
-    if( maxs != nullptr )
-    {
-        VectorCopy( classConfig->maxs, maxs );
+
+    if(maxs != nullptr) {
+        VectorCopy(classConfig->maxs, maxs);
     }
-    
-    if( cmaxs != nullptr )
-    {
-        VectorCopy( classConfig->crouchMaxs, cmaxs );
+
+    if(cmaxs != nullptr) {
+        VectorCopy(classConfig->crouchMaxs, cmaxs);
     }
-    
-    if( dmins != nullptr )
-    {
-        VectorCopy( classConfig->deadMins, dmins );
+
+    if(dmins != nullptr) {
+        VectorCopy(classConfig->deadMins, dmins);
     }
-    
-    if( dmaxs != nullptr )
-    {
-        VectorCopy( classConfig->deadMaxs, dmaxs );
+
+    if(dmaxs != nullptr) {
+        VectorCopy(classConfig->deadMaxs, dmaxs);
     }
 }
 
@@ -1400,10 +1352,9 @@ void idBothGamesLocal::ClassBoundingBox( class_t _class, vec3_t mins, vec3_t max
 idBothGamesLocal::ClassHasAbility
 ==============
 */
-bool idBothGamesLocal::ClassHasAbility( class_t _class, sint ability )
-{
-    sint abilities = Class( _class )->abilities;
-    
+bool idBothGamesLocal::ClassHasAbility(class_t _class, sint ability) {
+    sint abilities = Class(_class)->abilities;
+
     return abilities & ability;
 }
 
@@ -1412,54 +1363,52 @@ bool idBothGamesLocal::ClassHasAbility( class_t _class, sint ability )
 idBothGamesLocal::ClassCanEvolveFromTo
 ==============
 */
-sint idBothGamesLocal::ClassCanEvolveFromTo( class_t fclass, class_t tclass, sint credits, sint stage, sint cost )
-{
+sint idBothGamesLocal::ClassCanEvolveFromTo(class_t fclass, class_t tclass,
+        sint credits, sint stage, sint cost) {
     sint i, j, best, value;
-    
-    if( credits < cost || fclass == PCL_NONE || tclass == PCL_NONE || fclass == tclass )
-    {
+
+    if(credits < cost || fclass == PCL_NONE || tclass == PCL_NONE ||
+            fclass == tclass) {
         return -1;
     }
-    
-    for( i = 0; i < bg_numClasses; i++ )
-    {
-        if( bg_classList[i].number != fclass )
-        {
+
+    for(i = 0; i < bg_numClasses; i++) {
+        if(bg_classList[i].number != fclass) {
             continue;
         }
-        
+
         best = credits + 1;
-        for( j = 0; j < 3; j++ )
-        {
+
+        for(j = 0; j < 3; j++) {
             sint thruClass, evolveCost;
-            
+
             thruClass = bg_classList[ i ].children[ j ];
-            
-            if( thruClass == PCL_NONE || !ClassAllowedInStage( ( class_t )thruClass, ( stage_t )stage ) || !ClassIsAllowed( ( class_t )thruClass ) )
-            {
+
+            if(thruClass == PCL_NONE ||
+                    !ClassAllowedInStage((class_t)thruClass, (stage_t)stage) ||
+                    !ClassIsAllowed((class_t)thruClass)) {
                 continue;
             }
-            
-            evolveCost = Class( ( class_t )thruClass )->cost * ALIEN_CREDITS_PER_FRAG;
-            
-            if( thruClass == tclass )
-            {
+
+            evolveCost = Class((class_t)thruClass)->cost * ALIEN_CREDITS_PER_FRAG;
+
+            if(thruClass == tclass) {
                 value = cost + evolveCost;
+            } else {
+                value = ClassCanEvolveFromTo((class_t)thruClass, tclass, credits, stage,
+                                             cost + evolveCost);
             }
-            else
-            {
-                value = ClassCanEvolveFromTo( ( class_t )thruClass, tclass, credits, stage, cost + evolveCost );
-            }
-            
-            if( value >= 0 && value < best )
-            {
+
+            if(value >= 0 && value < best) {
                 best = value;
             }
         }
+
         return best <= credits ? best : -1;
     }
-    
-    Com_Printf( S_COLOR_YELLOW "WARNING: fallthrough in BG_ClassCanEvolveFromTo\n" );
+
+    Com_Printf(S_COLOR_YELLOW
+               "WARNING: fallthrough in BG_ClassCanEvolveFromTo\n");
     return -1;
 }
 
@@ -1468,29 +1417,30 @@ sint idBothGamesLocal::ClassCanEvolveFromTo( class_t fclass, class_t tclass, sin
 idBothGamesLocal::AlienCanEvolve
 ==============
 */
-bool idBothGamesLocal::AlienCanEvolve( class_t pclass, sint credits, sint stage )
-{
+bool idBothGamesLocal::AlienCanEvolve(class_t pclass, sint credits,
+                                      sint stage) {
     sint i, j, tclass;
-    
-    for( i = PCL_NONE + 1; i < PCL_NUM_CLASSES; i++ )
-    {
-        if( bg_classList[i].number != pclass )
-        {
+
+    for(i = PCL_NONE + 1; i < PCL_NUM_CLASSES; i++) {
+        if(bg_classList[i].number != pclass) {
             continue;
         }
-        
-        for( j = 0; j < 3; j++ )
-        {
+
+        for(j = 0; j < 3; j++) {
             tclass = bg_classList[ i ].children[ j ];
-            if( tclass != PCL_NONE && ClassAllowedInStage( ( class_t )tclass, ( stage_t )stage ) && ClassIsAllowed( ( class_t )tclass ) && credits >= Class( ( class_t )tclass )->cost * ALIEN_CREDITS_PER_FRAG )
-            {
+
+            if(tclass != PCL_NONE &&
+                    ClassAllowedInStage((class_t)tclass, (stage_t)stage) &&
+                    ClassIsAllowed((class_t)tclass) &&
+                    credits >= Class((class_t)tclass)->cost * ALIEN_CREDITS_PER_FRAG) {
                 return true;
             }
         }
+
         return false;
     }
-    
-    Com_Printf( S_COLOR_YELLOW "WARNING: fallthrough in BG_AlienCanEvolve\n" );
+
+    Com_Printf(S_COLOR_YELLOW "WARNING: fallthrough in BG_AlienCanEvolve\n");
     return false;
 }
 
@@ -1501,17 +1451,16 @@ idBothGamesLocal::ParseClassFile
 Parses a configuration file describing a class
 ======================
 */
-bool idBothGamesLocal::ParseClassFile( pointer filename, classConfig_t* cc )
-{
-    valueType* text_p;
+bool idBothGamesLocal::ParseClassFile(pointer filename,
+                                      classConfig_t *cc) {
+    valueType *text_p;
     sint i, len;
-    valueType* token;
+    valueType *token;
     valueType text[20000];
     fileHandle_t f;
     float32 scale = 0.0f;
     sint defined = 0;
-    enum parseClass
-    {
+    enum parseClass {
         MODEL = 1 << 0,
         SKIN = 1 << 1,
         HUD = 1 << 2,
@@ -1527,318 +1476,252 @@ bool idBothGamesLocal::ParseClassFile( pointer filename, classConfig_t* cc )
         ZOFFSET = 1 << 12,
         NAME = 1 << 13
     };
-    
+
     // load the file
-    len = trap_FS_FOpenFile( filename, &f, FS_READ );
-    
-    if( len < 0 )
-    {
+    len = trap_FS_FOpenFile(filename, &f, FS_READ);
+
+    if(len < 0) {
         return false;
     }
-    
-    if( len == 0 || len >= sizeof( text ) - 1 )
-    {
-        trap_FS_FCloseFile( f );
-        Com_Printf( S_COLOR_RED "ERROR: Class file %s is %s\n", filename, len == 0 ? "empty" : "too long" );
+
+    if(len == 0 || len >= sizeof(text) - 1) {
+        trap_FS_FCloseFile(f);
+        Com_Printf(S_COLOR_RED "ERROR: Class file %s is %s\n", filename,
+                   len == 0 ? "empty" : "too long");
         return false;
     }
-    
-    trap_FS_Read( text, len, f );
+
+    trap_FS_Read(text, len, f);
     text[len] = 0;
-    trap_FS_FCloseFile( f );
-    
+    trap_FS_FCloseFile(f);
+
     // parse the text
     text_p = text;
-    
+
     // read optional parameters
-    while( 1 )
-    {
-        token = COM_Parse( &text_p );
-        
-        if( !token )
-            break;
-            
-        if( !Q_stricmp( token, "" ) )
-        {
+    while(1) {
+        token = COM_Parse(&text_p);
+
+        if(!token) {
             break;
         }
-        
-        if( !Q_stricmp( token, "model" ) )
-        {
-            token = COM_Parse( &text_p );
-            if( !token )
-            {
+
+        if(!Q_stricmp(token, "")) {
+            break;
+        }
+
+        if(!Q_stricmp(token, "model")) {
+            token = COM_Parse(&text_p);
+
+            if(!token) {
                 break;
             }
-            
-            Q_strncpyz( cc->modelName, token, sizeof( cc->modelName ) );
-            
+
+            Q_strncpyz(cc->modelName, token, sizeof(cc->modelName));
+
             defined |= MODEL;
             continue;
-        }
-        else if( !Q_stricmp( token, "skin" ) )
-        {
-            token = COM_Parse( &text_p );
-            if( !token )
-            {
+        } else if(!Q_stricmp(token, "skin")) {
+            token = COM_Parse(&text_p);
+
+            if(!token) {
                 break;
             }
-            
-            Q_strncpyz( cc->skinName, token, sizeof( cc->skinName ) );
-            
+
+            Q_strncpyz(cc->skinName, token, sizeof(cc->skinName));
+
             defined |= SKIN;
             continue;
-        }
-        else if( !Q_stricmp( token, "hud" ) )
-        {
-            token = COM_Parse( &text_p );
-            if( !token )
-            {
+        } else if(!Q_stricmp(token, "hud")) {
+            token = COM_Parse(&text_p);
+
+            if(!token) {
                 break;
             }
-            
-            Q_strncpyz( cc->hudName, token, sizeof( cc->hudName ) );
-            
+
+            Q_strncpyz(cc->hudName, token, sizeof(cc->hudName));
+
             defined |= HUD;
             continue;
-        }
-        else if( !Q_stricmp( token, "modelScale" ) )
-        {
-            token = COM_Parse( &text_p );
-            if( !token )
-            {
+        } else if(!Q_stricmp(token, "modelScale")) {
+            token = COM_Parse(&text_p);
+
+            if(!token) {
                 break;
             }
-            
-            scale = atof( token );
-            
-            if( scale < 0.0f )
-            {
+
+            scale = atof(token);
+
+            if(scale < 0.0f) {
                 scale = 0.0f;
             }
-            
+
             cc->modelScale = scale;
-            
+
             defined |= MODELSCALE;
             continue;
-        }
-        else if( !Q_stricmp( token, "shadowScale" ) )
-        {
-            token = COM_Parse( &text_p );
-            if( !token )
-            {
+        } else if(!Q_stricmp(token, "shadowScale")) {
+            token = COM_Parse(&text_p);
+
+            if(!token) {
                 break;
             }
-            
-            scale = atof( token );
-            
-            if( scale < 0.0f )
-            {
+
+            scale = atof(token);
+
+            if(scale < 0.0f) {
                 scale = 0.0f;
             }
-            
+
             cc->shadowScale = scale;
-            
+
             defined |= SHADOWSCALE;
             continue;
-        }
-        else if( !Q_stricmp( token, "mins" ) )
-        {
-            for( i = 0; i <= 2; i++ )
-            {
-                token = COM_Parse( &text_p );
-                if( !token )
-                {
+        } else if(!Q_stricmp(token, "mins")) {
+            for(i = 0; i <= 2; i++) {
+                token = COM_Parse(&text_p);
+
+                if(!token) {
                     break;
                 }
-                
-                cc->mins[i] = atof( token );
+
+                cc->mins[i] = atof(token);
             }
-            
+
             defined |= MINS;
             continue;
-        }
-        else if( !Q_stricmp( token, "maxs" ) )
-        {
-            for( i = 0; i <= 2; i++ )
-            {
-                token = COM_Parse( &text_p );
-                if( !token )
-                {
+        } else if(!Q_stricmp(token, "maxs")) {
+            for(i = 0; i <= 2; i++) {
+                token = COM_Parse(&text_p);
+
+                if(!token) {
                     break;
                 }
-                
-                cc->maxs[i] = atof( token );
+
+                cc->maxs[i] = atof(token);
             }
-            
+
             defined |= MAXS;
             continue;
-        }
-        else if( !Q_stricmp( token, "deadMins" ) )
-        {
-            for( i = 0; i <= 2; i++ )
-            {
-                token = COM_Parse( &text_p );
-                if( !token )
-                {
+        } else if(!Q_stricmp(token, "deadMins")) {
+            for(i = 0; i <= 2; i++) {
+                token = COM_Parse(&text_p);
+
+                if(!token) {
                     break;
                 }
-                
-                cc->deadMins[i] = atof( token );
+
+                cc->deadMins[i] = atof(token);
             }
-            
+
             defined |= DEADMINS;
             continue;
-        }
-        else if( !Q_stricmp( token, "deadMaxs" ) )
-        {
-            for( i = 0; i <= 2; i++ )
-            {
-                token = COM_Parse( &text_p );
-                if( !token )
-                {
+        } else if(!Q_stricmp(token, "deadMaxs")) {
+            for(i = 0; i <= 2; i++) {
+                token = COM_Parse(&text_p);
+
+                if(!token) {
                     break;
                 }
-                
-                cc->deadMaxs[i] = atof( token );
+
+                cc->deadMaxs[i] = atof(token);
             }
-            
+
             defined |= DEADMAXS;
             continue;
-        }
-        else if( !Q_stricmp( token, "crouchMaxs" ) )
-        {
-            for( i = 0; i <= 2; i++ )
-            {
-                token = COM_Parse( &text_p );
-                if( !token )
-                {
+        } else if(!Q_stricmp(token, "crouchMaxs")) {
+            for(i = 0; i <= 2; i++) {
+                token = COM_Parse(&text_p);
+
+                if(!token) {
                     break;
                 }
-                
-                cc->crouchMaxs[i] = atof( token );
+
+                cc->crouchMaxs[i] = atof(token);
             }
-            
+
             defined |= CROUCHMAXS;
             continue;
-        }
-        else if( !Q_stricmp( token, "viewheight" ) )
-        {
-            token = COM_Parse( &text_p );
-            cc->viewheight = atoi( token );
+        } else if(!Q_stricmp(token, "viewheight")) {
+            token = COM_Parse(&text_p);
+            cc->viewheight = atoi(token);
             defined |= VIEWHEIGHT;
             continue;
-        }
-        else if( !Q_stricmp( token, "crouchViewheight" ) )
-        {
-            token = COM_Parse( &text_p );
-            cc->crouchViewheight = atoi( token );
+        } else if(!Q_stricmp(token, "crouchViewheight")) {
+            token = COM_Parse(&text_p);
+            cc->crouchViewheight = atoi(token);
             defined |= CVIEWHEIGHT;
             continue;
-        }
-        else if( !Q_stricmp( token, "zOffset" ) )
-        {
+        } else if(!Q_stricmp(token, "zOffset")) {
             float32 offset;
-            
-            token = COM_Parse( &text_p );
-            if( !token )
-            {
+
+            token = COM_Parse(&text_p);
+
+            if(!token) {
                 break;
             }
-            
-            offset = atof( token );
-            
+
+            offset = atof(token);
+
             cc->zOffset = offset;
-            
+
             defined |= ZOFFSET;
             continue;
-        }
-        else if( !Q_stricmp( token, "name" ) )
-        {
-            token = COM_Parse( &text_p );
-            if( !token )
-            {
+        } else if(!Q_stricmp(token, "name")) {
+            token = COM_Parse(&text_p);
+
+            if(!token) {
                 break;
             }
-            
-            Q_strncpyz( cc->humanName, token, sizeof( cc->humanName ) );
-            
+
+            Q_strncpyz(cc->humanName, token, sizeof(cc->humanName));
+
             defined |= NAME;
             continue;
         }
-        
-        
-        Com_Printf( S_COLOR_RED "ERROR: unknown token '%s'\n", token );
+
+
+        Com_Printf(S_COLOR_RED "ERROR: unknown token '%s'\n", token);
         return false;
     }
-    
-    if( !( defined & MODEL ) )
-    {
+
+    if(!(defined & MODEL)) {
         token = "model";
-    }
-    else if( !( defined & SKIN ) )
-    {
+    } else if(!(defined & SKIN)) {
         token = "skin";
-    }
-    else if( !( defined & HUD ) )
-    {
+    } else if(!(defined & HUD)) {
         token = "hud";
-    }
-    else if( !( defined & MODELSCALE ) )
-    {
+    } else if(!(defined & MODELSCALE)) {
         token = "modelScale";
-    }
-    else if( !( defined & SHADOWSCALE ) )
-    {
+    } else if(!(defined & SHADOWSCALE)) {
         token = "shadowScale";
-    }
-    else if( !( defined & MINS ) )
-    {
+    } else if(!(defined & MINS)) {
         token = "mins";
-    }
-    else if( !( defined & MAXS ) )
-    {
+    } else if(!(defined & MAXS)) {
         token = "maxs";
-    }
-    else if( !( defined & DEADMINS ) )
-    {
+    } else if(!(defined & DEADMINS)) {
         token = "deadMins";
-    }
-    else if( !( defined & DEADMAXS ) )
-    {
+    } else if(!(defined & DEADMAXS)) {
         token = "deadMaxs";
-    }
-    else if( !( defined & CROUCHMAXS ) )
-    {
+    } else if(!(defined & CROUCHMAXS)) {
         token = "crouchMaxs";
-    }
-    else if( !( defined & VIEWHEIGHT ) )
-    {
+    } else if(!(defined & VIEWHEIGHT)) {
         token = "viewheight";
-    }
-    else if( !( defined & CVIEWHEIGHT ) )
-    {
+    } else if(!(defined & CVIEWHEIGHT)) {
         token = "crouchViewheight";
-    }
-    else if( !( defined & ZOFFSET ) )
-    {
+    } else if(!(defined & ZOFFSET)) {
         token = "zOffset";
-    }
-    else if( !( defined & NAME ) )
-    {
+    } else if(!(defined & NAME)) {
         token = "name";
-    }
-    else
-    {
+    } else {
         token = "";
     }
-    
-    if( strlen( token ) > 0 )
-    {
-        Com_Printf( S_COLOR_RED "ERROR: %s not defined in %s\n", token, filename );
+
+    if(strlen(token) > 0) {
+        Com_Printf(S_COLOR_RED "ERROR: %s not defined in %s\n", token, filename);
         return false;
     }
-    
+
     return true;
 }
 
@@ -1847,27 +1730,24 @@ bool idBothGamesLocal::ParseClassFile( pointer filename, classConfig_t* cc )
 idBothGamesLocal:InitClassConfigs
 ===============
 */
-void idBothGamesLocal::InitClassConfigs( void )
-{
+void idBothGamesLocal::InitClassConfigs(void) {
     sint i;
-    classConfig_t* cc;
-    
-    for( i = PCL_NONE; i < PCL_NUM_CLASSES; i++ )
-    {
-        cc = ClassConfig( ( class_t )i );
-        
-        ParseClassFile( va( "configs/classes/%s.cfg", Class( ( class_t )i )->name ), cc );
+    classConfig_t *cc;
+
+    for(i = PCL_NONE; i < PCL_NUM_CLASSES; i++) {
+        cc = ClassConfig((class_t)i);
+
+        ParseClassFile(va("configs/classes/%s.cfg", Class((class_t)i)->name), cc);
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-static const weaponAttributes_t bg_weapons[ ] =
-{
+static const weaponAttributes_t bg_weapons[ ] = {
     {
         WP_ALEVEL0,           //int       weaponNum;
         0,                    //int       price;
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),       //int  stages
         SLOT_WEAPON,          //int       slots;
         "level0",             //char      *weaponName;
         "Bite",               //char      *humanName;
@@ -1892,7 +1772,7 @@ static const weaponAttributes_t bg_weapons[ ] =
     {
         WP_ALEVEL1,           //int       weaponNum;
         0,                    //int       price;
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),       //int  stages
         SLOT_WEAPON,          //int       slots;
         "level1",             //char      *weaponName;
         "Claws",              //char      *humanName;
@@ -1917,7 +1797,7 @@ static const weaponAttributes_t bg_weapons[ ] =
     {
         WP_ALEVEL1_UPG,       //int       weaponNum;
         0,                    //int       price;
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),       //int  stages
         SLOT_WEAPON,          //int       slots;
         "level1upg",          //char      *weaponName;
         "Claws Upgrade",      //char      *humanName;
@@ -1942,7 +1822,7 @@ static const weaponAttributes_t bg_weapons[ ] =
     {
         WP_ALEVEL2,           //int       weaponNum;
         0,                    //int       price;
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),       //int  stages
         SLOT_WEAPON,          //int       slots;
         "level2",             //char      *weaponName;
         "Bite",               //char      *humanName;
@@ -1967,7 +1847,7 @@ static const weaponAttributes_t bg_weapons[ ] =
     {
         WP_ALEVEL2_UPG,       //int       weaponNum;
         0,                    //int       price;
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),       //int  stages
         SLOT_WEAPON,          //int       slots;
         "level2upg",          //char      *weaponName;
         "Zap",                //char      *humanName;
@@ -1992,7 +1872,7 @@ static const weaponAttributes_t bg_weapons[ ] =
     {
         WP_ALEVEL3,           //int       weaponNum;
         0,                    //int       price;
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),       //int  stages
         SLOT_WEAPON,          //int       slots;
         "level3",             //char      *weaponName;
         "Pounce",             //char      *humanName;
@@ -2017,7 +1897,7 @@ static const weaponAttributes_t bg_weapons[ ] =
     {
         WP_ALEVEL3_UPG,       //int       weaponNum;
         0,                    //int       price;
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),       //int  stages
         SLOT_WEAPON,          //int       slots;
         "level3upg",          //char      *weaponName;
         "Pounce (upgrade)",   //char      *humanName;
@@ -2042,7 +1922,7 @@ static const weaponAttributes_t bg_weapons[ ] =
     {
         WP_ALEVEL4,           //int       weaponNum;
         0,                    //int       price;
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),       //int  stages
         SLOT_WEAPON,          //int       slots;
         "level4",             //char      *weaponName;
         "Charge",             //char      *humanName;
@@ -2067,7 +1947,7 @@ static const weaponAttributes_t bg_weapons[ ] =
     {
         WP_BLASTER,           //int       weaponNum;
         0,                    //int       price;
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),       //int  stages
         0,                    //int       slots;
         "blaster",            //char      *weaponName;
         "Blaster",            //char      *humanName;
@@ -2092,7 +1972,7 @@ static const weaponAttributes_t bg_weapons[ ] =
     {
         WP_MACHINEGUN,        //int       weaponNum;
         RIFLE_PRICE,          //int       price;
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),       //int  stages
         SLOT_WEAPON,          //int       slots;
         "rifle",              //char      *weaponName;
         "Rifle",              //char      *humanName;
@@ -2118,7 +1998,7 @@ static const weaponAttributes_t bg_weapons[ ] =
     {
         WP_PAIN_SAW,          //int       weaponNum;
         PAINSAW_PRICE,        //int       price;
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),       //int  stages
         SLOT_WEAPON,          //int       slots;
         "psaw",               //char      *weaponName;
         "Pain Saw",           //char      *humanName;
@@ -2145,7 +2025,7 @@ static const weaponAttributes_t bg_weapons[ ] =
     {
         WP_SHOTGUN,           //int       weaponNum;
         SHOTGUN_PRICE,        //int       price;
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),       //int  stages
         SLOT_WEAPON,          //int       slots;
         "shotgun",            //char      *weaponName;
         "Shotgun",            //char      *humanName;
@@ -2172,7 +2052,7 @@ static const weaponAttributes_t bg_weapons[ ] =
     {
         WP_LAS_GUN,           //int       weaponNum;
         LASGUN_PRICE,         //int       price;
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),       //int  stages
         SLOT_WEAPON,          //int       slots;
         "lgun",               //char      *weaponName;
         "Las Gun",            //char      *humanName;
@@ -2198,7 +2078,7 @@ static const weaponAttributes_t bg_weapons[ ] =
     {
         WP_MASS_DRIVER,       //int       weaponNum;
         MDRIVER_PRICE,        //int       price;
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),       //int  stages
         SLOT_WEAPON,          //int       slots;
         "mdriver",            //char      *weaponName;
         "Mass Driver",        //char      *humanName;
@@ -2225,7 +2105,7 @@ static const weaponAttributes_t bg_weapons[ ] =
     {
         WP_CHAINGUN,          //int       weaponNum;
         CHAINGUN_PRICE,       //int       price;
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),       //int  stages
         SLOT_WEAPON,          //int       slots;
         "chaingun",           //char      *weaponName;
         "Chaingun",           //char      *humanName;
@@ -2252,7 +2132,7 @@ static const weaponAttributes_t bg_weapons[ ] =
     {
         WP_PULSE_RIFLE,       //int       weaponNum;
         PRIFLE_PRICE,         //int       price;
-        ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S2) | (1 << S3),     //int  stages
         SLOT_WEAPON,          //int       slots;
         "prifle",             //char      *weaponName;
         "Pulse Rifle",        //char      *humanName;
@@ -2277,7 +2157,7 @@ static const weaponAttributes_t bg_weapons[ ] =
     {
         WP_FLAMER,            //int       weaponNum;
         FLAMER_PRICE,         //int       price;
-        ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S2) | (1 << S3),     //int  stages
         SLOT_WEAPON,          //int       slots;
         "flamer",             //char      *weaponName;
         "Flame Thrower",      //char      *humanName;
@@ -2304,7 +2184,7 @@ static const weaponAttributes_t bg_weapons[ ] =
     {
         WP_LUCIFER_CANNON,    //int       weaponNum;
         LCANNON_PRICE,        //int       price;
-        ( 1 << S3 ),          //int  stages
+        (1 << S3),            //int  stages
         SLOT_WEAPON,          //int       slots;
         "lcannon",            //char      *weaponName;
         "Lucifer Cannon",     //char      *humanName;
@@ -2331,7 +2211,7 @@ static const weaponAttributes_t bg_weapons[ ] =
     {
         WP_GRENADE,           //int       weaponNum;
         GRENADE_PRICE,        //int       price;
-        ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S2) | (1 << S3),     //int  stages
         SLOT_NONE,            //int       slots;
         "grenade",            //char      *weaponName;
         "Grenade",            //char      *humanName;
@@ -2356,7 +2236,7 @@ static const weaponAttributes_t bg_weapons[ ] =
     {
         WP_LOCKBLOB_LAUNCHER, //int       weaponNum;
         0,                    //int       price;
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),       //int  stages
         SLOT_WEAPON,          //int       slots;
         "lockblob",           //char      *weaponName;
         "Lock Blob",          //char      *humanName;
@@ -2381,7 +2261,7 @@ static const weaponAttributes_t bg_weapons[ ] =
     {
         WP_HIVE,              //int       weaponNum;
         0,                    //int       price;
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),       //int  stages
         SLOT_WEAPON,          //int       slots;
         "hive",               //char      *weaponName;
         "Hive",               //char      *humanName;
@@ -2406,7 +2286,7 @@ static const weaponAttributes_t bg_weapons[ ] =
     {
         WP_TESLAGEN,          //int       weaponNum;
         0,                    //int       price;
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),       //int  stages
         SLOT_WEAPON,          //int       slots;
         "teslagen",           //char      *weaponName;
         "Tesla Generator",    //char      *humanName;
@@ -2431,7 +2311,7 @@ static const weaponAttributes_t bg_weapons[ ] =
     {
         WP_MGTURRET,          //int       weaponNum;
         0,                    //int       price;
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),       //int  stages
         SLOT_WEAPON,          //int       slots;
         "mgturret",           //char      *weaponName;
         "Machinegun Turret",  //char      *humanName;
@@ -2456,7 +2336,7 @@ static const weaponAttributes_t bg_weapons[ ] =
     {
         WP_ABUILD,            //int       weaponNum;
         0,                    //int       price;
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),       //int  stages
         SLOT_WEAPON,          //int       slots;
         "abuild",             //char      *weaponName;
         "Alien build weapon", //char      *humanName;
@@ -2481,7 +2361,7 @@ static const weaponAttributes_t bg_weapons[ ] =
     {
         WP_ABUILD2,           //int       weaponNum;
         0,                    //int       price;
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),       //int  stages
         SLOT_WEAPON,          //int       slots;
         "abuildupg",          //char      *weaponName;
         "Alien build weapon2",//char      *humanName;
@@ -2506,7 +2386,7 @@ static const weaponAttributes_t bg_weapons[ ] =
     {
         WP_HBUILD,            //int       weaponNum;
         HBUILD_PRICE,         //int       price;
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),       //int  stages
         SLOT_WEAPON,          //int       slots;
         "ckit",               //char      *weaponName;
         "Construction Kit",   //char      *humanName;
@@ -2532,27 +2412,24 @@ static const weaponAttributes_t bg_weapons[ ] =
     }
 };
 
-sint bg_numWeapons = sizeof( bg_weapons ) / sizeof( bg_weapons[ 0 ] );
+sint bg_numWeapons = sizeof(bg_weapons) / sizeof(bg_weapons[ 0 ]);
 
-static const weaponAttributes_t nullWeapon = { ( weapon_t )0 };
+static const weaponAttributes_t nullWeapon = { (weapon_t)0 };
 
 /*
 ==============
 idBothGamesLocal::WeaponByName
 ==============
 */
-const weaponAttributes_t* idBothGamesLocal::WeaponByName( pointer name )
-{
+const weaponAttributes_t *idBothGamesLocal::WeaponByName(pointer name) {
     sint i;
-    
-    for( i = 0; i < bg_numWeapons; i++ )
-    {
-        if( !Q_stricmp( bg_weapons[ i ].name, name ) )
-        {
+
+    for(i = 0; i < bg_numWeapons; i++) {
+        if(!Q_stricmp(bg_weapons[ i ].name, name)) {
             return &bg_weapons[ i ];
         }
     }
-    
+
     return &nullWeapon;
 }
 
@@ -2561,9 +2438,9 @@ const weaponAttributes_t* idBothGamesLocal::WeaponByName( pointer name )
 idBothGamesLocal::Weapon
 ==============
 */
-const weaponAttributes_t* idBothGamesLocal::Weapon( weapon_t weapon )
-{
-    return ( weapon > WP_NONE && weapon < WP_NUM_WEAPONS ) ? &bg_weapons[ weapon - 1 ] : &nullWeapon;
+const weaponAttributes_t *idBothGamesLocal::Weapon(weapon_t weapon) {
+    return (weapon > WP_NONE &&
+            weapon < WP_NUM_WEAPONS) ? &bg_weapons[ weapon - 1 ] : &nullWeapon;
 }
 
 /*
@@ -2571,19 +2448,18 @@ const weaponAttributes_t* idBothGamesLocal::Weapon( weapon_t weapon )
 idBothGamesLocal::WeaponAllowedInStage
 ==============
 */
-bool idBothGamesLocal::WeaponAllowedInStage( weapon_t weapon, stage_t stage )
-{
-    sint stages = Weapon( weapon )->stages;
-    
-    return stages & ( 1 << stage );
+bool idBothGamesLocal::WeaponAllowedInStage(weapon_t weapon,
+        stage_t stage) {
+    sint stages = Weapon(weapon)->stages;
+
+    return stages & (1 << stage);
 }
 
-static const upgradeAttributes_t bg_upgrades[ ] =
-{
+static const upgradeAttributes_t bg_upgrades[ ] = {
     {
         UP_LIGHTARMOUR,         //int   upgradeNum;
         LIGHTARMOUR_PRICE,      //int   price;
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),       //int  stages
         SLOT_TORSO | SLOT_ARMS | SLOT_LEGS, //int   slots;
         "larmour",              //char  *upgradeName;
         "Light Armour",         //char  *humanName;
@@ -2597,7 +2473,7 @@ static const upgradeAttributes_t bg_upgrades[ ] =
     {
         UP_HELMET,              //int   upgradeNum;
         HELMET_PRICE,           //int   price;
-        ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S2) | (1 << S3),     //int  stages
         SLOT_HEAD,              //int   slots;
         "helmet",               //char  *upgradeName;
         "Helmet",               //char  *humanName;
@@ -2612,7 +2488,7 @@ static const upgradeAttributes_t bg_upgrades[ ] =
     {
         UP_MEDKIT,              //int   upgradeNum;
         MEDKIT_PRICE,           //int   price;
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),       //int  stages
         SLOT_NONE,              //int   slots;
         "medkit",               //char  *upgradeName;
         "Medkit",               //char  *humanName;
@@ -2625,7 +2501,7 @@ static const upgradeAttributes_t bg_upgrades[ ] =
     {
         UP_BATTPACK,            //int   upgradeNum;
         BATTPACK_PRICE,         //int   price;
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),       //int  stages
         SLOT_BACKPACK,          //int   slots;
         "battpack",             //char  *upgradeName;
         "Battery Pack",         //char  *humanName;
@@ -2639,7 +2515,7 @@ static const upgradeAttributes_t bg_upgrades[ ] =
     {
         UP_JETPACK,             //int   upgradeNum;
         JETPACK_PRICE,          //int   price;
-        ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S2) | (1 << S3),     //int  stages
         SLOT_BACKPACK,          //int   slots;
         "jetpack",              //char  *upgradeName;
         "Jet Pack",             //char  *humanName;
@@ -2654,7 +2530,7 @@ static const upgradeAttributes_t bg_upgrades[ ] =
     {
         UP_BATTLESUIT,          //int   upgradeNum;
         BSUIT_PRICE,            //int   price;
-        ( 1 << S3 ),            //int  stages
+        (1 << S3),              //int  stages
         SLOT_HEAD | SLOT_TORSO | SLOT_ARMS | SLOT_LEGS | SLOT_BACKPACK, //int   slots;
         "bsuit",                //char  *upgradeName;
         "Battlesuit",           //char  *humanName;
@@ -2669,7 +2545,7 @@ static const upgradeAttributes_t bg_upgrades[ ] =
     {
         UP_GRENADE,             //int   upgradeNum;
         GRENADE_PRICE,          //int   price;
-        ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S2) | (1 << S3),     //int  stages
         SLOT_NONE,              //int   slots;
         "gren",                 //char  *upgradeName;
         "Grenade",              //char  *humanName;
@@ -2683,7 +2559,7 @@ static const upgradeAttributes_t bg_upgrades[ ] =
     {
         UP_AMMO,                //int   upgradeNum;
         0,                      //int   price;
-        ( 1 << S1 ) | ( 1 << S2 ) | ( 1 << S3 ), //int  stages
+        (1 << S1) | (1 << S2) | (1 << S3),       //int  stages
         SLOT_NONE,              //int   slots;
         "ammo",                 //char  *upgradeName;
         "Ammunition",           //char  *humanName;
@@ -2695,27 +2571,24 @@ static const upgradeAttributes_t bg_upgrades[ ] =
     }
 };
 
-sint bg_numUpgrades = sizeof( bg_upgrades ) / sizeof( bg_upgrades[ 0 ] );
+sint bg_numUpgrades = sizeof(bg_upgrades) / sizeof(bg_upgrades[ 0 ]);
 
-static const upgradeAttributes_t nullUpgrade = { ( upgrade_t )0 };
+static const upgradeAttributes_t nullUpgrade = { (upgrade_t)0 };
 
 /*
 ==============
 idBothGamesLocal::UpgradeByName
 ==============
 */
-const upgradeAttributes_t* idBothGamesLocal::UpgradeByName( pointer name )
-{
+const upgradeAttributes_t *idBothGamesLocal::UpgradeByName(pointer name) {
     sint i;
-    
-    for( i = 0; i < bg_numUpgrades; i++ )
-    {
-        if( !Q_stricmp( bg_upgrades[ i ].name, name ) )
-        {
+
+    for(i = 0; i < bg_numUpgrades; i++) {
+        if(!Q_stricmp(bg_upgrades[ i ].name, name)) {
             return &bg_upgrades[ i ];
         }
     }
-    
+
     return &nullUpgrade;
 }
 
@@ -2724,9 +2597,9 @@ const upgradeAttributes_t* idBothGamesLocal::UpgradeByName( pointer name )
 idBothGamesLocal::Upgrade
 ==============
 */
-const upgradeAttributes_t* idBothGamesLocal::Upgrade( upgrade_t upgrade )
-{
-    return ( upgrade > UP_NONE && upgrade < UP_NUM_UPGRADES ) ? &bg_upgrades[ upgrade - 1 ] : &nullUpgrade;
+const upgradeAttributes_t *idBothGamesLocal::Upgrade(upgrade_t upgrade) {
+    return (upgrade > UP_NONE &&
+            upgrade < UP_NUM_UPGRADES) ? &bg_upgrades[ upgrade - 1 ] : &nullUpgrade;
 }
 
 /*
@@ -2734,11 +2607,11 @@ const upgradeAttributes_t* idBothGamesLocal::Upgrade( upgrade_t upgrade )
 idBothGamesLocal::UpgradeAllowedInStage
 ==============
 */
-bool idBothGamesLocal::UpgradeAllowedInStage( upgrade_t upgrade, stage_t stage )
-{
-    sint stages = Upgrade( upgrade )->stages;
-    
-    return stages & ( 1 << stage );
+bool idBothGamesLocal::UpgradeAllowedInStage(upgrade_t upgrade,
+        stage_t stage) {
+    sint stages = Upgrade(upgrade)->stages;
+
+    return stages & (1 << stage);
 }
 
 /*
@@ -2746,53 +2619,58 @@ bool idBothGamesLocal::UpgradeAllowedInStage( upgrade_t upgrade, stage_t stage )
 idBothGamesLocal::EvaluateTrajectory
 ================
 */
-void idBothGamesLocal::EvaluateTrajectory( const trajectory_t* tr, sint atTime, vec3_t result )
-{
+void idBothGamesLocal::EvaluateTrajectory(const trajectory_t *tr,
+        sint atTime, vec3_t result) {
     float32 deltaTime, phase;
-    
-    switch( tr->trType )
-    {
+
+    switch(tr->trType) {
         case TR_STATIONARY:
         case TR_INTERPOLATE:
-            VectorCopy( tr->trBase, result );
+            VectorCopy(tr->trBase, result);
             break;
-            
+
         case TR_LINEAR:
-            deltaTime = ( atTime - tr->trTime ) * 0.001; // milliseconds to seconds
-            VectorMA( tr->trBase, deltaTime, tr->trDelta, result );
+            deltaTime = (atTime - tr->trTime) * 0.001;   // milliseconds to seconds
+            VectorMA(tr->trBase, deltaTime, tr->trDelta, result);
             break;
-            
+
         case TR_SINE:
-            deltaTime = ( atTime - tr->trTime ) / ( float )tr->trDuration;
-            phase = sin( deltaTime * M_PI * 2 );
-            VectorMA( tr->trBase, phase, tr->trDelta, result );
+            deltaTime = (atTime - tr->trTime) / (float)tr->trDuration;
+            phase = sin(deltaTime * M_PI * 2);
+            VectorMA(tr->trBase, phase, tr->trDelta, result);
             break;
-            
+
         case TR_LINEAR_STOP:
-            if( atTime > tr->trTime + tr->trDuration )
+            if(atTime > tr->trTime + tr->trDuration) {
                 atTime = tr->trTime + tr->trDuration;
-                
-            deltaTime = ( atTime - tr->trTime ) * 0.001; // milliseconds to seconds
-            if( deltaTime < 0 )
+            }
+
+            deltaTime = (atTime - tr->trTime) * 0.001;   // milliseconds to seconds
+
+            if(deltaTime < 0) {
                 deltaTime = 0;
-            
-            VectorMA( tr->trBase, deltaTime, tr->trDelta, result );
+            }
+
+            VectorMA(tr->trBase, deltaTime, tr->trDelta, result);
             break;
-            
+
         case TR_GRAVITY:
-            deltaTime = ( atTime - tr->trTime ) * 0.001; // milliseconds to seconds
-            VectorMA( tr->trBase, deltaTime, tr->trDelta, result );
-            result[2] -= 0.5 * DEFAULT_GRAVITY * deltaTime * deltaTime;   // FIXME: local gravity...
+            deltaTime = (atTime - tr->trTime) * 0.001;   // milliseconds to seconds
+            VectorMA(tr->trBase, deltaTime, tr->trDelta, result);
+            result[2] -= 0.5 * DEFAULT_GRAVITY * deltaTime *
+                         deltaTime;   // FIXME: local gravity...
             break;
-            
+
         case TR_BUOYANCY:
-            deltaTime = ( atTime - tr->trTime ) * 0.001; // milliseconds to seconds
-            VectorMA( tr->trBase, deltaTime, tr->trDelta, result );
-            result[2] += 0.5 * DEFAULT_GRAVITY * deltaTime * deltaTime;   // FIXME: local gravity...
+            deltaTime = (atTime - tr->trTime) * 0.001;   // milliseconds to seconds
+            VectorMA(tr->trBase, deltaTime, tr->trDelta, result);
+            result[2] += 0.5 * DEFAULT_GRAVITY * deltaTime *
+                         deltaTime;   // FIXME: local gravity...
             break;
-            
+
         default:
-            Com_Error( ERR_DROP, "idBothGamesLocal::EvaluateTrajectory: unknown trType: %i", tr->trTime );
+            Com_Error(ERR_DROP,
+                      "idBothGamesLocal::EvaluateTrajectory: unknown trType: %i", tr->trTime);
             break;
     }
 }
@@ -2804,140 +2682,143 @@ idBothGamesLocal::EvaluateTrajectoryDelta
 For determining velocity at a given time
 ================
 */
-void idBothGamesLocal::EvaluateTrajectoryDelta( const trajectory_t* tr, sint atTime, vec3_t result )
-{
+void idBothGamesLocal::EvaluateTrajectoryDelta(const trajectory_t *tr,
+        sint atTime, vec3_t result) {
     float32 deltaTime, phase;
-    
-    switch( tr->trType )
-    {
+
+    switch(tr->trType) {
         case TR_STATIONARY:
         case TR_INTERPOLATE:
-            VectorClear( result );
+            VectorClear(result);
             break;
-            
+
         case TR_LINEAR:
-            VectorCopy( tr->trDelta, result );
+            VectorCopy(tr->trDelta, result);
             break;
-            
+
         case TR_SINE:
-            deltaTime = ( atTime - tr->trTime ) / ( float32 )tr->trDuration;
-            phase = cos( deltaTime * M_PI * 2 );  // derivative of sin = cos
+            deltaTime = (atTime - tr->trTime) / (float32)tr->trDuration;
+            phase = cos(deltaTime * M_PI * 2);    // derivative of sin = cos
             phase *= 0.5;
-            VectorScale( tr->trDelta, phase, result );
+            VectorScale(tr->trDelta, phase, result);
             break;
-            
+
         case TR_LINEAR_STOP:
-            if( atTime > tr->trTime + tr->trDuration )
-            {
-                VectorClear( result );
+            if(atTime > tr->trTime + tr->trDuration) {
+                VectorClear(result);
                 return;
             }
-            VectorCopy( tr->trDelta, result );
+
+            VectorCopy(tr->trDelta, result);
             break;
-            
+
         case TR_NONLINEAR_STOP:
-            if( atTime - tr->trTime > tr->trDuration || atTime - tr->trTime <= 0 )
-            {
-                VectorClear( result );
+            if(atTime - tr->trTime > tr->trDuration || atTime - tr->trTime <= 0) {
+                VectorClear(result);
                 return;
             }
-            deltaTime = tr->trDuration * 0.001f * ( ( float )cos( DEG2RAD( 90.0f - ( 90.0f * ( ( float )( atTime - tr->trTime ) ) / ( float )tr->trDuration ) ) ) );
-            VectorScale( tr->trDelta, deltaTime, result );
+
+            deltaTime = tr->trDuration * 0.001f * ((float)cos(DEG2RAD(90.0f -
+                                                   (90.0f * ((float)(atTime - tr->trTime)) / (float)tr->trDuration))));
+            VectorScale(tr->trDelta, deltaTime, result);
             break;
-            
+
         case TR_GRAVITY:
-            deltaTime = ( atTime - tr->trTime ) * 0.001;  // milliseconds to seconds
-            VectorCopy( tr->trDelta, result );
+            deltaTime = (atTime - tr->trTime) * 0.001;    // milliseconds to seconds
+            VectorCopy(tr->trDelta, result);
             result[ 2 ] -= DEFAULT_GRAVITY * deltaTime;   // FIXME: local gravity...
             break;
-            
+
         case TR_BUOYANCY:
-            deltaTime = ( atTime - tr->trTime ) * 0.001;  // milliseconds to seconds
-            VectorCopy( tr->trDelta, result );
+            deltaTime = (atTime - tr->trTime) * 0.001;    // milliseconds to seconds
+            VectorCopy(tr->trDelta, result);
             result[ 2 ] += DEFAULT_GRAVITY * deltaTime;   // FIXME: local gravity...
             break;
-            
+
         default:
 #ifdef GAMEDLL
-            Com_Error( ERR_DROP, "idBothGamesLocal::EvaluateTrajectory: [GAME SIDE] unknown trType: %i", tr->trType );
+            Com_Error(ERR_DROP,
+                      "idBothGamesLocal::EvaluateTrajectory: [GAME SIDE] unknown trType: %i",
+                      tr->trType);
 #else
-            Com_Error( ERR_DROP, "idBothGamesLocal::EvaluateTrajectory: [CLIENTGAME SIDE] unknown trType: %i", tr->trType );
+            Com_Error(ERR_DROP,
+                      "idBothGamesLocal::EvaluateTrajectory: [CLIENTGAME SIDE] unknown trType: %i",
+                      tr->trType);
 #endif
             break;
     }
 }
 
-valueType* eventnames[ ] =
-{
+valueType *eventnames[ ] = {
     "EV_NONE",
-    
+
     "EV_FOOTSTEP",
     "EV_FOOTSTEP_METAL",
     "EV_FOOTSTEP_SQUELCH",
     "EV_FOOTSPLASH",
     "EV_FOOTWADE",
     "EV_SWIM",
-    
+
     "EV_STEP_4",
     "EV_STEP_8",
     "EV_STEP_12",
     "EV_STEP_16",
-    
+
     "EV_STEPDN_4",
     "EV_STEPDN_8",
     "EV_STEPDN_12",
     "EV_STEPDN_16",
-    
+
     "EV_FALL_SHORT",
     "EV_FALL_MEDIUM",
     "EV_FALL_FAR",
     "EV_FALLING",
-    
+
     "EV_JUMP",
     "EV_WATER_TOUCH", // foot touches
     "EV_WATER_LEAVE", // foot leaves
     "EV_WATER_UNDER", // head touches
     "EV_WATER_CLEAR", // head leaves
-    
+
     "EV_NOAMMO",
     "EV_CHANGE_WEAPON",
     "EV_FIRE_WEAPON",
     "EV_FIRE_WEAPON2",
     "EV_FIRE_WEAPON3",
-    
+
     "EV_PLAYER_RESPAWN", // for fovwarp effects
     "EV_PLAYER_TELEPORT_IN",
     "EV_PLAYER_TELEPORT_OUT",
-    
+
     "EV_GRENADE_BOUNCE",    // eventParm will be the soundindex
-    
+
     "EV_GENERAL_SOUND",
     "EV_GLOBAL_SOUND",    // no attenuation
-    
+
     "EV_BULLET_HIT_FLESH",
     "EV_BULLET_HIT_WALL",
-    
+
     "EV_SHOTGUN",
     "EV_MASS_DRIVER",
-    
+
     "EV_MISSILE_HIT",
     "EV_MISSILE_MISS",
     "EV_MISSILE_MISS_METAL",
     "EV_TESLATRAIL",
     "EV_BULLET",        // otherEntity is the shooter
-    
+
     "EV_LEV1_GRAB",
     "EV_LEV4_TRAMPLE_PREPARE",
     "EV_LEV4_TRAMPLE_START",
-    
+
     "EV_PAIN",
     "EV_DEATH1",
     "EV_DEATH2",
     "EV_DEATH3",
     "EV_OBITUARY",
-    
+
     "EV_GIB_PLAYER",      // gib a previously living player
-    
+
     "EV_BUILD_CONSTRUCT",
     "EV_BUILD_DESTROY",
     "EV_BUILD_DELAY",     // can't build yet
@@ -2946,34 +2827,34 @@ valueType* eventnames[ ] =
     "EV_HUMAN_BUILDABLE_EXPLOSION",
     "EV_ALIEN_BUILDABLE_EXPLOSION",
     "EV_ALIEN_ACIDTUBE",
-    
+
     "EV_MEDKIT_USED",
-    
+
     "EV_ALIEN_EVOLVE",
     "EV_ALIEN_EVOLVE_FAILED",
-    
+
     "EV_DEBUG_LINE",
     "EV_STOPLOOPINGSOUND",
     "EV_TAUNT",
-    
+
     "EV_OVERMIND_ATTACK", // overmind under attack
     "EV_OVERMIND_DYING",  // overmind close to death
     "EV_OVERMIND_SPAWNS", // overmind needs spawns
-    
+
     "EV_DCC_ATTACK",      // dcc under attack
-    
+
     "EV_MGTURRET_SPINUP", // turret spinup sound should play
-    
+
     "EV_RPTUSE_SOUND",    // trigger a sound
-    
+
     "EV_ALIEN_HIT",       // Alien feedback for hitting an enemy
     "EV_ALIEN_MISS",      // Alien feedback for missing a strike
     "EV_ALIEN_TEAMHIT",   // Alien feedback for hitting a teammate
-    
+
     "EV_ALIENRANGED_HIT",       // Alien ranged attack feedback for hitting an enemy
     "EV_ALIENRANGED_MISS",      // Alien ranged attack feedback for missing a strike
     "EV_ALIENRANGED_TEAMHIT",   // Alien ranged attack feedback for hitting a teammate
-    
+
     "EV_LEV2_ZAP"
 };
 
@@ -2982,13 +2863,11 @@ valueType* eventnames[ ] =
 idBothGamesLocal::EventName
 ===============
 */
-pointer idBothGamesLocal::EventName( sint num )
-{
-    if( num < 0 || num >= sizeof( eventnames ) / sizeof( valueType* ) )
-    {
+pointer idBothGamesLocal::EventName(sint num) {
+    if(num < 0 || num >= sizeof(eventnames) / sizeof(valueType *)) {
         return "UNKNOWN";
     }
-    
+
     return eventnames[ num ];
 }
 
@@ -3000,31 +2879,31 @@ Handles the sequence numbers
 ===============
 */
 
-void  trap_Cvar_VariableStringBuffer( pointer var_name, valueType* buffer, uint64 bufsize );
+void  trap_Cvar_VariableStringBuffer(pointer var_name, valueType *buffer,
+                                     uint64 bufsize);
 
-void idBothGamesLocal::AddPredictableEventToPlayerstate( sint newEvent, sint eventParm, playerState_t* ps )
-{
+void idBothGamesLocal::AddPredictableEventToPlayerstate(sint newEvent,
+        sint eventParm, playerState_t *ps) {
 #ifdef _DEBUG
     {
         valueType buf[ 256 ];
-        trap_Cvar_VariableStringBuffer( "showevents", buf, sizeof( buf ) );
-        
-        if( atof( buf ) != 0 )
-        {
+        trap_Cvar_VariableStringBuffer("showevents", buf, sizeof(buf));
+
+        if(atof(buf) != 0) {
 #ifdef GAMEDLL
-            Com_Printf( " game event svt %5d -> %5d: num = %20s parm %d\n",
-            ps->pmove_framecount/*ps->commandTime*/, ps->eventSequence,
-            EventName( newEvent ), eventParm );
+            Com_Printf(" game event svt %5d -> %5d: num = %20s parm %d\n",
+                       ps->pmove_framecount/*ps->commandTime*/, ps->eventSequence,
+                       EventName(newEvent), eventParm);
 #else
-            Com_Printf( "Cgame event svt %5d -> %5d: num = %20s parm %d\n",
-            ps->pmove_framecount/*ps->commandTime*/, ps->eventSequence,
-            EventName( newEvent ), eventParm );
+            Com_Printf("Cgame event svt %5d -> %5d: num = %20s parm %d\n",
+                       ps->pmove_framecount/*ps->commandTime*/, ps->eventSequence,
+                       EventName(newEvent), eventParm);
 #endif
         }
     }
 #endif
-    ps->events[ ps->eventSequence & ( MAX_EVENTS - 1 ) ] = newEvent;
-    ps->eventParms[ ps->eventSequence & ( MAX_EVENTS - 1 ) ] = eventParm;
+    ps->events[ ps->eventSequence & (MAX_EVENTS - 1) ] = newEvent;
+    ps->eventParms[ ps->eventSequence & (MAX_EVENTS - 1) ] = eventParm;
     ps->eventSequence++;
 }
 
@@ -3037,124 +2916,106 @@ This is done after each set of usercmd_t on the server,
 and after local prediction on the client
 ========================
 */
-void idBothGamesLocal::PlayerStateToEntityState( playerState_t* ps, entityState_t* s, bool snap )
-{
+void idBothGamesLocal::PlayerStateToEntityState(playerState_t *ps,
+        entityState_t *s, bool snap) {
     sint i;
-    
-    if( ps->pm_type == PM_INTERMISSION || ps->pm_type == PM_SPECTATOR || ps->pm_type == PM_FREEZE )
-    {
+
+    if(ps->pm_type == PM_INTERMISSION || ps->pm_type == PM_SPECTATOR ||
+            ps->pm_type == PM_FREEZE) {
         s->eType = ET_INVISIBLE;
-    }
-    else if( ps->persistant[PERS_SPECSTATE] != SPECTATOR_NOT )
-    {
+    } else if(ps->persistant[PERS_SPECSTATE] != SPECTATOR_NOT) {
         s->eType = ET_INVISIBLE;
-    }
-    else
-    {
+    } else {
         s->eType = ET_PLAYER;
     }
-    
+
     s->number = ps->clientNum;
-    
+
     s->pos.trType = TR_INTERPOLATE;
-    VectorCopy( ps->origin, s->pos.trBase );
-    
+    VectorCopy(ps->origin, s->pos.trBase);
+
     // Snapping player origins causes more problems than it solves
     //if( snap )
     //  SnapVector( s->pos.trBase );
-    
+
     //set the trDelta for flag direction
-    VectorCopy( ps->velocity, s->pos.trDelta );
-    
+    VectorCopy(ps->velocity, s->pos.trDelta);
+
     s->apos.trType = TR_INTERPOLATE;
-    VectorCopy( ps->viewangles, s->apos.trBase );
-    
-    if( snap )
-    {
-        SnapVector( s->apos.trBase );
+    VectorCopy(ps->viewangles, s->apos.trBase);
+
+    if(snap) {
+        SnapVector(s->apos.trBase);
     }
-    
+
     s->time2 = ps->movementDir;
     s->legsAnim = ps->legsAnim;
     s->torsoAnim = ps->torsoAnim;
     //FIXME: gotta work out a way to transmit this in the entitystate
     //s->weaponAnim |= ps->weaponAnim;
-    s->clientNum = ps->clientNum;   // ET_PLAYER looks here instead of at number
+    s->clientNum =
+        ps->clientNum;   // ET_PLAYER looks here instead of at number
     // so corpses can also reference the proper config
     s->eFlags = ps->eFlags;
-    
-    if( ps->stats[STAT_HEALTH] <= 0 )
-    {
+
+    if(ps->stats[STAT_HEALTH] <= 0) {
         s->eFlags |= EF_DEAD;
-    }
-    else
-    {
+    } else {
         s->eFlags &= ~EF_DEAD;
     }
-    
-    if( ps->stats[STAT_STATE] & SS_BLOBLOCKED )
-    {
+
+    if(ps->stats[STAT_STATE] & SS_BLOBLOCKED) {
         s->eFlags |= EF_BLOBLOCKED;
-    }
-    else
-    {
+    } else {
         s->eFlags &= ~EF_BLOBLOCKED;
     }
-    
-    if( ps->externalEvent )
-    {
+
+    if(ps->externalEvent) {
         s->_event = ps->externalEvent;
         s->eventParm = ps->externalEventParm;
-    }
-    else if( ps->entityEventSequence < ps->eventSequence )
-    {
+    } else if(ps->entityEventSequence < ps->eventSequence) {
         sint seq;
-        
-        if( ps->entityEventSequence < ps->eventSequence - MAX_EVENTS )
-        {
+
+        if(ps->entityEventSequence < ps->eventSequence - MAX_EVENTS) {
             ps->entityEventSequence = ps->eventSequence - MAX_EVENTS;
         }
-        
-        seq = ps->entityEventSequence & ( MAX_EVENTS - 1 );
-        s->_event = ps->events[ seq ] | ( ( ps->entityEventSequence & 3 ) << 8 );
+
+        seq = ps->entityEventSequence & (MAX_EVENTS - 1);
+        s->_event = ps->events[ seq ] | ((ps->entityEventSequence & 3) << 8);
         s->eventParm = ps->eventParms[ seq ];
         ps->entityEventSequence++;
     }
-    
+
     s->weapon = ps->weapon;
     s->groundEntityNum = ps->groundEntityNum;
-    
+
     //store items held and active items in modelindex and modelindex2
     s->modelindex = 0;
     s->modelindex2 = 0;
-    
-    for( i = UP_NONE + 1; i < UP_NUM_UPGRADES; i++ )
-    {
-        if( InventoryContainsUpgrade( i, ps->stats ) )
-        {
+
+    for(i = UP_NONE + 1; i < UP_NUM_UPGRADES; i++) {
+        if(InventoryContainsUpgrade(i, ps->stats)) {
             s->modelindex |= 1 << i;
-            
-            if( UpgradeIsActive( i, ps->stats ) )
-            {
+
+            if(UpgradeIsActive(i, ps->stats)) {
                 s->modelindex2 |= 1 << i;
             }
         }
     }
-    
+
     // use misc field to store team/class info:
-    s->misc = ps->stats[ STAT_TEAM ] | ( ps->stats[ STAT_CLASS ] << 8 );
-    
+    s->misc = ps->stats[ STAT_TEAM ] | (ps->stats[ STAT_CLASS ] << 8);
+
     // have to get the surfNormal through somehow...
-    VectorCopy( ps->grapplePoint, s->angles2 );
-    
+    VectorCopy(ps->grapplePoint, s->angles2);
+
     s->loopSound = ps->loopSound;
     s->generic1 = ps->generic1;
-    
-    if( s->generic1 <= WPM_NONE || s->generic1 >= WPM_NUM_WEAPONMODES )
-    {
+
+    if(s->generic1 <= WPM_NONE || s->generic1 >= WPM_NUM_WEAPONMODES) {
         s->generic1 = WPM_PRIMARY;
     }
-    
+
     s->otherEntityNum = ps->otherEntityNum;
 }
 
@@ -3167,130 +3028,111 @@ This is done after each set of usercmd_t on the server,
 and after local prediction on the client
 ========================
 */
-void idBothGamesLocal::PlayerStateToEntityStateExtraPolate( playerState_t* ps, entityState_t* s, sint time, bool snap )
-{
+void idBothGamesLocal::PlayerStateToEntityStateExtraPolate(
+    playerState_t *ps, entityState_t *s, sint time, bool snap) {
     sint i;
-    
-    if( ps->pm_type == PM_INTERMISSION || ps->pm_type == PM_SPECTATOR || ps->pm_type == PM_FREEZE )
-    {
+
+    if(ps->pm_type == PM_INTERMISSION || ps->pm_type == PM_SPECTATOR ||
+            ps->pm_type == PM_FREEZE) {
         s->eType = ET_INVISIBLE;
-    }
-    else if( ps->persistant[PERS_SPECSTATE] != SPECTATOR_NOT )
-    {
+    } else if(ps->persistant[PERS_SPECSTATE] != SPECTATOR_NOT) {
         s->eType = ET_INVISIBLE;
-    }
-    else
-    {
+    } else {
         s->eType = ET_PLAYER;
     }
-    
+
     s->number = ps->clientNum;
-    
+
     s->pos.trType = TR_LINEAR_STOP;
-    VectorCopy( ps->origin, s->pos.trBase );
-    
+    VectorCopy(ps->origin, s->pos.trBase);
+
     // Snapping player origins causes more problems than it solves
     //if( snap )
     //  SnapVector( s->pos.trBase );
-    
+
     // set the trDelta for flag direction and linear prediction
-    VectorCopy( ps->velocity, s->pos.trDelta );
+    VectorCopy(ps->velocity, s->pos.trDelta);
     // set the time for linear prediction
     s->pos.trTime = time;
     // set maximum extra polation time
     s->pos.trDuration = 50; // 1000 / sv_fps (default = 20)
-    
+
     s->apos.trType = TR_INTERPOLATE;
-    VectorCopy( ps->viewangles, s->apos.trBase );
-    
-    if( snap )
-    {
-        SnapVector( s->apos.trBase );
+    VectorCopy(ps->viewangles, s->apos.trBase);
+
+    if(snap) {
+        SnapVector(s->apos.trBase);
     }
-    
+
     s->time2 = ps->movementDir;
     s->legsAnim = ps->legsAnim;
     s->torsoAnim = ps->torsoAnim;
-    
+
     // FIXME: see previous instance of weaponAnim
     //s->weaponAnim = ps->weaponAnim;
     s->clientNum = ps->clientNum; // ET_PLAYER looks here instead of at number
-    
+
     // so corpses can also reference the proper config
     s->eFlags = ps->eFlags;
-    
-    if( ps->stats[STAT_HEALTH] <= 0 )
-    {
+
+    if(ps->stats[STAT_HEALTH] <= 0) {
         s->eFlags |= EF_DEAD;
-    }
-    else
-    {
+    } else {
         s->eFlags &= ~EF_DEAD;
     }
-    
-    if( ps->stats[STAT_STATE] & SS_BLOBLOCKED )
-    {
+
+    if(ps->stats[STAT_STATE] & SS_BLOBLOCKED) {
         s->eFlags |= EF_BLOBLOCKED;
-    }
-    else
-    {
+    } else {
         s->eFlags &= ~EF_BLOBLOCKED;
     }
-    
-    if( ps->externalEvent )
-    {
+
+    if(ps->externalEvent) {
         s->_event = ps->externalEvent;
         s->eventParm = ps->externalEventParm;
-    }
-    else if( ps->entityEventSequence < ps->eventSequence )
-    {
+    } else if(ps->entityEventSequence < ps->eventSequence) {
         sint seq;
-        
-        if( ps->entityEventSequence < ps->eventSequence - MAX_EVENTS )
-        {
+
+        if(ps->entityEventSequence < ps->eventSequence - MAX_EVENTS) {
             ps->entityEventSequence = ps->eventSequence - MAX_EVENTS;
         }
-        
-        seq = ps->entityEventSequence & ( MAX_EVENTS - 1 );
-        s->_event = ps->events[ seq ] | ( ( ps->entityEventSequence & 3 ) << 8 );
+
+        seq = ps->entityEventSequence & (MAX_EVENTS - 1);
+        s->_event = ps->events[ seq ] | ((ps->entityEventSequence & 3) << 8);
         s->eventParm = ps->eventParms[ seq ];
         ps->entityEventSequence++;
     }
-    
+
     s->weapon = ps->weapon;
     s->groundEntityNum = ps->groundEntityNum;
-    
+
     //store items held and active items in modelindex and modelindex2
     s->modelindex = 0;
     s->modelindex2 = 0;
-    
-    for( i = UP_NONE + 1; i < UP_NUM_UPGRADES; i++ )
-    {
-        if( InventoryContainsUpgrade( i, ps->stats ) )
-        {
+
+    for(i = UP_NONE + 1; i < UP_NUM_UPGRADES; i++) {
+        if(InventoryContainsUpgrade(i, ps->stats)) {
             s->modelindex |= 1 << i;
-            
-            if( UpgradeIsActive( i, ps->stats ) )
-            {
+
+            if(UpgradeIsActive(i, ps->stats)) {
                 s->modelindex2 |= 1 << i;
             }
         }
     }
-    
+
     // use misc field to store team/class info:
-    s->misc = ps->stats[ STAT_TEAM ] | ( ps->stats[ STAT_CLASS ] << 8 );
-    
+    s->misc = ps->stats[ STAT_TEAM ] | (ps->stats[ STAT_CLASS ] << 8);
+
     // have to get the surfNormal through somehow...
-    VectorCopy( ps->grapplePoint, s->angles2 );
-    
+    VectorCopy(ps->grapplePoint, s->angles2);
+
     s->loopSound = ps->loopSound;
     s->generic1 = ps->generic1;
-    
-    if( s->generic1 <= WPM_NONE || s->generic1 >= WPM_NUM_WEAPONMODES )
-    {
+
+    if(s->generic1 <= WPM_NONE || s->generic1 >= WPM_NUM_WEAPONMODES) {
         s->generic1 = WPM_PRIMARY;
     }
-    
+
     s->otherEntityNum = ps->otherEntityNum;
 }
 
@@ -3301,19 +3143,18 @@ idBothGamesLocal::WeaponIsFull
 Check if a weapon has full ammo
 ========================
 */
-bool idBothGamesLocal::WeaponIsFull( weapon_t weapon, sint stats[ ], sint ammo, sint clips )
-{
+bool idBothGamesLocal::WeaponIsFull(weapon_t weapon, sint stats[ ],
+                                    sint ammo, sint clips) {
     sint maxAmmo, maxClips;
-    
-    maxAmmo = Weapon( weapon )->maxAmmo;
-    maxClips = Weapon( weapon )->maxClips;
-    
-    if( InventoryContainsUpgrade( UP_BATTPACK, stats ) )
-    {
-        maxAmmo = ( sint )( ( float32 )maxAmmo * BATTPACK_MODIFIER );
+
+    maxAmmo = Weapon(weapon)->maxAmmo;
+    maxClips = Weapon(weapon)->maxClips;
+
+    if(InventoryContainsUpgrade(UP_BATTPACK, stats)) {
+        maxAmmo = (sint)((float32)maxAmmo * BATTPACK_MODIFIER);
     }
-    
-    return ( maxAmmo == ammo ) && ( maxClips == clips );
+
+    return (maxAmmo == ammo) && (maxClips == clips);
 }
 
 /*
@@ -3323,15 +3164,14 @@ idBothGamesLocal::InventoryContainsWeapon
 Does the player hold a weapon?
 ========================
 */
-bool idBothGamesLocal::InventoryContainsWeapon( sint weapon, sint stats[ ] )
-{
+bool idBothGamesLocal::InventoryContainsWeapon(sint weapon,
+        sint stats[ ]) {
     // humans always have a blaster
-    if( stats[STAT_TEAM] == TEAM_HUMANS && weapon == WP_BLASTER )
-    {
+    if(stats[STAT_TEAM] == TEAM_HUMANS && weapon == WP_BLASTER) {
         return true;
     }
-    
-    return ( stats[ STAT_WEAPON ] == weapon );
+
+    return (stats[ STAT_WEAPON ] == weapon);
 }
 
 /*
@@ -3341,32 +3181,29 @@ idBothGamesLocal::CalculateSlotsForInventory
 Calculate the slots used by an inventory and warn of conflicts
 ========================
 */
-sint idBothGamesLocal::CalculateSlotsForInventory( sint stats[ ] )
-{
+sint idBothGamesLocal::CalculateSlotsForInventory(sint stats[ ]) {
     sint i, slot, slots;
-    
-    slots = Weapon( ( weapon_t )stats[ STAT_WEAPON ] )->slots;
-    
-    if( stats[STAT_TEAM] == TEAM_HUMANS )
-    {
-        slots |= Weapon( WP_BLASTER )->slots;
+
+    slots = Weapon((weapon_t)stats[ STAT_WEAPON ])->slots;
+
+    if(stats[STAT_TEAM] == TEAM_HUMANS) {
+        slots |= Weapon(WP_BLASTER)->slots;
     }
-    
-    for( i = UP_NONE; i < UP_NUM_UPGRADES; i++ )
-    {
-        if( InventoryContainsUpgrade( i, stats ) )
-        {
-            slot = Upgrade( ( upgrade_t )i )->slots;
-            
+
+    for(i = UP_NONE; i < UP_NUM_UPGRADES; i++) {
+        if(InventoryContainsUpgrade(i, stats)) {
+            slot = Upgrade((upgrade_t)i)->slots;
+
             // this check should never be true
-            if( slots & slot )
-            {
-                Com_Printf( S_COLOR_YELLOW "WARNING: held item %d conflicts with inventory slot %d\n", i, slot );
+            if(slots & slot) {
+                Com_Printf(S_COLOR_YELLOW
+                           "WARNING: held item %d conflicts with inventory slot %d\n", i, slot);
             }
+
             slots |= slot;
         }
     }
-    
+
     return slots;
 }
 
@@ -3377,9 +3214,8 @@ idBothGamesLocal::AddUpgradeToInventory
 Give the player an upgrade
 ========================
 */
-void idBothGamesLocal::AddUpgradeToInventory( sint item, sint stats[ ] )
-{
-    stats[ STAT_ITEMS ] |= ( 1 << item );
+void idBothGamesLocal::AddUpgradeToInventory(sint item, sint stats[ ]) {
+    stats[ STAT_ITEMS ] |= (1 << item);
 }
 
 /*
@@ -3389,9 +3225,9 @@ idBothGamesLocal::RemoveUpgradeFromInventory
 Take an upgrade from the player
 ========================
 */
-void idBothGamesLocal::RemoveUpgradeFromInventory( sint item, sint stats[ ] )
-{
-    stats[ STAT_ITEMS ] &= ~( 1 << item );
+void idBothGamesLocal::RemoveUpgradeFromInventory(sint item,
+        sint stats[ ]) {
+    stats[ STAT_ITEMS ] &= ~(1 << item);
 }
 
 /*
@@ -3401,9 +3237,8 @@ idBothGamesLocal::InventoryContainsUpgrade
 Does the player hold an upgrade?
 ========================
 */
-bool idBothGamesLocal::InventoryContainsUpgrade( sint item, sint stats[ ] )
-{
-    return( stats[ STAT_ITEMS ] & ( 1 << item ) );
+bool idBothGamesLocal::InventoryContainsUpgrade(sint item, sint stats[ ]) {
+    return(stats[ STAT_ITEMS ] & (1 << item));
 }
 
 /*
@@ -3413,9 +3248,8 @@ idBothGamesLocal::ActivateUpgrade
 Activates an upgrade
 ========================
 */
-void idBothGamesLocal::ActivateUpgrade( sint item, sint stats[ ] )
-{
-    stats[ STAT_ACTIVEITEMS ] |= ( 1 << item );
+void idBothGamesLocal::ActivateUpgrade(sint item, sint stats[ ]) {
+    stats[ STAT_ACTIVEITEMS ] |= (1 << item);
 }
 
 /*
@@ -3425,9 +3259,8 @@ idBothGamesLocal::DeactivateUpgrade
 Deactivates an upgrade
 ========================
 */
-void idBothGamesLocal::DeactivateUpgrade( sint item, sint stats[ ] )
-{
-    stats[ STAT_ACTIVEITEMS ] &= ~( 1 << item );
+void idBothGamesLocal::DeactivateUpgrade(sint item, sint stats[ ]) {
+    stats[ STAT_ACTIVEITEMS ] &= ~(1 << item);
 }
 
 /*
@@ -3437,9 +3270,8 @@ idBothGamesLocal::UpgradeIsActive
 Is this upgrade active?
 ========================
 */
-bool idBothGamesLocal::UpgradeIsActive( sint item, sint stats[ ] )
-{
-    return( stats[ STAT_ACTIVEITEMS ] & ( 1 << item ) );
+bool idBothGamesLocal::UpgradeIsActive(sint item, sint stats[ ]) {
+    return(stats[ STAT_ACTIVEITEMS ] & (1 << item));
 }
 
 /*
@@ -3449,49 +3281,42 @@ idBothGamesLocal::RotateAxis
 Shared axis rotation function
 ===============
 */
-bool idBothGamesLocal::RotateAxis( vec3_t surfNormal, vec3_t inAxis[ 3 ], vec3_t outAxis[ 3 ], bool inverse, bool ceiling )
-{
+bool idBothGamesLocal::RotateAxis(vec3_t surfNormal, vec3_t inAxis[ 3 ],
+                                  vec3_t outAxis[ 3 ], bool inverse, bool ceiling) {
     vec3_t refNormal = { 0.0f, 0.0f, 1.0f };
     vec3_t ceilingNormal = { 0.0f, 0.0f, -1.0f };
     vec3_t localNormal, xNormal;
     float32 rotAngle;
-    
+
     //the grapplePoint being a surfNormal rotation Normal hack... see above :)
-    if( ceiling )
-    {
-        VectorCopy( ceilingNormal, localNormal );
-        VectorCopy( surfNormal, xNormal );
-    }
-    else
-    {
+    if(ceiling) {
+        VectorCopy(ceilingNormal, localNormal);
+        VectorCopy(surfNormal, xNormal);
+    } else {
         //cross the reference normal and the surface normal to get the rotation axis
-        VectorCopy( surfNormal, localNormal );
-        CrossProduct( localNormal, refNormal, xNormal );
-        VectorNormalize( xNormal );
+        VectorCopy(surfNormal, localNormal);
+        CrossProduct(localNormal, refNormal, xNormal);
+        VectorNormalize(xNormal);
     }
-    
+
     //can't rotate with no rotation vector
-    if( VectorLength( xNormal ) != 0.0f )
-    {
-        rotAngle = RAD2DEG( acos( DotProduct( localNormal, refNormal ) ) );
-        
-        if( inverse )
-        {
+    if(VectorLength(xNormal) != 0.0f) {
+        rotAngle = RAD2DEG(acos(DotProduct(localNormal, refNormal)));
+
+        if(inverse) {
             rotAngle = -rotAngle;
         }
-        
-        AngleNormalize180( rotAngle );
-        
+
+        AngleNormalize180(rotAngle);
+
         //hmmm could get away with only one rotation and some clever stuff later... but i'm lazy
-        RotatePointAroundVector( outAxis[ 0 ], xNormal, inAxis[ 0 ], -rotAngle );
-        RotatePointAroundVector( outAxis[ 1 ], xNormal, inAxis[ 1 ], -rotAngle );
-        RotatePointAroundVector( outAxis[ 2 ], xNormal, inAxis[ 2 ], -rotAngle );
-    }
-    else
-    {
+        RotatePointAroundVector(outAxis[ 0 ], xNormal, inAxis[ 0 ], -rotAngle);
+        RotatePointAroundVector(outAxis[ 1 ], xNormal, inAxis[ 1 ], -rotAngle);
+        RotatePointAroundVector(outAxis[ 2 ], xNormal, inAxis[ 2 ], -rotAngle);
+    } else {
         return false;
     }
-    
+
     return true;
 }
 
@@ -3502,22 +3327,16 @@ idBothGamesLocal::GetClientNormal
 Get the normal for the surface the client is walking on
 ===============
 */
-void idBothGamesLocal::GetClientNormal( const playerState_t* ps, vec3_t normal )
-{
-    if( ps->stats[ STAT_STATE ] & SS_WALLCLIMBING )
-    {
-        if( ps->eFlags & EF_WALLCLIMBCEILING )
-        {
-            VectorSet( normal, 0.0f, 0.0f, -1.0f );
+void idBothGamesLocal::GetClientNormal(const playerState_t *ps,
+                                       vec3_t normal) {
+    if(ps->stats[ STAT_STATE ] & SS_WALLCLIMBING) {
+        if(ps->eFlags & EF_WALLCLIMBCEILING) {
+            VectorSet(normal, 0.0f, 0.0f, -1.0f);
+        } else {
+            VectorCopy(ps->grapplePoint, normal);
         }
-        else
-        {
-            VectorCopy( ps->grapplePoint, normal );
-        }
-    }
-    else
-    {
-        VectorSet( normal, 0.0f, 0.0f, 1.0f );
+    } else {
+        VectorSet(normal, 0.0f, 0.0f, 1.0f);
     }
 }
 
@@ -3528,37 +3347,41 @@ idBothGamesLocal::PositionBuildableRelativeToPlayer
 Find a place to build a buildable
 ===============
 */
-void idBothGamesLocal::PositionBuildableRelativeToPlayer( const playerState_t* ps, const vec3_t mins, const vec3_t maxs, void ( *trace )( trace_t*, const vec3_t, const vec3_t, const vec3_t, const vec3_t, sint, sint ), vec3_t outOrigin, vec3_t outAngles, trace_t* tr )
-{
+void idBothGamesLocal::PositionBuildableRelativeToPlayer(
+    const playerState_t *ps, const vec3_t mins, const vec3_t maxs,
+    void (*trace)(trace_t *, const vec3_t, const vec3_t, const vec3_t,
+                  const vec3_t, sint, sint), vec3_t outOrigin, vec3_t outAngles,
+    trace_t *tr) {
     vec3_t forward, entityOrigin, targetOrigin;
     vec3_t angles, playerOrigin, playerNormal;
     float32 buildDist;
-    
-    GetClientNormal( ps, playerNormal );
-    
-    VectorCopy( ps->viewangles, angles );
-    VectorCopy( ps->origin, playerOrigin );
-    buildDist = Class( ( class_t )ps->stats[ STAT_CLASS ] )->buildDist;
-    
-    AngleVectors( angles, forward, nullptr, nullptr );
-    ProjectPointOnPlane( forward, forward, playerNormal );
-    VectorNormalize( forward );
-    
-    VectorMA( playerOrigin, buildDist, forward, entityOrigin );
-    
-    VectorCopy( entityOrigin, targetOrigin );
-    
+
+    GetClientNormal(ps, playerNormal);
+
+    VectorCopy(ps->viewangles, angles);
+    VectorCopy(ps->origin, playerOrigin);
+    buildDist = Class((class_t)ps->stats[ STAT_CLASS ])->buildDist;
+
+    AngleVectors(angles, forward, nullptr, nullptr);
+    ProjectPointOnPlane(forward, forward, playerNormal);
+    VectorNormalize(forward);
+
+    VectorMA(playerOrigin, buildDist, forward, entityOrigin);
+
+    VectorCopy(entityOrigin, targetOrigin);
+
     //so buildings can be placed facing slopes
-    VectorMA( entityOrigin, 32, playerNormal, entityOrigin );
-    
+    VectorMA(entityOrigin, 32, playerNormal, entityOrigin);
+
     //so buildings drop to floor
-    VectorMA( targetOrigin, -128, playerNormal, targetOrigin );
-    
+    VectorMA(targetOrigin, -128, playerNormal, targetOrigin);
+
     // The mask is MASK_DEADSOLID on purpose to avoid collisions with other entities
-    ( *trace )( tr, entityOrigin, mins, maxs, targetOrigin, ps->clientNum, MASK_DEADSOLID );
-    VectorCopy( tr->endpos, entityOrigin );
-    VectorMA( entityOrigin, 0.1f, playerNormal, outOrigin );
-    vectoangles( forward, outAngles );
+    (*trace)(tr, entityOrigin, mins, maxs, targetOrigin, ps->clientNum,
+             MASK_DEADSOLID);
+    VectorCopy(tr->endpos, entityOrigin);
+    VectorMA(entityOrigin, 0.1f, playerNormal, outOrigin);
+    vectoangles(forward, outAngles);
 }
 
 /*
@@ -3568,29 +3391,23 @@ idBothGamesLocal::GetValueOfPlayer
 Returns the credit value of a player
 ===============
 */
-sint idBothGamesLocal::GetValueOfPlayer( playerState_t* ps )
-{
-    sint i, worth = Class( ( class_t )ps->stats[ STAT_CLASS ] )->value;
-    
-    if( ps->stats[ STAT_TEAM ] == TEAM_HUMANS )
-    {
-        for( i = UP_NONE + 1; i < UP_NUM_UPGRADES; i++ )
-        {
-            if( InventoryContainsUpgrade( i, ps->stats ) )
-            {
-                worth += Upgrade( ( upgrade_t )i )->price;
+sint idBothGamesLocal::GetValueOfPlayer(playerState_t *ps) {
+    sint i, worth = Class((class_t)ps->stats[ STAT_CLASS ])->value;
+
+    if(ps->stats[ STAT_TEAM ] == TEAM_HUMANS) {
+        for(i = UP_NONE + 1; i < UP_NUM_UPGRADES; i++) {
+            if(InventoryContainsUpgrade(i, ps->stats)) {
+                worth += Upgrade((upgrade_t)i)->price;
             }
         }
-        
-        for( i = WP_NONE + 1; i < WP_NUM_WEAPONS; i++ )
-        {
-            if( InventoryContainsWeapon( i, ps->stats ) )
-            {
-                worth += Weapon( ( weapon_t )i )->price;
+
+        for(i = WP_NONE + 1; i < WP_NUM_WEAPONS; i++) {
+            if(InventoryContainsWeapon(i, ps->stats)) {
+                worth += Weapon((weapon_t)i)->price;
             }
         }
     }
-    
+
     return worth;
 }
 
@@ -3599,23 +3416,21 @@ sint idBothGamesLocal::GetValueOfPlayer( playerState_t* ps )
 idBothGamesLocal::PlayerPoisonCloudTime
 =================
 */
-sint idBothGamesLocal::PlayerPoisonCloudTime( playerState_t* ps )
-{
+sint idBothGamesLocal::PlayerPoisonCloudTime(playerState_t *ps) {
     sint time = LEVEL1_PCLOUD_TIME;
-    
-    if( InventoryContainsUpgrade( UP_BATTLESUIT, ps->stats ) )
-    {
+
+    if(InventoryContainsUpgrade(UP_BATTLESUIT, ps->stats)) {
         time -= BSUIT_PCLOUD_PROTECTION;
     }
-    if( InventoryContainsUpgrade( UP_HELMET, ps->stats ) )
-    {
+
+    if(InventoryContainsUpgrade(UP_HELMET, ps->stats)) {
         time -= HELMET_PCLOUD_PROTECTION;
     }
-    if( InventoryContainsUpgrade( UP_LIGHTARMOUR, ps->stats ) )
-    {
+
+    if(InventoryContainsUpgrade(UP_LIGHTARMOUR, ps->stats)) {
         time -= LIGHTARMOUR_PCLOUD_PROTECTION;
     }
-    
+
     return time;
 }
 
@@ -3627,13 +3442,12 @@ Returns the players current weapon or the weapon they are switching to.
 Only needs to be used for human weapons.
 =================
 */
-weapon_t idBothGamesLocal::GetPlayerWeapon( playerState_t* ps )
-{
-    if( ps->persistant[PERS_NEWWEAPON] )
-    {
-        return ( weapon_t )ps->persistant[PERS_NEWWEAPON];
+weapon_t idBothGamesLocal::GetPlayerWeapon(playerState_t *ps) {
+    if(ps->persistant[PERS_NEWWEAPON]) {
+        return (weapon_t)ps->persistant[PERS_NEWWEAPON];
     }
-    return ( weapon_t )ps->weapon;
+
+    return (weapon_t)ps->weapon;
 }
 
 /*
@@ -3641,15 +3455,16 @@ weapon_t idBothGamesLocal::GetPlayerWeapon( playerState_t* ps )
 idBothGamesLocal::PlayerCanChangeWeapon
 ===============
 */
-bool idBothGamesLocal::PlayerCanChangeWeapon( playerState_t* ps )
-{
+bool idBothGamesLocal::PlayerCanChangeWeapon(playerState_t *ps) {
     // prevent lcannon ammo conservation exploit
-    
-    if( ( ps->weapon == WP_LUCIFER_CANNON && ps->stats[STAT_MISC] > LCANNON_CHARGE_TIME_MIN ) || ( ps->weapon != WP_HBUILD && ( ps->weaponTime > 0 || ps->weaponstate == WEAPON_FIRING ) ) )
-    {
+
+    if((ps->weapon == WP_LUCIFER_CANNON &&
+            ps->stats[STAT_MISC] > LCANNON_CHARGE_TIME_MIN) ||
+            (ps->weapon != WP_HBUILD && (ps->weaponTime > 0 ||
+                                         ps->weaponstate == WEAPON_FIRING))) {
         return false;
     }
-    
+
     return true;
 }
 
@@ -3660,17 +3475,15 @@ idBothGamesLocal::atof_neg
 atof with an allowance for negative values
 ===============
 */
-float32 idBothGamesLocal::atof_neg( valueType* token, bool allowNegative )
-{
+float32 idBothGamesLocal::atof_neg(valueType *token, bool allowNegative) {
     float32 value;
-    
-    value = atof( token );
-    
-    if( !allowNegative && value < 0.0f )
-    {
+
+    value = atof(token);
+
+    if(!allowNegative && value < 0.0f) {
         value = 1.0f;
     }
-    
+
     return value;
 }
 
@@ -3681,17 +3494,15 @@ idBothGamesLocal::atoi_neg
 atoi with an allowance for negative values
 ===============
 */
-sint idBothGamesLocal::atoi_neg( valueType* token, bool allowNegative )
-{
+sint idBothGamesLocal::atoi_neg(valueType *token, bool allowNegative) {
     sint value;
-    
-    value = atoi( token );
-    
-    if( !allowNegative && value < 0 )
-    {
+
+    value = atoi(token);
+
+    if(!allowNegative && value < 0) {
         value = 1;
     }
-    
+
     return value;
 }
 
@@ -3700,84 +3511,69 @@ sint idBothGamesLocal::atoi_neg( valueType* token, bool allowNegative )
 idBothGamesLocal::ParseCSVEquipmentList
 ===============
 */
-void idBothGamesLocal::ParseCSVEquipmentList( pointer string, weapon_t* weapons, sint weaponsSize, upgrade_t* upgrades, sint upgradesSize )
-{
+void idBothGamesLocal::ParseCSVEquipmentList(pointer string,
+        weapon_t *weapons, sint weaponsSize, upgrade_t *upgrades,
+        sint upgradesSize) {
     valueType buffer[ MAX_STRING_CHARS ];
     sint i = 0, j = 0;
-    valueType* p, *q;
+    valueType *p, *q;
     bool EOS = false;
-    
-    Q_strncpyz( buffer, string, MAX_STRING_CHARS );
-    
+
+    Q_strncpyz(buffer, string, MAX_STRING_CHARS);
+
     p = q = buffer;
-    
-    while( *p != '\0' )
-    {
+
+    while(*p != '\0') {
         //skip to first , or EOS
-        while( *p != ',' && *p != '\0' )
-        {
+        while(*p != ',' && *p != '\0') {
             p++;
         }
-        
-        if( *p == '\0' )
-        {
+
+        if(*p == '\0') {
             EOS = true;
         }
-        
+
         *p = '\0';
-        
+
         //strip leading whitespace
-        while( *q == ' ' )
-        {
+        while(*q == ' ') {
             q++;
         }
-        
-        if( weaponsSize )
-        {
-            weapons[i] = WeaponByName( q )->number;
+
+        if(weaponsSize) {
+            weapons[i] = WeaponByName(q)->number;
         }
-        
-        if( upgradesSize )
-        {
-            upgrades[j] = UpgradeByName( q )->number;
+
+        if(upgradesSize) {
+            upgrades[j] = UpgradeByName(q)->number;
         }
-        
-        if( weaponsSize && weapons[i] == WP_NONE && upgradesSize && upgrades[j] == UP_NONE )
-        {
-            Com_Printf( S_COLOR_YELLOW "WARNING: unknown equipment %s\n", q );
-        }
-        else if( weaponsSize && weapons[i] != WP_NONE )
-        {
+
+        if(weaponsSize && weapons[i] == WP_NONE && upgradesSize &&
+                upgrades[j] == UP_NONE) {
+            Com_Printf(S_COLOR_YELLOW "WARNING: unknown equipment %s\n", q);
+        } else if(weaponsSize && weapons[i] != WP_NONE) {
             i++;
-        }
-        else if( upgradesSize && upgrades[j] != UP_NONE )
-        {
+        } else if(upgradesSize && upgrades[j] != UP_NONE) {
             j++;
         }
-        
-        if( !EOS )
-        {
+
+        if(!EOS) {
             p++;
             q = p;
-        }
-        else
-        {
+        } else {
             break;
         }
-        
-        if( i == ( weaponsSize - 1 ) || j == ( upgradesSize - 1 ) )
-        {
+
+        if(i == (weaponsSize - 1) || j == (upgradesSize - 1)) {
             break;
         }
     }
-    
-    if( weaponsSize )
-    {
+
+    if(weaponsSize) {
         weapons[i] = WP_NONE;
     }
-    
-    if( upgradesSize )
-    {
+
+    if(upgradesSize) {
         upgrades[j] = UP_NONE;
     }
 }
@@ -3787,60 +3583,50 @@ void idBothGamesLocal::ParseCSVEquipmentList( pointer string, weapon_t* weapons,
 idBothGamesLocal::ParseCSVClassList
 ===============
 */
-void idBothGamesLocal::ParseCSVClassList( pointer string, class_t* classes, sint classesSize )
-{
+void idBothGamesLocal::ParseCSVClassList(pointer string, class_t *classes,
+        sint classesSize) {
     valueType buffer[ MAX_STRING_CHARS ];
     sint i = 0;
-    valueType* p, *q;
+    valueType *p, *q;
     bool EOS = false;
-    
-    Q_strncpyz( buffer, string, MAX_STRING_CHARS );
-    
+
+    Q_strncpyz(buffer, string, MAX_STRING_CHARS);
+
     p = q = buffer;
-    
-    while( *p != '\0' )
-    {
+
+    while(*p != '\0') {
         //skip to first , or EOS
-        while( *p != ',' && *p != '\0' )
-        {
+        while(*p != ',' && *p != '\0') {
             p++;
         }
-        
-        if( *p == '\0' )
-        {
+
+        if(*p == '\0') {
             EOS = true;
         }
-        
+
         *p = '\0';
-        
+
         //strip leading whitespace
-        while( *q == ' ' )
-        {
+        while(*q == ' ') {
             q++;
         }
-        
-        classes[ i ] = ClassByName( q )->number;
-        
-        if( classes[i] == PCL_NONE )
-        {
-            Com_Printf( S_COLOR_YELLOW "WARNING: unknown class %s\n", q );
-        }
-        else
-        {
+
+        classes[ i ] = ClassByName(q)->number;
+
+        if(classes[i] == PCL_NONE) {
+            Com_Printf(S_COLOR_YELLOW "WARNING: unknown class %s\n", q);
+        } else {
             i++;
         }
-        
-        if( !EOS )
-        {
+
+        if(!EOS) {
             p++;
             q = p;
-        }
-        else
-        {
+        } else {
             break;
         }
     }
-    
+
     classes[ i ] = PCL_NONE;
 }
 
@@ -3849,65 +3635,54 @@ void idBothGamesLocal::ParseCSVClassList( pointer string, class_t* classes, sint
 idBothGamesLocal::ParseCSVBuildableList
 ===============
 */
-void idBothGamesLocal::ParseCSVBuildableList( pointer string, buildable_t* buildables, sint buildablesSize )
-{
+void idBothGamesLocal::ParseCSVBuildableList(pointer string,
+        buildable_t *buildables, sint buildablesSize) {
     valueType buffer[ MAX_STRING_CHARS ];
     sint i = 0;
-    valueType* p, *q;
+    valueType *p, *q;
     bool EOS = false;
-    
-    Q_strncpyz( buffer, string, MAX_STRING_CHARS );
-    
+
+    Q_strncpyz(buffer, string, MAX_STRING_CHARS);
+
     p = q = buffer;
-    
-    while( *p != '\0' )
-    {
+
+    while(*p != '\0') {
         //skip to first , or EOS
-        while( *p != ',' && *p != '\0' )
-        {
+        while(*p != ',' && *p != '\0') {
             p++;
         }
-        
-        if( *p == '\0' )
-        {
+
+        if(*p == '\0') {
             EOS = true;
         }
-        
+
         *p = '\0';
-        
+
         //strip leading whitespace
-        while( *q == ' ' )
-        {
+        while(*q == ' ') {
             q++;
         }
-        
-        buildables[ i ] = BuildableByName( q )->number;
-        
-        if( buildables[i] == BA_NONE )
-        {
-            Com_Printf( S_COLOR_YELLOW "WARNING: unknown buildable %s\n", q );
-        }
-        else
-        {
+
+        buildables[ i ] = BuildableByName(q)->number;
+
+        if(buildables[i] == BA_NONE) {
+            Com_Printf(S_COLOR_YELLOW "WARNING: unknown buildable %s\n", q);
+        } else {
             i++;
         }
-        
-        if( !EOS )
-        {
+
+        if(!EOS) {
             p++;
             q = p;
-        }
-        else
-        {
+        } else {
             break;
         }
     }
-    
+
     buildables[ i ] = BA_NONE;
 }
 
-typedef struct gameElements_s
-{
+typedef struct gameElements_s {
     buildable_t       buildables[ BA_NUM_BUILDABLES ];
     class_t           classes[ PCL_NUM_CLASSES ];
     weapon_t          weapons[ WP_NUM_WEAPONS ];
@@ -3921,21 +3696,25 @@ static gameElements_t bg_disabledGameElements;
 idBothGamesLocal::InitAllowedGameElements
 ============
 */
-void idBothGamesLocal::InitAllowedGameElements( void )
-{
+void idBothGamesLocal::InitAllowedGameElements(void) {
     valueType cvar[ MAX_CVAR_VALUE_STRING ];
-    
-    trap_Cvar_VariableStringBuffer( "g_disabledEquipment", cvar, MAX_CVAR_VALUE_STRING );
-    
-    ParseCSVEquipmentList( cvar, bg_disabledGameElements.weapons, WP_NUM_WEAPONS, bg_disabledGameElements.upgrades, UP_NUM_UPGRADES );
-    
-    trap_Cvar_VariableStringBuffer( "g_disabledClasses", cvar, MAX_CVAR_VALUE_STRING );
-    
-    ParseCSVClassList( cvar, bg_disabledGameElements.classes, PCL_NUM_CLASSES );
-    
-    trap_Cvar_VariableStringBuffer( "g_disabledBuildables", cvar, MAX_CVAR_VALUE_STRING );
-    
-    ParseCSVBuildableList( cvar, bg_disabledGameElements.buildables, BA_NUM_BUILDABLES );
+
+    trap_Cvar_VariableStringBuffer("g_disabledEquipment", cvar,
+                                   MAX_CVAR_VALUE_STRING);
+
+    ParseCSVEquipmentList(cvar, bg_disabledGameElements.weapons,
+                          WP_NUM_WEAPONS, bg_disabledGameElements.upgrades, UP_NUM_UPGRADES);
+
+    trap_Cvar_VariableStringBuffer("g_disabledClasses", cvar,
+                                   MAX_CVAR_VALUE_STRING);
+
+    ParseCSVClassList(cvar, bg_disabledGameElements.classes, PCL_NUM_CLASSES);
+
+    trap_Cvar_VariableStringBuffer("g_disabledBuildables", cvar,
+                                   MAX_CVAR_VALUE_STRING);
+
+    ParseCSVBuildableList(cvar, bg_disabledGameElements.buildables,
+                          BA_NUM_BUILDABLES);
 }
 
 /*
@@ -3943,18 +3722,16 @@ void idBothGamesLocal::InitAllowedGameElements( void )
 idBothGamesLocal::WeaponIsAllowed
 ============
 */
-bool idBothGamesLocal::WeaponIsAllowed( weapon_t weapon )
-{
+bool idBothGamesLocal::WeaponIsAllowed(weapon_t weapon) {
     sint i;
-    
-    for( i = 0; i < WP_NUM_WEAPONS && bg_disabledGameElements.weapons[ i ] != WP_NONE; i++ )
-    {
-        if( bg_disabledGameElements.weapons[i] == weapon )
-        {
+
+    for(i = 0; i < WP_NUM_WEAPONS &&
+            bg_disabledGameElements.weapons[ i ] != WP_NONE; i++) {
+        if(bg_disabledGameElements.weapons[i] == weapon) {
             return false;
         }
     }
-    
+
     return true;
 }
 
@@ -3963,18 +3740,16 @@ bool idBothGamesLocal::WeaponIsAllowed( weapon_t weapon )
 idBothGamesLocal::UpgradeIsAllowed
 ============
 */
-bool idBothGamesLocal::UpgradeIsAllowed( upgrade_t upgrade )
-{
+bool idBothGamesLocal::UpgradeIsAllowed(upgrade_t upgrade) {
     sint i;
-    
-    for( i = 0; i < UP_NUM_UPGRADES && bg_disabledGameElements.upgrades[ i ] != UP_NONE; i++ )
-    {
-        if( bg_disabledGameElements.upgrades[i] == upgrade )
-        {
+
+    for(i = 0; i < UP_NUM_UPGRADES &&
+            bg_disabledGameElements.upgrades[ i ] != UP_NONE; i++) {
+        if(bg_disabledGameElements.upgrades[i] == upgrade) {
             return false;
         }
     }
-    
+
     return true;
 }
 
@@ -3983,18 +3758,16 @@ bool idBothGamesLocal::UpgradeIsAllowed( upgrade_t upgrade )
 idBothGamesLocal::ClassIsAllowed
 ============
 */
-bool idBothGamesLocal::ClassIsAllowed( class_t _class )
-{
+bool idBothGamesLocal::ClassIsAllowed(class_t _class) {
     sint i;
-    
-    for( i = 0; i < PCL_NUM_CLASSES && bg_disabledGameElements.classes[ i ] != PCL_NONE; i++ )
-    {
-        if( bg_disabledGameElements.classes[i] == _class )
-        {
+
+    for(i = 0; i < PCL_NUM_CLASSES &&
+            bg_disabledGameElements.classes[ i ] != PCL_NONE; i++) {
+        if(bg_disabledGameElements.classes[i] == _class) {
             return false;
         }
     }
-    
+
     return true;
 }
 
@@ -4003,18 +3776,16 @@ bool idBothGamesLocal::ClassIsAllowed( class_t _class )
 idBothGamesLocal::BuildableIsAllowed
 ============
 */
-bool idBothGamesLocal::BuildableIsAllowed( buildable_t buildable )
-{
+bool idBothGamesLocal::BuildableIsAllowed(buildable_t buildable) {
     sint i;
-    
-    for( i = 0; i < BA_NUM_BUILDABLES && bg_disabledGameElements.buildables[ i ] != BA_NONE; i++ )
-    {
-        if( bg_disabledGameElements.buildables[i] == buildable )
-        {
+
+    for(i = 0; i < BA_NUM_BUILDABLES &&
+            bg_disabledGameElements.buildables[ i ] != BA_NONE; i++) {
+        if(bg_disabledGameElements.buildables[i] == buildable) {
             return false;
         }
     }
-    
+
     return true;
 }
 
@@ -4023,20 +3794,15 @@ bool idBothGamesLocal::BuildableIsAllowed( buildable_t buildable )
 idBothGamesLocal::ClientListTest
 ============
 */
-bool idBothGamesLocal::ClientListTest( clientList_t* list, sint clientNum )
-{
-    if( clientNum < 0 || clientNum >= MAX_CLIENTS || !list )
-    {
+bool idBothGamesLocal::ClientListTest(clientList_t *list, sint clientNum) {
+    if(clientNum < 0 || clientNum >= MAX_CLIENTS || !list) {
         return false;
     }
-    
-    if( clientNum < 32 )
-    {
-        return ( ( list->lo & ( 1 << clientNum ) ) != 0 );
-    }
-    else
-    {
-        return ( ( list->hi & ( 1 << ( clientNum - 32 ) ) ) != 0 );
+
+    if(clientNum < 32) {
+        return ((list->lo & (1 << clientNum)) != 0);
+    } else {
+        return ((list->hi & (1 << (clientNum - 32))) != 0);
     }
 }
 
@@ -4045,20 +3811,15 @@ bool idBothGamesLocal::ClientListTest( clientList_t* list, sint clientNum )
 idBothGamesLocal::ClientListAdd
 ============
 */
-void idBothGamesLocal::ClientListAdd( clientList_t* list, sint clientNum )
-{
-    if( clientNum < 0 || clientNum >= MAX_CLIENTS || !list )
-    {
+void idBothGamesLocal::ClientListAdd(clientList_t *list, sint clientNum) {
+    if(clientNum < 0 || clientNum >= MAX_CLIENTS || !list) {
         return;
     }
-    
-    if( clientNum < 32 )
-    {
-        list->lo |= ( 1 << clientNum );
-    }
-    else
-    {
-        list->hi |= ( 1 << ( clientNum - 32 ) );
+
+    if(clientNum < 32) {
+        list->lo |= (1 << clientNum);
+    } else {
+        list->hi |= (1 << (clientNum - 32));
     }
 }
 
@@ -4067,20 +3828,16 @@ void idBothGamesLocal::ClientListAdd( clientList_t* list, sint clientNum )
 idBothGamesLocal::ClientListRemove
 ============
 */
-void idBothGamesLocal::ClientListRemove( clientList_t* list, sint clientNum )
-{
-    if( clientNum < 0 || clientNum >= MAX_CLIENTS || !list )
-    {
+void idBothGamesLocal::ClientListRemove(clientList_t *list,
+                                        sint clientNum) {
+    if(clientNum < 0 || clientNum >= MAX_CLIENTS || !list) {
         return;
     }
-    
-    if( clientNum < 32 )
-    {
-        list->lo &= ~( 1 << clientNum );
-    }
-    else
-    {
-        list->hi &= ~( 1 << ( clientNum - 32 ) );
+
+    if(clientNum < 32) {
+        list->lo &= ~(1 << clientNum);
+    } else {
+        list->hi &= ~(1 << (clientNum - 32));
     }
 }
 
@@ -4089,18 +3846,17 @@ void idBothGamesLocal::ClientListRemove( clientList_t* list, sint clientNum )
 idBothGamesLocal::ClientListString
 ============
 */
-valueType* idBothGamesLocal::ClientListString( clientList_t* list )
-{
+valueType *idBothGamesLocal::ClientListString(clientList_t *list) {
     static valueType s[ 17 ];
-    
+
     s[ 0 ] = '\0';
-    if( !list )
-    {
+
+    if(!list) {
         return s;
     }
-    
-    Q_vsprintf_s( s, sizeof( s ), sizeof( s ), "%08x%08x", list->hi, list->lo );
-    
+
+    Q_vsprintf_s(s, sizeof(s), sizeof(s), "%08x%08x", list->hi, list->lo);
+
     return s;
 }
 
@@ -4109,26 +3865,23 @@ valueType* idBothGamesLocal::ClientListString( clientList_t* list )
 idBothGamesLocal::ClientListParse
 ============
 */
-void idBothGamesLocal::ClientListParse( clientList_t* list, pointer s )
-{
-    if( !list )
-    {
+void idBothGamesLocal::ClientListParse(clientList_t *list, pointer s) {
+    if(!list) {
         return;
     }
-    
+
     list->lo = 0;
     list->hi = 0;
-    
-    if( !s )
-    {
+
+    if(!s) {
         return;
     }
-    
-    if( strlen( s ) != 16 )
-    {
+
+    if(strlen(s) != 16) {
         return;
     }
-    sscanf( s, "%x%x", &list->hi, &list->lo );
+
+    sscanf(s, "%x%x", &list->hi, &list->lo);
 }
 
 /*
@@ -4136,28 +3889,23 @@ void idBothGamesLocal::ClientListParse( clientList_t* list, pointer s )
 idBothGamesLocal::PrimaryWeapon
 ============
 */
-weapon_t idBothGamesLocal::PrimaryWeapon( sint stats[ ] )
-{
+weapon_t idBothGamesLocal::PrimaryWeapon(sint stats[ ]) {
     sint i;
-    
-    for( i = WP_NONE; i < WP_NUM_WEAPONS; i++ )
-    {
-        if( Weapon( ( weapon_t )i )->slots != SLOT_WEAPON )
-        {
+
+    for(i = WP_NONE; i < WP_NUM_WEAPONS; i++) {
+        if(Weapon((weapon_t)i)->slots != SLOT_WEAPON) {
             continue;
         }
-        
-        if( InventoryContainsWeapon( i, stats ) )
-        {
-            return ( weapon_t )i;
+
+        if(InventoryContainsWeapon(i, stats)) {
+            return (weapon_t)i;
         }
     }
-    
-    if( InventoryContainsWeapon( WP_BLASTER, stats ) )
-    {
+
+    if(InventoryContainsWeapon(WP_BLASTER, stats)) {
         return WP_BLASTER;
     }
-    
+
     return WP_NONE;
 }
 
@@ -4166,85 +3914,87 @@ weapon_t idBothGamesLocal::PrimaryWeapon( sint stats[ ] )
 idBothGamesLocal::LoadEmoticons
 ============
 */
-sint idBothGamesLocal::LoadEmoticons( valueType names[ ][ MAX_EMOTICON_NAME_LEN ], sint widths[ ] )
-{
+sint idBothGamesLocal::LoadEmoticons(valueType
+                                     names[ ][ MAX_EMOTICON_NAME_LEN ], sint widths[ ]) {
     sint numFiles;
-    valueType fileList[ MAX_EMOTICONS * ( MAX_EMOTICON_NAME_LEN + 9 ) ] = {""};
+    valueType fileList[ MAX_EMOTICONS * (MAX_EMOTICON_NAME_LEN + 9) ] = {""};
     sint i;
-    valueType* filePtr;
+    valueType *filePtr;
     sint fileLen;
     valueType emoticon[ MAX_EMOTICON_NAME_LEN + 9 ] = {""};
     sint loaded = 0;
     sint count;
     sint width = 0;
-    
-    numFiles = trap_FS_GetFileList( "emoticons", "x1.tga", fileList, sizeof( fileList ) );
-    
-    if( numFiles < 1 )
-    {
+
+    numFiles = trap_FS_GetFileList("emoticons", "x1.tga", fileList,
+                                   sizeof(fileList));
+
+    if(numFiles < 1) {
         return 0;
     }
-    
+
     filePtr = fileList;
     fileLen = 0;
     count = 0;
-    for( i = 0; i < numFiles; i++, filePtr += fileLen + 1 )
-    {
-        if( count >= MAX_EMOTICONS )
-        {
+
+    for(i = 0; i < numFiles; i++, filePtr += fileLen + 1) {
+        if(count >= MAX_EMOTICONS) {
             count++;
             continue;
         }
-        
-        fileLen = strlen( filePtr );
-        if( fileLen > MAX_EMOTICON_NAME_LEN + 8 )
-        {
-            Com_Printf( S_COLOR_YELLOW "WARNING: MAX_EMOTICON_NAME_LEN is %d. skipping \"%s\", filename too long", MAX_EMOTICON_NAME_LEN, filePtr );
+
+        fileLen = strlen(filePtr);
+
+        if(fileLen > MAX_EMOTICON_NAME_LEN + 8) {
+            Com_Printf(S_COLOR_YELLOW
+                       "WARNING: MAX_EMOTICON_NAME_LEN is %d. skipping \"%s\", filename too long",
+                       MAX_EMOTICON_NAME_LEN, filePtr);
             continue;
         }
-        
-        if( fileLen < 9 )
-        {
-            Com_Printf( S_COLOR_YELLOW "WARNING: skipping \"%s\", filename too short", filePtr );
+
+        if(fileLen < 9) {
+            Com_Printf(S_COLOR_YELLOW "WARNING: skipping \"%s\", filename too short",
+                       filePtr);
             continue;
         }
-        
-        if( !trap_FS_FOpenFile( va( "emoticons/%s", filePtr ), nullptr, FS_READ ) )
-        {
-            Com_Printf( S_COLOR_YELLOW "WARNING: BG_LoadEmoticons(): detected an unreadable .tga file name \"emoticons/%s\" in emoticon detection", filePtr );
+
+        if(!trap_FS_FOpenFile(va("emoticons/%s", filePtr), nullptr, FS_READ)) {
+            Com_Printf(S_COLOR_YELLOW
+                       "WARNING: BG_LoadEmoticons(): detected an unreadable .tga file name \"emoticons/%s\" in emoticon detection",
+                       filePtr);
             break;
         }
-        
-        Q_strncpyz( emoticon, filePtr, sizeof( emoticon ) );
-        
-        if( emoticon[ fileLen - 8 ] != '_' )
-        {
-            Com_Printf( S_COLOR_YELLOW "WARNING: skipping \"%s\", filename invalid",
-                        filePtr );
+
+        Q_strncpyz(emoticon, filePtr, sizeof(emoticon));
+
+        if(emoticon[ fileLen - 8 ] != '_') {
+            Com_Printf(S_COLOR_YELLOW "WARNING: skipping \"%s\", filename invalid",
+                       filePtr);
             continue;
         }
-        
+
         width = emoticon[ fileLen - 7 ] - '0';
-        
-        if( width < 1 || width > 9 )
-        {
-            Com_Printf( S_COLOR_YELLOW "WARNING: skipping \"%s\", invalid width", filePtr );
+
+        if(width < 1 || width > 9) {
+            Com_Printf(S_COLOR_YELLOW "WARNING: skipping \"%s\", invalid width",
+                       filePtr);
             continue;
         }
-        
+
         emoticon[ fileLen - 8 ] = '\0';
-        
-        Q_strncpyz( names[ count ], emoticon, sizeof( names[ count ] ) );
-        
-        if( widths )
-        {
+
+        Q_strncpyz(names[ count ], emoticon, sizeof(names[ count ]));
+
+        if(widths) {
             widths[count] = width;
         }
+
         count++;
         loaded = count;
     }
-    
-    Com_Printf( "Loaded %d of %d emoticons (MAX_EMOTICONS is %d)\n", loaded, count, MAX_EMOTICONS );
+
+    Com_Printf("Loaded %d of %d emoticons (MAX_EMOTICONS is %d)\n", loaded,
+               count, MAX_EMOTICONS);
     return loaded;
 }
 
@@ -4253,22 +4003,19 @@ sint idBothGamesLocal::LoadEmoticons( valueType names[ ][ MAX_EMOTICON_NAME_LEN 
 idBothGamesLocal::TeamName
 ============
 */
-valueType* idBothGamesLocal::TeamName( team_t team )
-{
-    if( team == TEAM_NONE )
-    {
+valueType *idBothGamesLocal::TeamName(team_t team) {
+    if(team == TEAM_NONE) {
         return "spectator";
     }
-    
-    if( team == TEAM_ALIENS )
-    {
+
+    if(team == TEAM_ALIENS) {
         return "alien";
     }
-    
-    if( team == TEAM_HUMANS )
-    {
+
+    if(team == TEAM_HUMANS) {
         return "human";
     }
+
     return "<team>";
 }
 

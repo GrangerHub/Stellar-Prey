@@ -31,37 +31,36 @@
 
 class idSGameLocal;
 
-class idSGameActive: public idSGameLocal
-{
+class idSGameActive: public idSGameLocal {
 public:
     idSGameActive();
     ~idSGameActive();
-    
-    static void UnlaggedStore( void );
-    static void UnlaggedClear( gentity_t* ent );
-    static void UnlaggedCalc( sint time, gentity_t* skipEnt );
-    static void UnlaggedOn( gentity_t* attacker, vec3_t muzzle, float32 range );
-    static void UnlaggedOff( void );
-    static void ClientEndFrame( gentity_t* ent );
-    static void DamageFeedback( gentity_t* player );
-    static void WorldEffects( gentity_t* ent );
-    static void SendPendingPredictableEvents( playerState_t* ps );
-    static void SpectatorClientEndFrame( gentity_t* ent );
-    static void TouchTriggers( gentity_t* ent );
-    static void RunClient( gentity_t* ent );
-    static void SetClientSound( gentity_t* ent );
-    static void ClientThink_real( gentity_t* ent );
-    static sint GetClientMass( gentity_t* ent );
-    static void ClientShove( gentity_t* ent, gentity_t* victim );
-    static void ClientImpacts( gentity_t* ent, pmove_t* pm );
-    static void SpectatorThink( gentity_t* ent, usercmd_t* ucmd );
-    static bool ClientInactivityTimer( gclient_t* client );
-    static void ClientTimerActions( gentity_t* ent, sint msec );
-    static void ClientIntermissionThink( gclient_t* client );
-    static void ClientEvents( gentity_t* ent, sint oldEventSequence );
-    static void UnlaggedDetectCollisions( gentity_t* ent );
-    static void CheckZap( gentity_t* ent );
-    static void OtherTouchTriggers( gentity_t* ent );
+
+    static void UnlaggedStore(void);
+    static void UnlaggedClear(gentity_t *ent);
+    static void UnlaggedCalc(sint time, gentity_t *skipEnt);
+    static void UnlaggedOn(gentity_t *attacker, vec3_t muzzle, float32 range);
+    static void UnlaggedOff(void);
+    static void ClientEndFrame(gentity_t *ent);
+    static void DamageFeedback(gentity_t *player);
+    static void WorldEffects(gentity_t *ent);
+    static void SendPendingPredictableEvents(playerState_t *ps);
+    static void SpectatorClientEndFrame(gentity_t *ent);
+    static void TouchTriggers(gentity_t *ent);
+    static void RunClient(gentity_t *ent);
+    static void SetClientSound(gentity_t *ent);
+    static void ClientThink_real(gentity_t *ent);
+    static sint GetClientMass(gentity_t *ent);
+    static void ClientShove(gentity_t *ent, gentity_t *victim);
+    static void ClientImpacts(gentity_t *ent, pmove_t *pm);
+    static void SpectatorThink(gentity_t *ent, usercmd_t *ucmd);
+    static bool ClientInactivityTimer(gclient_t *client);
+    static void ClientTimerActions(gentity_t *ent, sint msec);
+    static void ClientIntermissionThink(gclient_t *client);
+    static void ClientEvents(gentity_t *ent, sint oldEventSequence);
+    static void UnlaggedDetectCollisions(gentity_t *ent);
+    static void CheckZap(gentity_t *ent);
+    static void OtherTouchTriggers(gentity_t *ent);
 };
 
 #endif // !__SGAME_ACTIVE_H__

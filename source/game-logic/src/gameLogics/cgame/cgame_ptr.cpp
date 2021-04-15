@@ -36,8 +36,7 @@
 idCGamePtr::idCGamePtr
 ===============
 */
-idCGamePtr::idCGamePtr( void )
-{
+idCGamePtr::idCGamePtr(void) {
 }
 
 /*
@@ -45,8 +44,7 @@ idCGamePtr::idCGamePtr( void )
 idCGamePredict::~idCGamePredict
 ===============
 */
-idCGamePtr::~idCGamePtr( void )
-{
+idCGamePtr::~idCGamePtr(void) {
 }
 
 /*
@@ -56,31 +54,29 @@ CG_ReadPTRCode
 Read a PTR code from disk
 ===============
 */
-sint idCGamePtr::ReadPTRCode( void )
-{
+sint idCGamePtr::ReadPTRCode(void) {
     sint len;
     valueType text[ 16 ];
     fileHandle_t f;
-    
+
     // load the file
-    len = trap_FS_FOpenFile( PTRC_FILE, &f, FS_READ );
-    if( len < 0 )
-    {
+    len = trap_FS_FOpenFile(PTRC_FILE, &f, FS_READ);
+
+    if(len < 0) {
         return 0;
     }
-    
+
     // should never happen - malformed write
-    if( len == 0 || len >= sizeof( text ) - 1 )
-    {
-        trap_FS_FCloseFile( f );
+    if(len == 0 || len >= sizeof(text) - 1) {
+        trap_FS_FCloseFile(f);
         return 0;
     }
-    
-    trap_FS_Read( text, len, f );
+
+    trap_FS_Read(text, len, f);
     text[ len ] = 0;
-    trap_FS_FCloseFile( f );
-    
-    return atoi( text );
+    trap_FS_FCloseFile(f);
+
+    return atoi(text);
 }
 
 /*
@@ -90,21 +86,19 @@ idCGamePtr::WritePTRCode
 Write a PTR code to disk
 ===============
 */
-void idCGamePtr::WritePTRCode( sint code )
-{
+void idCGamePtr::WritePTRCode(sint code) {
     valueType text[ 16 ];
     fileHandle_t  f;
-    
-    Q_vsprintf_s( text, 16, 16, "%d", code );
-    
+
+    Q_vsprintf_s(text, 16, 16, "%d", code);
+
     // open file
-    if( trap_FS_FOpenFile( PTRC_FILE, &f, FS_WRITE ) < 0 )
-    {
+    if(trap_FS_FOpenFile(PTRC_FILE, &f, FS_WRITE) < 0) {
         return;
     }
-    
+
     // write the code
-    trap_FS_Write( text, strlen( text ), f );
-    
-    trap_FS_FCloseFile( f );
+    trap_FS_Write(text, strlen(text), f);
+
+    trap_FS_FCloseFile(f);
 }

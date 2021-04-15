@@ -31,50 +31,56 @@
 
 class idCGameLocal;
 
-class idCGameMain : public idCGameLocal
-{
+class idCGameMain : public idCGameLocal {
 public:
     idCGameMain();
     ~idCGameMain();
-    
-    static void RegisterCvars( void );
-    static void SetUIVars( void );
-    static void SetPVars( void );
-    static void UpdateCvars( void );
-    static void RemoveNotifyLine( void );
-    static void AddNotifyText( void );
-    static pointer Argv( sint arg );
-    static bool FileExists( valueType* filename );
-    static void RegisterSounds( void );
-    static void RegisterGraphics( void );
-    static void BuildSpectatorString( void );
-    static void RegisterClients( void );
-    static pointer ConfigString( sint index );
-    static void StartMusic( void );
-    static sint PlayerCount( void );
-    static valueType* GetMenuBuffer( pointer filename );
-    static bool Asset_Parse( sint handle );
-    static void ParseMenu( pointer menuFile );
-    static bool Load_Menu( valueType** p );
-    static void LoadMenus( pointer menuFile );
-    static bool OwnerDrawHandleKey( sint ownerDraw, sint flags, float32* special, sint key );
-    static sint FeederCount( float32 feederID );
-    static void SetScoreSelection( void* p );
-    static clientInfo_t* InfoFromScoreIndex( sint index, sint team, sint* scoreIndex );
-    static bool ClientIsReady( sint clientNum );
-    static pointer FeederItemText( float32 feederID, sint index, sint column, qhandle_t* handle );
-    static qhandle_t FeederItemImage( float32 feederID, sint index );
-    static void FeederSelection( float32 feederID, sint index );
-    static float32 Cvar_Get( pointer cvar );
-    static void Text_PaintWithCursor( float32 x, float32 y, float32 scale, vec4_t color, pointer text, sint cursorPos, valueType cursor, sint limit, sint style );
-    static sint OwnerDrawWidth( sint ownerDraw, float32 scale );
-    static sint PlayCinematic( pointer name, float32 x, float32 y, float32 w, float32 h );
-    static void StopCinematic( sint handle );
-    static void DrawCinematic( sint handle, float32 x, float32 y, float32 w, float32 h );
-    static void RunCinematicFrame( sint handle );
-    static bool OwnerDrawVisible( sint parameter );
-    static void LoadHudMenu( void );
-    static void AssetCache( void );
+
+    static void RegisterCvars(void);
+    static void SetUIVars(void);
+    static void SetPVars(void);
+    static void UpdateCvars(void);
+    static void RemoveNotifyLine(void);
+    static void AddNotifyText(void);
+    static pointer Argv(sint arg);
+    static bool FileExists(valueType *filename);
+    static void RegisterSounds(void);
+    static void RegisterGraphics(void);
+    static void BuildSpectatorString(void);
+    static void RegisterClients(void);
+    static pointer ConfigString(sint index);
+    static void StartMusic(void);
+    static sint PlayerCount(void);
+    static valueType *GetMenuBuffer(pointer filename);
+    static bool Asset_Parse(sint handle);
+    static void ParseMenu(pointer menuFile);
+    static bool Load_Menu(valueType **p);
+    static void LoadMenus(pointer menuFile);
+    static bool OwnerDrawHandleKey(sint ownerDraw, sint flags,
+                                   float32 *special, sint key);
+    static sint FeederCount(float32 feederID);
+    static void SetScoreSelection(void *p);
+    static clientInfo_t *InfoFromScoreIndex(sint index, sint team,
+                                            sint *scoreIndex);
+    static bool ClientIsReady(sint clientNum);
+    static pointer FeederItemText(float32 feederID, sint index, sint column,
+                                  qhandle_t *handle);
+    static qhandle_t FeederItemImage(float32 feederID, sint index);
+    static void FeederSelection(float32 feederID, sint index);
+    static float32 Cvar_Get(pointer cvar);
+    static void Text_PaintWithCursor(float32 x, float32 y, float32 scale,
+                                     vec4_t color, pointer text, sint cursorPos, valueType cursor, sint limit,
+                                     sint style);
+    static sint OwnerDrawWidth(sint ownerDraw, float32 scale);
+    static sint PlayCinematic(pointer name, float32 x, float32 y, float32 w,
+                              float32 h);
+    static void StopCinematic(sint handle);
+    static void DrawCinematic(sint handle, float32 x, float32 y, float32 w,
+                              float32 h);
+    static void RunCinematicFrame(sint handle);
+    static bool OwnerDrawVisible(sint parameter);
+    static void LoadHudMenu(void);
+    static void AssetCache(void);
 };
 
 #endif //!__CGAME_MAIN_H__

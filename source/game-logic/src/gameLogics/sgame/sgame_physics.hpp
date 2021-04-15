@@ -29,9 +29,8 @@
 #ifndef __SGAME_PHYSICS_H__
 #define __SGAME_PHYSICS_H__
 
-typedef struct
-{
-    gentity_t* ent;
+typedef struct {
+    gentity_t *ent;
     vec3_t origin;
     vec3_t angles;
     float32 deltayaw;
@@ -41,14 +40,13 @@ static pushed_t pushed[MAX_GENTITIES], *pushed_p;
 
 class idSGameLocal;
 
-class idSGamePhysics : public idSGameLocal
-{
+class idSGamePhysics : public idSGameLocal {
 public:
     idSGamePhysics();
     ~idSGamePhysics();
-    
-    static void Bounce( gentity_t* ent, trace_t* trace );
-    static void Physics( gentity_t* ent, sint msec );
+
+    static void Bounce(gentity_t *ent, trace_t *trace);
+    static void Physics(gentity_t *ent, sint msec);
 };
 
 #endif // !__SGAME_PHYSICS_H__

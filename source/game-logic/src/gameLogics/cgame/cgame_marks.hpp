@@ -31,18 +31,20 @@
 
 class idCGameLocal;
 
-class idCGameMarks : public idCGameLocal
-{
+class idCGameMarks : public idCGameLocal {
 public:
     idCGameMarks();
     ~idCGameMarks();
-    
-    static void InitMarkPolys( void );
-    static void FreeMarkPoly( markPoly_t* le );
-    static markPoly_t* AllocMark( void );
-    static void ImpactMark( qhandle_t markShader, const vec3_t origin, const vec3_t dir, float32 orientation, float32 red, float32 green, float32 blue, float32 alpha, bool alphaFade, float32 radius, bool temporary );
-    static void AddMarks( void );
-    
+
+    static void InitMarkPolys(void);
+    static void FreeMarkPoly(markPoly_t *le);
+    static markPoly_t *AllocMark(void);
+    static void ImpactMark(qhandle_t markShader, const vec3_t origin,
+                           const vec3_t dir, float32 orientation, float32 red, float32 green,
+                           float32 blue, float32 alpha, bool alphaFade, float32 radius,
+                           bool temporary);
+    static void AddMarks(void);
+
 };
 
 #endif //!__CGAME_MARKS_H__

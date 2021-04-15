@@ -33,29 +33,30 @@ static mapRotations_t mapRotations;
 
 class idSGameLocal;
 
-class idSGameMaprotation : public idSGameLocal
-{
+class idSGameMaprotation : public idSGameLocal {
 public:
     idSGameMaprotation();
     ~idSGameMaprotation();
-    
-    static sint* GetCurrentMapArray( void );
-    static void SetCurrentMap( sint currentMap, sint rotation );
-    static sint GetCurrentMap( sint rotation );
-    static void IssueMapChange( sint rotation );
-    static void AdvanceMapRotation( void );
-    static bool StartMapRotation( valueType* name, bool changeMap );
-    static void StopMapRotation( void );
-    static bool MapRotationActive( void );
-    static mapConditionType_t ResolveConditionDestination( sint* n, valueType* name );
-    static bool EvaluateMapCondition( mapRotationCondition_t* mrc );
-    static void InitMapRotations( void );
-    static bool MapExists( valueType* name );
-    static bool RotationExists( valueType* name );
-    static bool ParseMapCommandSection( mapRotationEntry_t* mre, valueType** text_p );
-    static bool ParseMapRotation( mapRotation_t* mr, valueType** text_p );
-    static bool ParseMapRotationFile( pointer fileName );
-    static void PrintRotations( void );
+
+    static sint *GetCurrentMapArray(void);
+    static void SetCurrentMap(sint currentMap, sint rotation);
+    static sint GetCurrentMap(sint rotation);
+    static void IssueMapChange(sint rotation);
+    static void AdvanceMapRotation(void);
+    static bool StartMapRotation(valueType *name, bool changeMap);
+    static void StopMapRotation(void);
+    static bool MapRotationActive(void);
+    static mapConditionType_t ResolveConditionDestination(sint *n,
+            valueType *name);
+    static bool EvaluateMapCondition(mapRotationCondition_t *mrc);
+    static void InitMapRotations(void);
+    static bool MapExists(valueType *name);
+    static bool RotationExists(valueType *name);
+    static bool ParseMapCommandSection(mapRotationEntry_t *mre,
+                                       valueType **text_p);
+    static bool ParseMapRotation(mapRotation_t *mr, valueType **text_p);
+    static bool ParseMapRotationFile(pointer fileName);
+    static void PrintRotations(void);
 };
 
 #endif // !__SGAME_MAPROTATION_H__

@@ -31,27 +31,27 @@
 
 class idSGameLocal;
 
-class idSGameSpawn : public idSGameLocal
-{
+class idSGameSpawn : public idSGameLocal {
 public:
     idSGameSpawn();
     ~idSGameSpawn();
-    
-    static bool SpawnString( pointer key, pointer defaultString, valueType** out );
-    static bool SpawnFloat( pointer key, pointer defaultString, float32* out );
-    static bool SpawnInt( pointer key, pointer defaultString, sint* out );
-    static bool SpawnVector( pointer key, pointer defaultString, float32* out );
-    static bool SpawnVector4( pointer key, pointer defaultString, float32* out );
-    static void SP_worldspawn( void );
-    static void SpawnEntitiesFromString( void );
-    static valueType* NewString( pointer string );
-    static bool CallSpawn( gentity_t* ent );
-    static void ParseField( pointer key, pointer value, gentity_t* ent );
-    static void SpawnGEntityFromSpawnVars( void );
-    static valueType* AddSpawnVarToken( pointer string );
-    static bool ParseSpawnVars( void );
-    static bool ParseSpawnVarsFromFile( char** data );
-    static bool SpawnEntitiesFromFile( const char* filename, bool num );
+
+    static bool SpawnString(pointer key, pointer defaultString,
+                            valueType **out);
+    static bool SpawnFloat(pointer key, pointer defaultString, float32 *out);
+    static bool SpawnInt(pointer key, pointer defaultString, sint *out);
+    static bool SpawnVector(pointer key, pointer defaultString, float32 *out);
+    static bool SpawnVector4(pointer key, pointer defaultString, float32 *out);
+    static void SP_worldspawn(void);
+    static void SpawnEntitiesFromString(void);
+    static valueType *NewString(pointer string);
+    static bool CallSpawn(gentity_t *ent);
+    static void ParseField(pointer key, pointer value, gentity_t *ent);
+    static void SpawnGEntityFromSpawnVars(void);
+    static valueType *AddSpawnVarToken(pointer string);
+    static bool ParseSpawnVars(void);
+    static bool ParseSpawnVarsFromFile(char **data);
+    static bool SpawnEntitiesFromFile(const char *filename, bool num);
 };
 
 #endif // !__SGAME_SPAWN_H__

@@ -36,8 +36,7 @@
 idSGameSvcmds::idSGameSvcmds
 ===============
 */
-idSGameSvcmds::idSGameSvcmds( void )
-{
+idSGameSvcmds::idSGameSvcmds(void) {
 }
 
 /*
@@ -45,8 +44,7 @@ idSGameSvcmds::idSGameSvcmds( void )
 idSGameSvcmds::~idSGameSvcmds
 ===============
 */
-idSGameSvcmds::~idSGameSvcmds( void )
-{
+idSGameSvcmds::~idSGameSvcmds(void) {
 }
 
 /*
@@ -54,148 +52,157 @@ idSGameSvcmds::~idSGameSvcmds( void )
 idSGameSvcmds::EntityList_f
 ===================
 */
-void idSGameSvcmds::EntityList_f( void )
-{
+void idSGameSvcmds::EntityList_f(void) {
     sint       e;
-    gentity_t* check;
-    
+    gentity_t *check;
+
     check = g_entities;
-    
-    for( e = 0; e < level.num_entities; e++, check++ )
-    {
-        if( !check->inuse )
+
+    for(e = 0; e < level.num_entities; e++, check++) {
+        if(!check->inuse) {
             continue;
-            
-        idSGameMain::Printf( "%3i:", e );
-        
-        switch( check->s.eType )
-        {
+        }
+
+        idSGameMain::Printf("%3i:", e);
+
+        switch(check->s.eType) {
             case ET_GENERAL:
-                idSGameMain::Printf( "ET_GENERAL          " );
+                idSGameMain::Printf("ET_GENERAL          ");
                 break;
+
             case ET_PLAYER:
-                idSGameMain::Printf( "ET_PLAYER           " );
+                idSGameMain::Printf("ET_PLAYER           ");
                 break;
+
             case ET_ITEM:
-                idSGameMain::Printf( "ET_ITEM             " );
+                idSGameMain::Printf("ET_ITEM             ");
                 break;
+
             case ET_BUILDABLE:
-                idSGameMain::Printf( "ET_BUILDABLE        " );
+                idSGameMain::Printf("ET_BUILDABLE        ");
                 break;
+
             case ET_MISSILE:
-                idSGameMain::Printf( "ET_MISSILE          " );
+                idSGameMain::Printf("ET_MISSILE          ");
                 break;
+
             case ET_MOVER:
-                idSGameMain::Printf( "ET_MOVER            " );
+                idSGameMain::Printf("ET_MOVER            ");
                 break;
+
             case ET_BEAM:
-                idSGameMain::Printf( "ET_BEAM             " );
+                idSGameMain::Printf("ET_BEAM             ");
                 break;
+
             case ET_PORTAL:
-                idSGameMain::Printf( "ET_PORTAL           " );
+                idSGameMain::Printf("ET_PORTAL           ");
                 break;
+
             case ET_SPEAKER:
-                idSGameMain::Printf( "ET_SPEAKER          " );
+                idSGameMain::Printf("ET_SPEAKER          ");
                 break;
+
             case ET_PUSH_TRIGGER:
-                idSGameMain::Printf( "ET_PUSH_TRIGGER     " );
+                idSGameMain::Printf("ET_PUSH_TRIGGER     ");
                 break;
+
             case ET_TELEPORT_TRIGGER:
-                idSGameMain::Printf( "ET_TELEPORT_TRIGGER " );
+                idSGameMain::Printf("ET_TELEPORT_TRIGGER ");
                 break;
+
             case ET_INVISIBLE:
-                idSGameMain::Printf( "ET_INVISIBLE        " );
+                idSGameMain::Printf("ET_INVISIBLE        ");
                 break;
+
             case ET_GRAPPLE:
-                idSGameMain::Printf( "ET_GRAPPLE          " );
+                idSGameMain::Printf("ET_GRAPPLE          ");
                 break;
+
             case ET_CORPSE:
-                idSGameMain::Printf( "ET_CORPSE           " );
+                idSGameMain::Printf("ET_CORPSE           ");
                 break;
+
             case ET_PARTICLE_SYSTEM:
-                idSGameMain::Printf( "ET_PARTICLE_SYSTEM  " );
+                idSGameMain::Printf("ET_PARTICLE_SYSTEM  ");
                 break;
+
             case ET_ANIMMAPOBJ:
-                idSGameMain::Printf( "ET_ANIMMAPOBJ       " );
+                idSGameMain::Printf("ET_ANIMMAPOBJ       ");
                 break;
+
             case ET_MODELDOOR:
-                idSGameMain::Printf( "ET_MODELDOOR        " );
+                idSGameMain::Printf("ET_MODELDOOR        ");
                 break;
+
             case ET_LIGHTFLARE:
-                idSGameMain::Printf( "ET_LIGHTFLARE       " );
+                idSGameMain::Printf("ET_LIGHTFLARE       ");
                 break;
+
             case ET_LEV2_ZAP_CHAIN:
-                idSGameMain::Printf( "ET_LEV2_ZAP_CHAIN   " );
+                idSGameMain::Printf("ET_LEV2_ZAP_CHAIN   ");
                 break;
+
             default:
-                idSGameMain::Printf( "%-3i                 ", check->s.eType );
+                idSGameMain::Printf("%-3i                 ", check->s.eType);
                 break;
         }
-        
-        if( check->classname )
-            idSGameMain::Printf( "%s", check->classname );
-            
-        idSGameMain::Printf( "\n" );
+
+        if(check->classname) {
+            idSGameMain::Printf("%s", check->classname);
+        }
+
+        idSGameMain::Printf("\n");
     }
 }
 
-gclient_t* idSGameSvcmds::ClientForString( valueType* s )
-{
+gclient_t *idSGameSvcmds::ClientForString(valueType *s) {
     sint idnum, count;
     sint pids[ MAX_CLIENTS ];
-    
-    if( ( count = idSGameCmds::ClientNumbersFromString( s, pids, MAX_CLIENTS ) ) != 1 )
-    {
-        idnum = idSGameCmds::ClientNumberFromString( s );
-        
-        if( idnum == -1 )
-        {
+
+    if((count = idSGameCmds::ClientNumbersFromString(s, pids,
+                MAX_CLIENTS)) != 1) {
+        idnum = idSGameCmds::ClientNumberFromString(s);
+
+        if(idnum == -1) {
             valueType err[ MAX_STRING_CHARS ];
-            idSGameCmds::MatchOnePlayer( pids, count, err, sizeof( err ) );
-            idSGameMain::Printf( "%s\n", err );
+            idSGameCmds::MatchOnePlayer(pids, count, err, sizeof(err));
+            idSGameMain::Printf("%s\n", err);
             return nullptr;
         }
-    }
-    else
-    {
+    } else {
         idnum = pids[0];
     }
-    
+
     return &level.clients[ idnum ];
 }
 
-void idSGameSvcmds::Svcmd_Status_f( void )
-{
+void idSGameSvcmds::Svcmd_Status_f(void) {
     sint i;
-    gclient_t* cl;
+    gclient_t *cl;
     valueType userinfo[ MAX_INFO_STRING ];
-    
-    idSGameMain::Printf( "slot score ping address               rate     name\n" );
-    idSGameMain::Printf( "---- ----- ---- -------               ----     ----\n" );
-    
-    for( i = 0, cl = level.clients; i < level.maxclients; i++, cl++ )
-    {
-        if( cl->pers.connected == CON_DISCONNECTED )
-        {
+
+    idSGameMain::Printf("slot score ping address               rate     name\n");
+    idSGameMain::Printf("---- ----- ---- -------               ----     ----\n");
+
+    for(i = 0, cl = level.clients; i < level.maxclients; i++, cl++) {
+        if(cl->pers.connected == CON_DISCONNECTED) {
             continue;
         }
-        
-        idSGameMain::Printf( "%-4d ", i );
-        idSGameMain::Printf( "%-5d ", cl->ps.persistant[ PERS_SCORE ] );
-        
-        if( cl->pers.connected == CON_CONNECTING )
-        {
-            idSGameMain::Printf( "CNCT " );
+
+        idSGameMain::Printf("%-4d ", i);
+        idSGameMain::Printf("%-5d ", cl->ps.persistant[ PERS_SCORE ]);
+
+        if(cl->pers.connected == CON_CONNECTING) {
+            idSGameMain::Printf("CNCT ");
+        } else {
+            idSGameMain::Printf("%-4d ", cl->ps.ping);
         }
-        else
-        {
-            idSGameMain::Printf( "%-4d ", cl->ps.ping );
-        }
-        
-        trap_GetUserinfo( i, userinfo, sizeof( userinfo ) );
-        idSGameMain::Printf( "%-21s ", Info_ValueForKey( userinfo, "ip" ) );
-        idSGameMain::Printf( "%-8d ", Info_ValueForKey( userinfo, "rate" ) );
-        idSGameMain::Printf( "%s\n", cl->pers.netname ); // Info_ValueForKey( userinfo, "name" )
+
+        trap_GetUserinfo(i, userinfo, sizeof(userinfo));
+        idSGameMain::Printf("%-21s ", Info_ValueForKey(userinfo, "ip"));
+        idSGameMain::Printf("%-8d ", Info_ValueForKey(userinfo, "rate"));
+        idSGameMain::Printf("%s\n",
+                            cl->pers.netname);   // Info_ValueForKey( userinfo, "name" )
     }
 }
 
@@ -206,32 +213,32 @@ Svcmd_ForceTeam_f
 forceteam <player> <team>
 ===================
 */
-void idSGameSvcmds::Svcmd_ForceTeam_f( void )
-{
-    gclient_t* cl;
+void idSGameSvcmds::Svcmd_ForceTeam_f(void) {
+    gclient_t *cl;
     valueType str[ MAX_TOKEN_CHARS ];
     team_t team;
-    
-    if( trap_Argc( ) != 3 )
-    {
-        idSGameMain::Printf( "usage: forceteam <player> <team>\n" );
+
+    if(trap_Argc() != 3) {
+        idSGameMain::Printf("usage: forceteam <player> <team>\n");
         return;
     }
-    
-    trap_Argv( 1, str, sizeof( str ) );
-    cl = ClientForString( str );
-    
-    if( !cl )
-        return;
-        
-    trap_Argv( 2, str, sizeof( str ) );
-    team = idSGameTeam::TeamFromString( str );
-    if( team == NUM_TEAMS )
-    {
-        idSGameMain::Printf( "forceteam: invalid team \"%s\"\n", str );
+
+    trap_Argv(1, str, sizeof(str));
+    cl = ClientForString(str);
+
+    if(!cl) {
         return;
     }
-    idSGameTeam::ChangeTeam( &g_entities[ cl - level.clients ], team );
+
+    trap_Argv(2, str, sizeof(str));
+    team = idSGameTeam::TeamFromString(str);
+
+    if(team == NUM_TEAMS) {
+        idSGameMain::Printf("forceteam: invalid team \"%s\"\n", str);
+        return;
+    }
+
+    idSGameTeam::ChangeTeam(&g_entities[ cl - level.clients ], team);
 }
 
 /*
@@ -241,39 +248,37 @@ Svcmd_LayoutSave_f
 layoutsave <name>
 ===================
 */
-void idSGameSvcmds::Svcmd_LayoutSave_f( void )
-{
+void idSGameSvcmds::Svcmd_LayoutSave_f(void) {
     valueType str[ MAX_QPATH ];
     valueType str2[ MAX_QPATH - 4 ];
-    valueType* s;
+    valueType *s;
     sint i = 0;
-    
-    if( trap_Argc( ) != 2 )
-    {
-        idSGameMain::Printf( "usage: layoutsave <name>\n" );
+
+    if(trap_Argc() != 2) {
+        idSGameMain::Printf("usage: layoutsave <name>\n");
         return;
     }
-    trap_Argv( 1, str, sizeof( str ) );
-    
+
+    trap_Argv(1, str, sizeof(str));
+
     // sanitize name
     s = &str[ 0 ];
-    while( *s && i < sizeof( str2 ) - 1 )
-    {
-        if( isalnum( *s ) || *s == '-' || *s == '_' )
-        {
+
+    while(*s && i < sizeof(str2) - 1) {
+        if(isalnum(*s) || *s == '-' || *s == '_') {
             str2[ i++ ] = *s;
             str2[ i ] = '\0';
         }
+
         s++;
     }
-    
-    if( !str2[ 0 ] )
-    {
-        idSGameMain::Printf( "layoutsave: invalid name \"%s\"\n", str );
+
+    if(!str2[ 0 ]) {
+        idSGameMain::Printf("layoutsave: invalid name \"%s\"\n", str);
         return;
     }
-    
-    idSGameBuildable::LayoutSave( str2 );
+
+    idSGameBuildable::LayoutSave(str2);
 }
 
 /*
@@ -287,253 +292,238 @@ This is just a silly alias for doing:
  map_restart
 ===================
 */
-void idSGameSvcmds::Svcmd_LayoutLoad_f( void )
-{
+void idSGameSvcmds::Svcmd_LayoutLoad_f(void) {
     valueType layouts[ MAX_CVAR_VALUE_STRING ];
-    valueType* s;
-    
-    if( trap_Argc( ) < 2 )
-    {
-        idSGameMain::Printf( "usage: layoutload <name> ...\n" );
+    valueType *s;
+
+    if(trap_Argc() < 2) {
+        idSGameMain::Printf("usage: layoutload <name> ...\n");
         return;
     }
-    
-    s = idSGameCmds::ConcatArgs( 1 );
-    Q_strncpyz( layouts, s, sizeof( layouts ) );
-    trap_Cvar_Set( "g_layouts", layouts );
-    trap_SendConsoleCommand( EXEC_APPEND, "map_restart\n" );
+
+    s = idSGameCmds::ConcatArgs(1);
+    Q_strncpyz(layouts, s, sizeof(layouts));
+    trap_Cvar_Set("g_layouts", layouts);
+    trap_SendConsoleCommand(EXEC_APPEND, "map_restart\n");
     level.restarted = true;
 }
 
-void idSGameSvcmds::Svcmd_AdmitDefeat_f( void )
-{
+void idSGameSvcmds::Svcmd_AdmitDefeat_f(void) {
     sint  team;
     valueType teamNum[ 2 ];
-    
-    if( trap_Argc( ) != 2 )
-    {
-        idSGameMain::Printf( "admitdefeat: must provide a team\n" );
+
+    if(trap_Argc() != 2) {
+        idSGameMain::Printf("admitdefeat: must provide a team\n");
         return;
     }
-    trap_Argv( 1, teamNum, sizeof( teamNum ) );
-    team = idSGameTeam::TeamFromString( teamNum );
-    if( team == TEAM_ALIENS )
-    {
-        idSGameUtils::TeamCommand( TEAM_ALIENS, "cp \"Hivemind Link Broken\" 1" );
-        trap_SendServerCommand( -1, "print \"Alien team has admitted defeat\n\"" );
-    }
-    else if( team == TEAM_HUMANS )
-    {
-        idSGameUtils::TeamCommand( TEAM_HUMANS, "cp \"Life Support Terminated\" 1" );
-        trap_SendServerCommand( -1, "print \"Human team has admitted defeat\n\"" );
-    }
-    else
-    {
-        idSGameMain::Printf( "admitdefeat: invalid team\n" );
+
+    trap_Argv(1, teamNum, sizeof(teamNum));
+    team = idSGameTeam::TeamFromString(teamNum);
+
+    if(team == TEAM_ALIENS) {
+        idSGameUtils::TeamCommand(TEAM_ALIENS, "cp \"Hivemind Link Broken\" 1");
+        trap_SendServerCommand(-1, "print \"Alien team has admitted defeat\n\"");
+    } else if(team == TEAM_HUMANS) {
+        idSGameUtils::TeamCommand(TEAM_HUMANS, "cp \"Life Support Terminated\" 1");
+        trap_SendServerCommand(-1, "print \"Human team has admitted defeat\n\"");
+    } else {
+        idSGameMain::Printf("admitdefeat: invalid team\n");
         return;
     }
-    level.surrenderTeam = ( team_t )team;
-    idSGameBuildable::BaseSelfDestruct( ( team_t )team );
+
+    level.surrenderTeam = (team_t)team;
+    idSGameBuildable::BaseSelfDestruct((team_t)team);
 }
 
-void idSGameSvcmds::Svcmd_TeamWin_f( void )
-{
+void idSGameSvcmds::Svcmd_TeamWin_f(void) {
     valueType cmd[ 6 ];
-    trap_Argv( 0, cmd, sizeof( cmd ) );
-    idSGameBuildable::BaseSelfDestruct( idSGameTeam::TeamFromString( cmd ) );
+    trap_Argv(0, cmd, sizeof(cmd));
+    idSGameBuildable::BaseSelfDestruct(idSGameTeam::TeamFromString(cmd));
 }
 
-void idSGameSvcmds::Svcmd_Evacuation_f( void )
-{
-    trap_SendServerCommand( -1, "print \"Evacuation ordered\n\"" );
+void idSGameSvcmds::Svcmd_Evacuation_f(void) {
+    trap_SendServerCommand(-1, "print \"Evacuation ordered\n\"");
     level.lastWin = TEAM_NONE;
-    trap_SetConfigstring( CS_WINNER, "Evacuation" );
-    idSGameMain::LogExit( "Evacuation." );
+    trap_SetConfigstring(CS_WINNER, "Evacuation");
+    idSGameMain::LogExit("Evacuation.");
 }
 
-void idSGameSvcmds::Svcmd_MapRotation_f( void )
-{
+void idSGameSvcmds::Svcmd_MapRotation_f(void) {
     valueType rotationName[ MAX_QPATH ];
-    
-    if( trap_Argc( ) != 2 )
-    {
-        idSGameMain::Printf( "usage: maprotation <name>\n" );
+
+    if(trap_Argc() != 2) {
+        idSGameMain::Printf("usage: maprotation <name>\n");
         return;
     }
-    
-    trap_Argv( 1, rotationName, sizeof( rotationName ) );
-    if( !idSGameMaprotation::StartMapRotation( rotationName, false ) )
-    {
-        idSGameMain::Printf( "maprotation: invalid map rotation \"%s\"\n", rotationName );
+
+    trap_Argv(1, rotationName, sizeof(rotationName));
+
+    if(!idSGameMaprotation::StartMapRotation(rotationName, false)) {
+        idSGameMain::Printf("maprotation: invalid map rotation \"%s\"\n",
+                            rotationName);
     }
 }
 
-void idSGameSvcmds::Svcmd_TeamMessage_f( void )
-{
+void idSGameSvcmds::Svcmd_TeamMessage_f(void) {
     valueType   teamNum[ 2 ];
     team_t team;
-    
-    if( trap_Argc( ) < 3 )
-    {
-        idSGameMain::Printf( "usage: say_team <team> <message>\n" );
+
+    if(trap_Argc() < 3) {
+        idSGameMain::Printf("usage: say_team <team> <message>\n");
         return;
     }
-    
-    trap_Argv( 1, teamNum, sizeof( teamNum ) );
-    team = idSGameTeam::TeamFromString( teamNum );
-    
-    if( team == NUM_TEAMS )
-    {
-        idSGameMain::Printf( "say_team: invalid team \"%s\"\n", teamNum );
+
+    trap_Argv(1, teamNum, sizeof(teamNum));
+    team = idSGameTeam::TeamFromString(teamNum);
+
+    if(team == NUM_TEAMS) {
+        idSGameMain::Printf("say_team: invalid team \"%s\"\n", teamNum);
         return;
     }
-    
-    idSGameUtils::TeamCommand( team, va( "tchat \"console: ^5%s\"", idSGameCmds::ConcatArgs( 2 ) ) );
+
+    idSGameUtils::TeamCommand(team, va("tchat \"console: ^5%s\"",
+                                       idSGameCmds::ConcatArgs(2)));
 }
 
-void idSGameSvcmds::Svcmd_SendMessage( void )
-{
+void idSGameSvcmds::Svcmd_SendMessage(void) {
     valueType cmd[ 5 ];
-    trap_Argv( 1, cmd, sizeof( cmd ) );
-    
-    if( trap_Argc( ) < 2 )
-    {
-        idSGameMain::Printf( "usage: %s <message>\n", cmd );
+    trap_Argv(1, cmd, sizeof(cmd));
+
+    if(trap_Argc() < 2) {
+        idSGameMain::Printf("usage: %s <message>\n", cmd);
         return;
     }
-    
-    trap_SendServerCommand( -1, va( "chat \"console: ^2%s\"", idSGameCmds::ConcatArgs( 1 ) ) );
+
+    trap_SendServerCommand(-1, va("chat \"console: ^2%s\"",
+                                  idSGameCmds::ConcatArgs(1)));
 }
 
-void idSGameSvcmds::Svcmd_CenterPrint_f( void )
-{
-    if( trap_Argc( ) < 2 )
-    {
-        idSGameMain::Printf( "usage: cp <message>\n" );
+void idSGameSvcmds::Svcmd_CenterPrint_f(void) {
+    if(trap_Argc() < 2) {
+        idSGameMain::Printf("usage: cp <message>\n");
         return;
     }
-    
-    trap_SendServerCommand( -1, va( "cp \"%s\"", idSGameCmds::ConcatArgs( 1 ) ) );
+
+    trap_SendServerCommand(-1, va("cp \"%s\"", idSGameCmds::ConcatArgs(1)));
 }
 
-void idSGameSvcmds::Svcmd_EjectClient_f( void )
-{
-    valueType* reason, name[ MAX_STRING_CHARS ];
-    
-    if( trap_Argc( ) < 2 )
-    {
-        idSGameMain::Printf( "usage: eject <player|-1> <reason>\n" );
+void idSGameSvcmds::Svcmd_EjectClient_f(void) {
+    valueType *reason, name[ MAX_STRING_CHARS ];
+
+    if(trap_Argc() < 2) {
+        idSGameMain::Printf("usage: eject <player|-1> <reason>\n");
         return;
     }
-    
-    trap_Argv( 1, name, sizeof( name ) );
-    reason = idSGameCmds::ConcatArgs( 2 );
-    
-    if( atoi( name ) == -1 )
-    {
+
+    trap_Argv(1, name, sizeof(name));
+    reason = idSGameCmds::ConcatArgs(2);
+
+    if(atoi(name) == -1) {
         sint i;
-        for( i = 0; i < level.maxclients; i++ )
-        {
-            if( level.clients[ i ].pers.connected == CON_DISCONNECTED )
+
+        for(i = 0; i < level.maxclients; i++) {
+            if(level.clients[ i ].pers.connected == CON_DISCONNECTED) {
                 continue;
-            if( level.clients[ i ].pers.localClient )
+            }
+
+            if(level.clients[ i ].pers.localClient) {
                 continue;
-            trap_DropClient( i, reason, 0 );
+            }
+
+            trap_DropClient(i, reason, 0);
         }
-    }
-    else
-    {
-        gclient_t* cl = ClientForString( name );
-        if( !cl )
-            return;
-            
-        if( cl->pers.localClient )
-        {
-            idSGameMain::Printf( "eject: cannot eject local clients\n" );
+    } else {
+        gclient_t *cl = ClientForString(name);
+
+        if(!cl) {
             return;
         }
-        trap_DropClient( cl - level.clients, reason, 0 );
+
+        if(cl->pers.localClient) {
+            idSGameMain::Printf("eject: cannot eject local clients\n");
+            return;
+        }
+
+        trap_DropClient(cl - level.clients, reason, 0);
     }
 }
 
-void idSGameSvcmds::Svcmd_DumpUser_f( void )
-{
+void idSGameSvcmds::Svcmd_DumpUser_f(void) {
     valueType name[ MAX_STRING_CHARS ], userinfo[ MAX_INFO_STRING ];
     valueType key[ BIG_INFO_KEY ], value[ BIG_INFO_VALUE ];
     pointer info;
-    gclient_t* cl;
-    
-    if( trap_Argc( ) != 2 )
-    {
-        idSGameMain::Printf( "usage: dumpuser <player>\n" );
+    gclient_t *cl;
+
+    if(trap_Argc() != 2) {
+        idSGameMain::Printf("usage: dumpuser <player>\n");
         return;
     }
-    
-    trap_Argv( 1, name, sizeof( name ) );
-    cl = ClientForString( name );
-    if( !cl )
+
+    trap_Argv(1, name, sizeof(name));
+    cl = ClientForString(name);
+
+    if(!cl) {
         return;
-        
-    trap_GetUserinfo( cl - level.clients, userinfo, sizeof( userinfo ) );
+    }
+
+    trap_GetUserinfo(cl - level.clients, userinfo, sizeof(userinfo));
     info = &userinfo[ 0 ];
-    idSGameMain::Printf( "userinfo\n--------\n" );
+    idSGameMain::Printf("userinfo\n--------\n");
+
     //Info_Print( userinfo );
-    while( 1 )
-    {
-        Info_NextPair( &info, key, value );
-        if( !*info )
+    while(1) {
+        Info_NextPair(&info, key, value);
+
+        if(!*info) {
             return;
-            
-        idSGameMain::Printf( "%-20s%s\n", key, value );
+        }
+
+        idSGameMain::Printf("%-20s%s\n", key, value);
     }
 }
 
-void idSGameSvcmds::Svcmd_PrintQueue_f( void )
-{
+void idSGameSvcmds::Svcmd_PrintQueue_f(void) {
     valueType team[ MAX_STRING_CHARS ];
-    if( trap_Argc() != 2 )
-    {
-        idSGameMain::Printf( "usage: printqueue <team>\n" );
+
+    if(trap_Argc() != 2) {
+        idSGameMain::Printf("usage: printqueue <team>\n");
         return;
     }
-    trap_Argv( 1, team, sizeof( team ) );
-    switch( team[0] )
-    {
+
+    trap_Argv(1, team, sizeof(team));
+
+    switch(team[0]) {
         case 'a':
-            idSGameMain::PrintSpawnQueue( &level.alienSpawnQueue );
+            idSGameMain::PrintSpawnQueue(&level.alienSpawnQueue);
             break;
+
         case 'h':
-            idSGameMain::PrintSpawnQueue( &level.humanSpawnQueue );
+            idSGameMain::PrintSpawnQueue(&level.humanSpawnQueue);
             break;
+
         default:
-            idSGameMain::Printf( "unknown team\n" );
+            idSGameMain::Printf("unknown team\n");
     }
 }
 
 // dumb wrapper for "a" and "m"
-void idSGameSvcmds::Svcmd_MessageWrapper( void )
-{
+void idSGameSvcmds::Svcmd_MessageWrapper(void) {
     valueType cmd[ 2 ];
-    
-    trap_Argv( 0, cmd, sizeof( cmd ) );
-    
-    if( !Q_stricmp( cmd, "a" ) )
-    {
-        idSGameCmds::AdminMessage_f( nullptr );
-    }
-    else
-    {
-        idSGameCmds::PrivateMessage_f( nullptr );
+
+    trap_Argv(0, cmd, sizeof(cmd));
+
+    if(!Q_stricmp(cmd, "a")) {
+        idSGameCmds::AdminMessage_f(nullptr);
+    } else {
+        idSGameCmds::PrivateMessage_f(nullptr);
     }
 }
 
-struct
-{
-    valueType*     cmd;
+struct {
+    valueType     *cmd;
     bool dedicated;
-    void ( *function )( void );
-} svcmds[ ] =
-{
+    void (*function)(void);
+} svcmds[ ] = {
     { "entityList", false, &idSGameSvcmds::EntityList_f },
     { "status", false, &idSGameSvcmds::Svcmd_Status_f },
     { "forceTeam", false, &idSGameSvcmds::Svcmd_ForceTeam_f },
@@ -549,7 +539,7 @@ struct
     { "admitDefeat", false, &idSGameSvcmds::Svcmd_AdmitDefeat_f },
     { "evacuation", false, &idSGameSvcmds::Svcmd_Evacuation_f },
     { "printqueue", false, &idSGameSvcmds::Svcmd_PrintQueue_f },
-    
+
     // don't handle communication commands unless dedicated
     { "say_team", true, &idSGameSvcmds::Svcmd_TeamMessage_f },
     { "say", true, &idSGameSvcmds::Svcmd_SendMessage },
@@ -564,38 +554,32 @@ struct
 idSGameLocal::ConsoleCommand
 =================
 */
-bool idSGameLocal::ConsoleCommand( void )
-{
+bool idSGameLocal::ConsoleCommand(void) {
     valueType cmd[ MAX_TOKEN_CHARS ];
     sint i;
-    
-    trap_Argv( 0, cmd, sizeof( cmd ) );
-    
-    for( i = 0; i < sizeof( svcmds ) / sizeof( svcmds[ 0 ] ); i++ )
-    {
-        if( !Q_stricmp( cmd, svcmds[ i ].cmd ) )
-        {
-            if( svcmds[i].dedicated && !g_dedicated.integer )
-            {
+
+    trap_Argv(0, cmd, sizeof(cmd));
+
+    for(i = 0; i < sizeof(svcmds) / sizeof(svcmds[ 0 ]); i++) {
+        if(!Q_stricmp(cmd, svcmds[ i ].cmd)) {
+            if(svcmds[i].dedicated && !g_dedicated.integer) {
                 return false;
             }
-            
-            svcmds[ i ].function( );
+
+            svcmds[ i ].function();
             return true;
         }
     }
-    
+
     // see if this is an admin command
-    if( adminLocal.AdminCmdCheck( nullptr, false ) )
-    {
+    if(adminLocal.AdminCmdCheck(nullptr, false)) {
         return true;
     }
-    
-    if( g_dedicated.integer )
-    {
-        idSGameMain::Printf( "unknown command: %s\n", cmd );
+
+    if(g_dedicated.integer) {
+        idSGameMain::Printf("unknown command: %s\n", cmd);
     }
-    
+
     return false;
 }
 

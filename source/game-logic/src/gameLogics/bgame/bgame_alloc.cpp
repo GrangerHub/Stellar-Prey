@@ -45,15 +45,14 @@
 #define FREEMEMCOOKIE ((sint)0xDEADBE3F)  // Any unlikely to be used value
 #define ROUNDBITS 31UL                   // Round to 32 bytes
 
-typedef struct freeMemNode_s
-{
+typedef struct freeMemNode_s {
     // Size of ROUNDBITS
     size_t cookie, size;        // Size includes node (obviously)
-    struct freeMemNode_s* prev, *next;
+    struct freeMemNode_s *prev, *next;
 } freeMemNode_t;
 
 static valueType memoryPool[POOLSIZE];
-static freeMemNode_t* freeHead;
+static freeMemNode_t *freeHead;
 static size_t freeMem;
 
 /*
@@ -61,86 +60,78 @@ static size_t freeMem;
 idBothGamesLocal::AddEvent
 ===============
 */
-void* idBothGamesLocal::Alloc( size_t size )
-{
+void *idBothGamesLocal::Alloc(size_t size) {
     // Find a free block and allocate.
     // Does two passes, attempts to fill same-sized free slot first.
-    
-    freeMemNode_t* fmn, * prev, * next, * smallest;
+
+    freeMemNode_t *fmn, * prev, * next, * smallest;
     size_t allocsize, smallestsize, si;
-    valueType* endptr;
-    sint* ptr;
-    
-    si = sizeof( int );
-    
-    allocsize = ( size + si + ROUNDBITS ) & ~ROUNDBITS;  // Round to 32-byte boundary
+    valueType *endptr;
+    sint *ptr;
+
+    si = sizeof(int);
+
+    allocsize = (size + si + ROUNDBITS) &
+                ~ROUNDBITS;    // Round to 32-byte boundary
     ptr = nullptr;
-    
+
     smallest = nullptr;
     smallestsize = POOLSIZE + 1;    // Guaranteed not to miss any slots :)
-    for( fmn = freeHead; fmn; fmn = fmn->next )
-    {
-        if( fmn->cookie != FREEMEMCOOKIE )
-        {
-            Com_Error( ERR_DROP, "idBothGamesLocal: Memory corruption detected!\n" );
+
+    for(fmn = freeHead; fmn; fmn = fmn->next) {
+        if(fmn->cookie != FREEMEMCOOKIE) {
+            Com_Error(ERR_DROP, "idBothGamesLocal: Memory corruption detected!\n");
         }
-        
-        if( fmn->size >= allocsize )
-        {
+
+        if(fmn->size >= allocsize) {
             // We've got a block
-            if( fmn->size == allocsize )
-            {
+            if(fmn->size == allocsize) {
                 // Same size, just remove
-                
+
                 prev = fmn->prev;
                 next = fmn->next;
-                if( prev )
-                {
+
+                if(prev) {
                     prev->next = next;      // Point previous node to next
                 }
-                
-                if( next )
-                {
+
+                if(next) {
                     next->prev = prev;      // Point next node to previous
                 }
-                
-                if( fmn == freeHead )
-                {
+
+                if(fmn == freeHead) {
                     freeHead = next;      // Set head pointer to next
                 }
-                ptr = ( sint* ) fmn;
+
+                ptr = (sint *) fmn;
                 break;              // Stop the loop, this is fine
-            }
-            else
-            {
+            } else {
                 // Keep track of the smallest free slot
-                if( fmn->size < smallestsize )
-                {
+                if(fmn->size < smallestsize) {
                     smallest = fmn;
                     smallestsize = fmn->size;
                 }
             }
         }
     }
-    
-    if( !ptr && smallest )
-    {
+
+    if(!ptr && smallest) {
         // We found a slot big enough
         smallest->size -= allocsize;
-        endptr = ( valueType* ) smallest + smallest->size;
-        ptr = ( sint* ) endptr;
+        endptr = (valueType *) smallest + smallest->size;
+        ptr = (sint *) endptr;
     }
-    
-    if( ptr )
-    {
+
+    if(ptr) {
         freeMem -= allocsize;
-        ::memset( ptr, 0, allocsize );
+        ::memset(ptr, 0, allocsize);
         *ptr++ = allocsize;        // Store a copy of size for deallocation
-        return( ( void* ) ptr );
+        return((void *) ptr);
     }
-    
-    Com_Error( ERR_DROP, "idBothGamesLocal: failed on allocation of %ld bytes\n", size );
-    return( nullptr );
+
+    Com_Error(ERR_DROP,
+              "idBothGamesLocal: failed on allocation of %ld bytes\n", size);
+    return(nullptr);
 }
 
 /*
@@ -148,32 +139,31 @@ void* idBothGamesLocal::Alloc( size_t size )
 idBothGamesLocal::Free
 ===============
 */
-void idBothGamesLocal::Free( void* ptr )
-{
+void idBothGamesLocal::Free(void *ptr) {
     // Release allocated memory, add it to the free list.
-    freeMemNode_t* fmn;
-    valueType* freeend;
-    sint* freeptr;
-    
-    freeptr = ( sint* )ptr;
+    freeMemNode_t *fmn;
+    valueType *freeend;
+    sint *freeptr;
+
+    freeptr = (sint *)ptr;
     freeptr--;
-    
+
     freeMem += *freeptr;
-    
-    for( fmn = freeHead; fmn; fmn = fmn->next )
-    {
-        freeend = ( ( valueType* ) fmn ) + fmn->size;
-        if( freeend == ( valueType* ) freeptr )
-        {
+
+    for(fmn = freeHead; fmn; fmn = fmn->next) {
+        freeend = ((valueType *) fmn) + fmn->size;
+
+        if(freeend == (valueType *) freeptr) {
             // Released block can be merged to an existing node
-            
+
             fmn->size += *freeptr;    // Add size of node.
             return;
         }
     }
+
     // No merging, add to head of list
-    
-    fmn = ( freeMemNode_t* ) freeptr;
+
+    fmn = (freeMemNode_t *) freeptr;
     fmn->size = *freeptr;        // Set this first to avoid corrupting *freeptr
     fmn->cookie = FREEMEMCOOKIE;
     fmn->prev = nullptr;
@@ -187,15 +177,14 @@ void idBothGamesLocal::Free( void* ptr )
 idBothGamesLocal::Free
 ===============
 */
-void idBothGamesLocal::InitMemory( void )
-{
+void idBothGamesLocal::InitMemory(void) {
     // Set up the initial node
-    freeHead = ( freeMemNode_t* )memoryPool;
+    freeHead = (freeMemNode_t *)memoryPool;
     freeHead->cookie = FREEMEMCOOKIE;
     freeHead->size = POOLSIZE;
     freeHead->next = nullptr;
     freeHead->prev = nullptr;
-    freeMem = sizeof( memoryPool );
+    freeMem = sizeof(memoryPool);
 }
 
 /*
@@ -203,49 +192,45 @@ void idBothGamesLocal::InitMemory( void )
 idBothGamesLocal::DefragmentMemory
 ===============
 */
-void idBothGamesLocal::DefragmentMemory( void )
-{
+void idBothGamesLocal::DefragmentMemory(void) {
     // If there's a frenzy of deallocation and we want to
     // allocate something big, this is useful. Otherwise...
     // not much use.
-    freeMemNode_t* startfmn, *endfmn, *fmn;
-    
-    for( startfmn = freeHead; startfmn; )
-    {
-        endfmn = ( freeMemNode_t* )( ( ( valueType* ) startfmn ) + startfmn->size );
-        for( fmn = freeHead; fmn; )
-        {
-            if( fmn->cookie != FREEMEMCOOKIE )
-            {
-                Com_Error( ERR_DROP, "idBothGamesLocal::DefragmentMemory: Memory corruption detected!\n" );
+    freeMemNode_t *startfmn, *endfmn, *fmn;
+
+    for(startfmn = freeHead; startfmn;) {
+        endfmn = (freeMemNode_t *)(((valueType *) startfmn) + startfmn->size);
+
+        for(fmn = freeHead; fmn;) {
+            if(fmn->cookie != FREEMEMCOOKIE) {
+                Com_Error(ERR_DROP,
+                          "idBothGamesLocal::DefragmentMemory: Memory corruption detected!\n");
             }
-            
-            if( fmn == endfmn )
-            {
+
+            if(fmn == endfmn) {
                 // We can add fmn onto startfmn.
-                if( fmn->prev )
-                {
+                if(fmn->prev) {
                     fmn->prev->next = fmn->next;
                 }
-                
-                if( fmn->next )
-                {
-                    if( !( fmn->next->prev = fmn->prev ) )
-                        freeHead = fmn->next;  // We're removing the head node
+
+                if(fmn->next) {
+                    if(!(fmn->next->prev = fmn->prev)) {
+                        freeHead = fmn->next;    // We're removing the head node
+                    }
                 }
+
                 startfmn->size += fmn->size;
-                ::memset( fmn, 0, sizeof( freeMemNode_t ) ); // A redundant call, really.
-                
+                ::memset(fmn, 0, sizeof(freeMemNode_t));     // A redundant call, really.
+
                 startfmn = freeHead;
                 endfmn = fmn = nullptr;        // Break out of current loop
-            }
-            else
-            {
+            } else {
                 fmn = fmn->next;
             }
         }
-        
-        if( endfmn )
+
+        if(endfmn) {
             startfmn = startfmn->next;    // endfmn acts as a 'restart' flag here
+        }
     }
 }

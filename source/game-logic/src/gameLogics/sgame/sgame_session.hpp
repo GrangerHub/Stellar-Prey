@@ -31,16 +31,15 @@
 
 class idSGameLocal;
 
-class idSGameSession : public idSGameLocal
-{
+class idSGameSession : public idSGameLocal {
 public:
     idSGameSession();
     ~idSGameSession();
-    
-    static void WriteClientSessionData( gclient_t* client );
-    static void WriteSessionData( void );
-    static void ReadSessionData( gclient_t* client );
-    static void InitSessionData( gclient_t* client, valueType* userinfo );
+
+    static void WriteClientSessionData(gclient_t *client);
+    static void WriteSessionData(void);
+    static void ReadSessionData(gclient_t *client);
+    static void InitSessionData(gclient_t *client, valueType *userinfo);
 };
 
 #endif // !__SGAME_SESSION_H__

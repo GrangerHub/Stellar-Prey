@@ -31,22 +31,28 @@
 
 class idCGameLocal;
 
-class idCGamePredict : public idCGameLocal
-{
+class idCGamePredict : public idCGameLocal {
 public:
     idCGamePredict();
     ~idCGamePredict();
-    
-    static void BuildSolidList( void );
-    static void ClipMoveToEntities( const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, sint skipNumber, sint mask, trace_t* tr, traceType_t collisionType );
-    static void Trace( trace_t* result, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, sint skipNumber, sint mask );
-    static void CapTrace( trace_t* result, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, sint skipNumber, sint mask );
-    static void BiSphereTrace( trace_t* result, const vec3_t start, const vec3_t end, const float32 startRadius, const float32 endRadius, sint skipNumber, sint mask );
-    static sint PointContents( const vec3_t point, sint passEntityNum );
-    static void InterpolatePlayerState( bool grabAngles );
-    static void TouchTriggerPrediction( void );
-    static sint IsUnacceptableError( playerState_t* ps, playerState_t* pps );
-    static void PredictPlayerState( void );
+
+    static void BuildSolidList(void);
+    static void ClipMoveToEntities(const vec3_t start, const vec3_t mins,
+                                   const vec3_t maxs, const vec3_t end, sint skipNumber, sint mask,
+                                   trace_t *tr, traceType_t collisionType);
+    static void Trace(trace_t *result, const vec3_t start, const vec3_t mins,
+                      const vec3_t maxs, const vec3_t end, sint skipNumber, sint mask);
+    static void CapTrace(trace_t *result, const vec3_t start,
+                         const vec3_t mins, const vec3_t maxs, const vec3_t end, sint skipNumber,
+                         sint mask);
+    static void BiSphereTrace(trace_t *result, const vec3_t start,
+                              const vec3_t end, const float32 startRadius, const float32 endRadius,
+                              sint skipNumber, sint mask);
+    static sint PointContents(const vec3_t point, sint passEntityNum);
+    static void InterpolatePlayerState(bool grabAngles);
+    static void TouchTriggerPrediction(void);
+    static sint IsUnacceptableError(playerState_t *ps, playerState_t *pps);
+    static void PredictPlayerState(void);
 };
 
 #endif //!__CGAME_PREDICT_H__

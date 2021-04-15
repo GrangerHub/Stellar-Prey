@@ -31,44 +31,49 @@
 
 class idCGameLocal;
 
-class idCGameParticles : public idCGameLocal
-{
+class idCGameParticles : public idCGameLocal {
 public:
     idCGameParticles();
     ~idCGameParticles();
-    
-    static float32 LerpValues( float32 a, float32 b, float32 f );
-    static float32 RandomiseValue( float32 value, float32 variance );
-    static void SpreadVector( vec3_t v, float32 spread );
-    static void DestroyParticle( particle_t* p, vec3_t impactNormal );
-    static particle_t* SpawnNewParticle( baseParticle_t* bp, particleEjector_t* parent );
-    static void SpawnNewParticles( void );
-    static particleEjector_t* SpawnNewParticleEjector( baseParticleEjector_t* bpe, particleSystem_t* parent );
-    static particleSystem_t* SpawnNewParticleSystem( qhandle_t psHandle );
-    static qhandle_t RegisterParticleSystem( valueType* name );
-    static void ParseValueAndVariance( valueType* token, float32* value, float32* variance, bool allowNegative );
-    static bool ParseColor( uchar8* c, valueType** text_p );
-    static bool ParseParticle( baseParticle_t* bp, valueType** text_p );
-    static void InitialiseBaseParticle( baseParticle_t* bp );
-    static bool ParseParticleEjector( baseParticleEjector_t* bpe, valueType** text_p );
-    static bool ParseParticleSystem( baseParticleSystem_t* bps, valueType** text_p, pointer name );
-    static bool ParseParticleFile( pointer fileName );
-    static void LoadParticleSystems( void );
-    static void SetParticleSystemNormal( particleSystem_t* ps, vec3_t normal );
-    static void DestroyParticleSystem( particleSystem_t** ps );
-    static bool IsParticleSystemInfinite( particleSystem_t* ps );
-    static bool IsParticleSystemValid( particleSystem_t** ps );
-    static void GarbageCollectParticleSystems( void );
-    static float32 CalculateTimeFrac( sint birth, sint life, sint delay );
-    static void EvaluateParticlePhysics( particle_t* p );
-    static void Radix( sint bits, sint size, particle_t** source, particle_t** dest );
-    static void RadixSort( particle_t** source, particle_t** temp, sint size );
-    static void CompactAndSortParticles( void );
-    static void RenderParticle( particle_t* p );
-    static void AddParticles( void );
-    static void ParticleSystemEntity( centity_t* cent );
-    static void DestroyTestPS_f( void );
-    static void TestPS_f( void );
+
+    static float32 LerpValues(float32 a, float32 b, float32 f);
+    static float32 RandomiseValue(float32 value, float32 variance);
+    static void SpreadVector(vec3_t v, float32 spread);
+    static void DestroyParticle(particle_t *p, vec3_t impactNormal);
+    static particle_t *SpawnNewParticle(baseParticle_t *bp,
+                                        particleEjector_t *parent);
+    static void SpawnNewParticles(void);
+    static particleEjector_t *SpawnNewParticleEjector(baseParticleEjector_t
+            *bpe, particleSystem_t *parent);
+    static particleSystem_t *SpawnNewParticleSystem(qhandle_t psHandle);
+    static qhandle_t RegisterParticleSystem(valueType *name);
+    static void ParseValueAndVariance(valueType *token, float32 *value,
+                                      float32 *variance, bool allowNegative);
+    static bool ParseColor(uchar8 *c, valueType **text_p);
+    static bool ParseParticle(baseParticle_t *bp, valueType **text_p);
+    static void InitialiseBaseParticle(baseParticle_t *bp);
+    static bool ParseParticleEjector(baseParticleEjector_t *bpe,
+                                     valueType **text_p);
+    static bool ParseParticleSystem(baseParticleSystem_t *bps,
+                                    valueType **text_p, pointer name);
+    static bool ParseParticleFile(pointer fileName);
+    static void LoadParticleSystems(void);
+    static void SetParticleSystemNormal(particleSystem_t *ps, vec3_t normal);
+    static void DestroyParticleSystem(particleSystem_t **ps);
+    static bool IsParticleSystemInfinite(particleSystem_t *ps);
+    static bool IsParticleSystemValid(particleSystem_t **ps);
+    static void GarbageCollectParticleSystems(void);
+    static float32 CalculateTimeFrac(sint birth, sint life, sint delay);
+    static void EvaluateParticlePhysics(particle_t *p);
+    static void Radix(sint bits, sint size, particle_t **source,
+                      particle_t **dest);
+    static void RadixSort(particle_t **source, particle_t **temp, sint size);
+    static void CompactAndSortParticles(void);
+    static void RenderParticle(particle_t *p);
+    static void AddParticles(void);
+    static void ParticleSystemEntity(centity_t *cent);
+    static void DestroyTestPS_f(void);
+    static void TestPS_f(void);
 };
 
 #endif //!__CGAME_PARTICLES_H_

@@ -31,18 +31,17 @@
 
 class idCGameLocal;
 
-class idCGameEvent : public idCGameLocal
-{
+class idCGameEvent : public idCGameLocal {
 public:
     idCGameEvent();
     ~idCGameEvent();
-    
-    static void Obituary( entityState_t* ent );
-    static void PainEvent( centity_t* cent, sint health );
-    static void Level2Zap( entityState_t* es );
-    static void EntityEvent( centity_t* cent, vec3_t position );
-    static void CheckEvents( centity_t* cent );
-    
+
+    static void Obituary(entityState_t *ent);
+    static void PainEvent(centity_t *cent, sint health);
+    static void Level2Zap(entityState_t *es);
+    static void EntityEvent(centity_t *cent, vec3_t position);
+    static void CheckEvents(centity_t *cent);
+
 };
 
 #endif //!__CGAME_ANIMINATION_H__

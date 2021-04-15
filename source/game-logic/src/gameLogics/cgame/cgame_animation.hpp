@@ -31,13 +31,12 @@
 
 class idCGameLocal;
 
-class idCGameAnimation : public idCGameLocal
-{
+class idCGameAnimation : public idCGameLocal {
 public:
     idCGameAnimation();
     ~idCGameAnimation();
-    
-    static void RunLerpFrame( lerpFrame_t* lf, float32 scale );
+
+    static void RunLerpFrame(lerpFrame_t *lf, float32 scale);
 };
 
 #endif //!__CGAME_ANIMINATION_H__

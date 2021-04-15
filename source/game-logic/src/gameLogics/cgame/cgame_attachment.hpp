@@ -31,27 +31,27 @@
 
 class idCGameLocal;
 
-class idCGameAttachment : public idCGameLocal
-{
+class idCGameAttachment : public idCGameLocal {
 public:
     idCGameAttachment();
     ~idCGameAttachment();
-    
-    static bool AttachmentPoint( attachment_t* a, vec3_t v );
-    static bool AttachmentDir( attachment_t* a, vec3_t v );
-    static bool AttachmentAxis( attachment_t* a, vec3_t axis[3] );
-    static bool AttachmentVelocity( attachment_t* a, vec3_t v );
-    static bool Attached( attachment_t* a );
-    static sint AttachmentCentNum( attachment_t* a );
-    static void AttachToPoint( attachment_t* a );
-    static void AttachToCent( attachment_t* a );
-    static void AttachToTag( attachment_t* a );
-    static void AttachToParticle( attachment_t* a );
-    static void SetAttachmentPoint( attachment_t* a, vec3_t v );
-    static void SetAttachmentCent( attachment_t* a, centity_t* cent );
-    static void SetAttachmentTag( attachment_t* a, refEntity_t parent, qhandle_t model, valueType* tagName );
-    static void SetAttachmentParticle( attachment_t* a, particle_t* p );
-    static void SetAttachmentOffset( attachment_t* a, vec3_t v );
+
+    static bool AttachmentPoint(attachment_t *a, vec3_t v);
+    static bool AttachmentDir(attachment_t *a, vec3_t v);
+    static bool AttachmentAxis(attachment_t *a, vec3_t axis[3]);
+    static bool AttachmentVelocity(attachment_t *a, vec3_t v);
+    static bool Attached(attachment_t *a);
+    static sint AttachmentCentNum(attachment_t *a);
+    static void AttachToPoint(attachment_t *a);
+    static void AttachToCent(attachment_t *a);
+    static void AttachToTag(attachment_t *a);
+    static void AttachToParticle(attachment_t *a);
+    static void SetAttachmentPoint(attachment_t *a, vec3_t v);
+    static void SetAttachmentCent(attachment_t *a, centity_t *cent);
+    static void SetAttachmentTag(attachment_t *a, refEntity_t parent,
+                                 qhandle_t model, valueType *tagName);
+    static void SetAttachmentParticle(attachment_t *a, particle_t *p);
+    static void SetAttachmentOffset(attachment_t *a, vec3_t v);
 };
 
 #endif //!__CGAME_ATTACHMENT_H__

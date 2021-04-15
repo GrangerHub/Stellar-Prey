@@ -35,8 +35,7 @@
 idSGameTarget::idSGameTarget
 ===============
 */
-idSGameTarget::idSGameTarget( void )
-{
+idSGameTarget::idSGameTarget(void) {
 }
 
 /*
@@ -44,8 +43,7 @@ idSGameTarget::idSGameTarget( void )
 idSGameTarget::~idSGameTarget
 ===============
 */
-idSGameTarget::~idSGameTarget( void )
-{
+idSGameTarget::~idSGameTarget(void) {
 }
 
 //==========================================================
@@ -54,31 +52,27 @@ idSGameTarget::~idSGameTarget( void )
 "wait" seconds to pause before firing targets.
 "random" delay variance, total delay = delay +/- random seconds
 */
-void idSGameTarget::Think_Target_Delay( gentity_t* ent )
-{
-    idSGameUtils::UseTargets( ent, ent->activator );
+void idSGameTarget::Think_Target_Delay(gentity_t *ent) {
+    idSGameUtils::UseTargets(ent, ent->activator);
 }
 
-void idSGameTarget::Use_Target_Delay( gentity_t* ent, gentity_t* other, gentity_t* activator )
-{
-    ent->nextthink = level.time + ( ent->wait + ent->random * crandom( ) ) * 1000;
+void idSGameTarget::Use_Target_Delay(gentity_t *ent, gentity_t *other,
+                                     gentity_t *activator) {
+    ent->nextthink = level.time + (ent->wait + ent->random * crandom()) * 1000;
     ent->think = Think_Target_Delay;
     ent->activator = activator;
 }
 
-void idSGameTarget::SP_target_delay( gentity_t* ent )
-{
+void idSGameTarget::SP_target_delay(gentity_t *ent) {
     // check delay for backwards compatability
-    if( !idSGameSpawn::SpawnFloat( "delay", "0", &ent->wait ) )
-    {
-        idSGameSpawn::SpawnFloat( "wait", "1", &ent->wait );
+    if(!idSGameSpawn::SpawnFloat("delay", "0", &ent->wait)) {
+        idSGameSpawn::SpawnFloat("wait", "1", &ent->wait);
     }
-    
-    if( !ent->wait )
-    {
+
+    if(!ent->wait) {
         ent->wait = 1;
     }
-    
+
     ent->use = Use_Target_Delay;
 }
 
@@ -90,18 +84,16 @@ void idSGameTarget::SP_target_delay( gentity_t* ent )
 
 The activator is given this many points.
 */
-void idSGameTarget::Use_Target_Score( gentity_t* ent, gentity_t* other, gentity_t* activator )
-{
-    idSGameCombat::AddScore( activator, ent->count );
+void idSGameTarget::Use_Target_Score(gentity_t *ent, gentity_t *other,
+                                     gentity_t *activator) {
+    idSGameCombat::AddScore(activator, ent->count);
 }
 
-void idSGameTarget::SP_target_score( gentity_t* ent )
-{
-    if( !ent->count )
-    {
+void idSGameTarget::SP_target_score(gentity_t *ent) {
+    if(!ent->count) {
         ent->count = 1;
     }
-    
+
     ent->use = Use_Target_Score;
 }
 
@@ -112,34 +104,30 @@ void idSGameTarget::SP_target_score( gentity_t* ent )
 "message" text to print
 If "private", only the activator gets the message.  If no checks, all clients get the message.
 */
-void idSGameTarget::Use_Target_Print( gentity_t* ent, gentity_t* other, gentity_t* activator )
-{
-    if( activator->client && ( ent->spawnflags & 4 ) )
-    {
-        trap_SendServerCommand( activator - g_entities, va( "cp \"%s\"", ent->message ) );
+void idSGameTarget::Use_Target_Print(gentity_t *ent, gentity_t *other,
+                                     gentity_t *activator) {
+    if(activator->client && (ent->spawnflags & 4)) {
+        trap_SendServerCommand(activator - g_entities, va("cp \"%s\"",
+                               ent->message));
         return;
     }
-    
-    if( ent->spawnflags & 3 )
-    {
-        if( ent->spawnflags & 1 )
-        {
-            idSGameUtils::TeamCommand( TEAM_HUMANS, va( "cp \"%s\"", ent->message ) );
+
+    if(ent->spawnflags & 3) {
+        if(ent->spawnflags & 1) {
+            idSGameUtils::TeamCommand(TEAM_HUMANS, va("cp \"%s\"", ent->message));
         }
-        
-        if( ent->spawnflags & 2 )
-        {
-            idSGameUtils::TeamCommand( TEAM_ALIENS, va( "cp \"%s\"", ent->message ) );
+
+        if(ent->spawnflags & 2) {
+            idSGameUtils::TeamCommand(TEAM_ALIENS, va("cp \"%s\"", ent->message));
         }
-        
+
         return;
     }
-    
-    trap_SendServerCommand( -1, va( "cp \"%s\"", ent->message ) );
+
+    trap_SendServerCommand(-1, va("cp \"%s\"", ent->message));
 }
 
-void idSGameTarget::SP_target_print( gentity_t* ent )
-{
+void idSGameTarget::SP_target_print(gentity_t *ent) {
     ent->use = Use_Target_Print;
 }
 
@@ -159,124 +147,105 @@ Multiple identical looping sounds will just increase volume without any speed co
 "wait" : Seconds between auto triggerings, 0 = don't auto trigger
 "random"  wait variance, default is 0
 */
-void idSGameTarget::Use_Target_Speaker( gentity_t* ent, gentity_t* other, gentity_t* activator )
-{
-    if( ent->spawnflags & 3 )
-    {
+void idSGameTarget::Use_Target_Speaker(gentity_t *ent, gentity_t *other,
+                                       gentity_t *activator) {
+    if(ent->spawnflags & 3) {
         // looping sound toggles
-        if( ent->s.loopSound )
-        {
+        if(ent->s.loopSound) {
             ent->s.loopSound = 0; // turn it off
-        }
-        else
-        {
+        } else {
             ent->s.loopSound = ent->noise_index;  // start it
         }
-    }
-    else
-    {
+    } else {
         // normal sound
-        if( ent->spawnflags & 8 )
-        {
-            idSGameUtils::AddEvent( activator, EV_GENERAL_SOUND, ent->noise_index );
+        if(ent->spawnflags & 8) {
+            idSGameUtils::AddEvent(activator, EV_GENERAL_SOUND, ent->noise_index);
+        } else if(ent->spawnflags & 4) {
+            idSGameUtils::AddEvent(ent, EV_GLOBAL_SOUND, ent->noise_index);
+        } else {
+            idSGameUtils::AddEvent(ent, EV_GENERAL_SOUND, ent->noise_index);
         }
-        else if( ent->spawnflags & 4 )
-        {
-            idSGameUtils::AddEvent( ent, EV_GLOBAL_SOUND, ent->noise_index );
-        }
-        else
-            idSGameUtils::AddEvent( ent, EV_GENERAL_SOUND, ent->noise_index );
     }
 }
 
-void idSGameTarget::SP_target_speaker( gentity_t* ent )
-{
+void idSGameTarget::SP_target_speaker(gentity_t *ent) {
     valueType buffer[ MAX_QPATH ];
-    valueType* s;
-    
-    idSGameSpawn::SpawnFloat( "wait", "0", &ent->wait );
-    idSGameSpawn::SpawnFloat( "random", "0", &ent->random );
-    
-    if( !idSGameSpawn::SpawnString( "noise", "NOSOUND", &s ) )
-    {
-        idSGameMain::Error( "target_speaker without a noise key at %s", idSGameUtils::vtos( ent->s.origin ) );
+    valueType *s;
+
+    idSGameSpawn::SpawnFloat("wait", "0", &ent->wait);
+    idSGameSpawn::SpawnFloat("random", "0", &ent->random);
+
+    if(!idSGameSpawn::SpawnString("noise", "NOSOUND", &s)) {
+        idSGameMain::Error("target_speaker without a noise key at %s",
+                           idSGameUtils::vtos(ent->s.origin));
     }
-    
+
     // force all client reletive sounds to be "activator" speakers that
     // play on the entity that activates it
-    if( s[0] == '*' )
-    {
+    if(s[0] == '*') {
         ent->spawnflags |= 8;
     }
-    
-    if( !strstr( s, ".wav" ) )
-    {
-        Q_vsprintf_s( buffer, sizeof( buffer ), sizeof( buffer ), "%s.wav", s );
+
+    if(!strstr(s, ".wav")) {
+        Q_vsprintf_s(buffer, sizeof(buffer), sizeof(buffer), "%s.wav", s);
+    } else {
+        Q_strncpyz(buffer, s, sizeof(buffer));
     }
-    else
-    {
-        Q_strncpyz( buffer, s, sizeof( buffer ) );
-    }
-    
-    ent->noise_index = idSGameUtils::SoundIndex( buffer );
-    
+
+    ent->noise_index = idSGameUtils::SoundIndex(buffer);
+
     // a repeating speaker can be done completely client side
     ent->s.eType = ET_SPEAKER;
     ent->s.eventParm = ent->noise_index;
     ent->s.frame = ent->wait * 10;
     ent->s.clientNum = ent->random * 10;
-    
-    
+
+
     // check for prestarted looping sound
-    if( ent->spawnflags & 1 )
-    {
+    if(ent->spawnflags & 1) {
         ent->s.loopSound = ent->noise_index;
     }
-    
+
     ent->use = Use_Target_Speaker;
-    
-    if( ent->spawnflags & 4 )
-    {
+
+    if(ent->spawnflags & 4) {
         ent->r.svFlags |= SVF_BROADCAST;
     }
-    
-    VectorCopy( ent->s.origin, ent->s.pos.trBase );
-    
+
+    VectorCopy(ent->s.origin, ent->s.pos.trBase);
+
     // must link the entity so we get areas and clusters so
     // the server can determine who to send updates to
-    trap_LinkEntity( ent );
+    trap_LinkEntity(ent);
 }
 
-void idSGameTarget::target_teleporter_use( gentity_t* self, gentity_t* other, gentity_t* activator )
-{
-    gentity_t* dest;
-    
-    if( !activator->client )
-    {
+void idSGameTarget::target_teleporter_use(gentity_t *self,
+        gentity_t *other, gentity_t *activator) {
+    gentity_t *dest;
+
+    if(!activator->client) {
         return;
     }
-    
-    dest = idSGameUtils::PickTarget( self->target );
-    
-    if( !dest )
-    {
-        idSGameMain::Printf( "Couldn't find teleporter destination\n" );
+
+    dest = idSGameUtils::PickTarget(self->target);
+
+    if(!dest) {
+        idSGameMain::Printf("Couldn't find teleporter destination\n");
         return;
     }
-    
-    idSGameMisc::TeleportPlayer( activator, dest->s.origin, dest->s.angles );
+
+    idSGameMisc::TeleportPlayer(activator, dest->s.origin, dest->s.angles);
 }
 
 /*QUAKED target_teleporter (1 0 0) (-8 -8 -8) (8 8 8)
 The activator will be teleported away.
 */
-void idSGameTarget::SP_target_teleporter( gentity_t* self )
-{
-    if( !self->targetname )
-    {
-        idSGameMain::Printf( "untargeted %s at %s\n", self->classname, idSGameUtils::vtos( self->s.origin ) );
+void idSGameTarget::SP_target_teleporter(gentity_t *self) {
+    if(!self->targetname) {
+        idSGameMain::Printf("untargeted %s at %s\n", self->classname,
+                            idSGameUtils::vtos(self->s.origin));
     }
-    
+
     self->use = target_teleporter_use;
 }
 
@@ -285,90 +254,84 @@ This doesn't perform any actions except fire its targets.
 The activator can be forced to be from a certain team.
 if RANDOM is checked, only one of the targets will be fired, not all of them
 */
-void idSGameTarget::target_relay_use( gentity_t* self, gentity_t* other, gentity_t* activator )
-{
-    if( ( self->spawnflags & 1 ) && activator->client && activator->client->ps.stats[STAT_TEAM] != TEAM_HUMANS )
-    {
+void idSGameTarget::target_relay_use(gentity_t *self, gentity_t *other,
+                                     gentity_t *activator) {
+    if((self->spawnflags & 1) && activator->client &&
+            activator->client->ps.stats[STAT_TEAM] != TEAM_HUMANS) {
         return;
     }
-    
-    if( ( self->spawnflags & 2 ) && activator->client && activator->client->ps.stats[STAT_TEAM] != TEAM_ALIENS )
-    {
+
+    if((self->spawnflags & 2) && activator->client &&
+            activator->client->ps.stats[STAT_TEAM] != TEAM_ALIENS) {
         return;
     }
-    
-    if( self->spawnflags & 4 )
-    {
-        gentity_t* ent;
-        
-        ent = idSGameUtils::PickTarget( self->target );
-        if( ent && ent->use )
-        {
-            ent->use( ent, self, activator );
+
+    if(self->spawnflags & 4) {
+        gentity_t *ent;
+
+        ent = idSGameUtils::PickTarget(self->target);
+
+        if(ent && ent->use) {
+            ent->use(ent, self, activator);
         }
-        
+
         return;
     }
-    
-    idSGameUtils::UseTargets( self, activator );
+
+    idSGameUtils::UseTargets(self, activator);
 }
 
-void idSGameTarget::SP_target_relay( gentity_t* self )
-{
+void idSGameTarget::SP_target_relay(gentity_t *self) {
     self->use = target_relay_use;
 }
 
 /*QUAKED target_kill (.5 .5 .5) (-8 -8 -8) (8 8 8)
 Kills the activator.
 */
-void idSGameTarget::target_kill_use( gentity_t* self, gentity_t* other, gentity_t* activator )
-{
-    idSGameCombat::Damage( activator, nullptr, nullptr, nullptr, nullptr, 100000, DAMAGE_NO_PROTECTION, MOD_TELEFRAG );
+void idSGameTarget::target_kill_use(gentity_t *self, gentity_t *other,
+                                    gentity_t *activator) {
+    idSGameCombat::Damage(activator, nullptr, nullptr, nullptr, nullptr,
+                          100000, DAMAGE_NO_PROTECTION, MOD_TELEFRAG);
 }
 
-void idSGameTarget::SP_target_kill( gentity_t* self )
-{
+void idSGameTarget::SP_target_kill(gentity_t *self) {
     self->use = target_kill_use;
 }
 
 /*QUAKED target_position (0 0.5 0) (-4 -4 -4) (4 4 4)
 Used as a positional target for in-game calculation, like jumppad targets.
 */
-void idSGameTarget::SP_target_position( gentity_t* self )
-{
-    idSGameUtils::SetOrigin( self, self->s.origin );
+void idSGameTarget::SP_target_position(gentity_t *self) {
+    idSGameUtils::SetOrigin(self, self->s.origin);
 }
 
-void idSGameTarget::target_location_linkup( gentity_t* ent )
-{
+void idSGameTarget::target_location_linkup(gentity_t *ent) {
     sint i, n;
-    
-    if( level.locationLinked )
-    {
+
+    if(level.locationLinked) {
         return;
     }
-    
+
     level.locationLinked = true;
-    
+
     level.locationHead = nullptr;
-    
-    trap_SetConfigstring( CS_LOCATIONS, "unknown" );
-    
-    for( i = 0, ent = g_entities, n = 1; i < level.num_entities; i++, ent++ )
-    {
-        if( ent->s.eType == ET_LOCATION )
-        {
+
+    trap_SetConfigstring(CS_LOCATIONS, "unknown");
+
+    for(i = 0, ent = g_entities, n = 1; i < level.num_entities; i++, ent++) {
+        if(ent->s.eType == ET_LOCATION) {
             // lets overload some variables!
             ent->s.generic1 = n; // use for location marking
-            
-            trap_SetConfigstring( CS_LOCATIONS + n, ent->message );
-            
+
+            trap_SetConfigstring(CS_LOCATIONS + n, ent->message);
+
             n++;
-            
+
             ent->nextTrain = level.locationHead;
             level.locationHead = ent;
         }
     }
+
     // All linked together now
 }
 
@@ -380,14 +343,13 @@ Set "count" to 0-7 for color.
 Closest target_location in sight used for the location, if none
 in site, closest in distance
 */
-void idSGameTarget::SP_target_location( gentity_t* self )
-{
+void idSGameTarget::SP_target_location(gentity_t *self) {
     self->think = target_location_linkup;
     self->nextthink = level.time + 200;  // Let them all spawn first
     self->s.eType = ET_LOCATION;
     self->r.svFlags = SVF_BROADCAST;
-    trap_LinkEntity( self ); // make the server send them to the clients
-    idSGameUtils::SetOrigin( self, self->s.origin );
+    trap_LinkEntity(self);   // make the server send them to the clients
+    idSGameUtils::SetOrigin(self, self->s.origin);
 }
 
 /*
@@ -395,41 +357,34 @@ void idSGameTarget::SP_target_location( gentity_t* self )
 target_rumble_think
 ===============
 */
-void idSGameTarget::target_rumble_think( gentity_t* self )
-{
+void idSGameTarget::target_rumble_think(gentity_t *self) {
     sint i;
-    gentity_t* ent;
-    
-    if( self->last_move_time < level.time )
-    {
+    gentity_t *ent;
+
+    if(self->last_move_time < level.time) {
         self->last_move_time = level.time + 0.5;
     }
-    
-    for( i = 0, ent = g_entities + i; i < level.num_entities; i++, ent++ )
-    {
-        if( !ent->inuse )
-        {
+
+    for(i = 0, ent = g_entities + i; i < level.num_entities; i++, ent++) {
+        if(!ent->inuse) {
             continue;
         }
-        
-        if( !ent->client )
-        {
+
+        if(!ent->client) {
             continue;
         }
-        
-        if( ent->client->ps.groundEntityNum == ENTITYNUM_NONE )
-        {
+
+        if(ent->client->ps.groundEntityNum == ENTITYNUM_NONE) {
             continue;
         }
-        
+
         ent->client->ps.groundEntityNum = ENTITYNUM_NONE;
-        ent->client->ps.velocity[ 0 ] += crandom( ) * 150;
-        ent->client->ps.velocity[ 1 ] += crandom( ) * 150;
+        ent->client->ps.velocity[ 0 ] += crandom() * 150;
+        ent->client->ps.velocity[ 1 ] += crandom() * 150;
         ent->client->ps.velocity[ 2 ] = self->speed;
     }
-    
-    if( level.time < self->timestamp )
-    {
+
+    if(level.time < self->timestamp) {
         self->nextthink = level.time + FRAMETIME;
     }
 }
@@ -439,9 +394,9 @@ void idSGameTarget::target_rumble_think( gentity_t* self )
 idSGameTarget::target_rumble_use
 ===============
 */
-void idSGameTarget::target_rumble_use( gentity_t* self, gentity_t* other, gentity_t* activator )
-{
-    self->timestamp = level.time + ( self->count * FRAMETIME );
+void idSGameTarget::target_rumble_use(gentity_t *self, gentity_t *other,
+                                      gentity_t *activator) {
+    self->timestamp = level.time + (self->count * FRAMETIME);
     self->nextthink = level.time + FRAMETIME;
     self->activator = activator;
     self->last_move_time = 0;
@@ -452,23 +407,20 @@ void idSGameTarget::target_rumble_use( gentity_t* self, gentity_t* other, gentit
 SP_target_rumble
 ===============
 */
-void idSGameTarget::SP_target_rumble( gentity_t* self )
-{
-    if( !self->targetname )
-    {
-        idSGameMain::Printf( S_COLOR_YELLOW "WARNING: untargeted %s at %s\n", self->classname, idSGameUtils::vtos( self->s.origin ) );
+void idSGameTarget::SP_target_rumble(gentity_t *self) {
+    if(!self->targetname) {
+        idSGameMain::Printf(S_COLOR_YELLOW "WARNING: untargeted %s at %s\n",
+                            self->classname, idSGameUtils::vtos(self->s.origin));
     }
-    
-    if( !self->count )
-    {
+
+    if(!self->count) {
         self->count = 10;
     }
-    
-    if( !self->speed )
-    {
+
+    if(!self->speed) {
         self->speed = 100;
     }
-    
+
     self->think = target_rumble_think;
     self->use = target_rumble_use;
 }
@@ -478,8 +430,8 @@ void idSGameTarget::SP_target_rumble( gentity_t* self )
 target_alien_win_use
 ===============
 */
-void idSGameTarget::target_alien_win_use( gentity_t* self, gentity_t* other, gentity_t* activator )
-{
+void idSGameTarget::target_alien_win_use(gentity_t *self, gentity_t *other,
+        gentity_t *activator) {
     level.uncondAlienWin = true;
 }
 
@@ -488,8 +440,7 @@ void idSGameTarget::target_alien_win_use( gentity_t* self, gentity_t* other, gen
 SP_target_alien_win
 ===============
 */
-void idSGameTarget::SP_target_alien_win( gentity_t* self )
-{
+void idSGameTarget::SP_target_alien_win(gentity_t *self) {
     self->use = target_alien_win_use;
 }
 
@@ -498,8 +449,8 @@ void idSGameTarget::SP_target_alien_win( gentity_t* self )
 target_human_win_use
 ===============
 */
-void idSGameTarget::target_human_win_use( gentity_t* self, gentity_t* other, gentity_t* activator )
-{
+void idSGameTarget::target_human_win_use(gentity_t *self, gentity_t *other,
+        gentity_t *activator) {
     level.uncondHumanWin = true;
 }
 
@@ -508,8 +459,7 @@ void idSGameTarget::target_human_win_use( gentity_t* self, gentity_t* other, gen
 SP_target_human_win
 ===============
 */
-void idSGameTarget::SP_target_human_win( gentity_t* self )
-{
+void idSGameTarget::SP_target_human_win(gentity_t *self) {
     self->use = target_human_win_use;
 }
 
@@ -518,15 +468,15 @@ void idSGameTarget::SP_target_human_win( gentity_t* self )
 target_hurt_use
 ===============
 */
-void idSGameTarget::target_hurt_use( gentity_t* self, gentity_t* other, gentity_t* activator )
-{
+void idSGameTarget::target_hurt_use(gentity_t *self, gentity_t *other,
+                                    gentity_t *activator) {
     // hurt the activator
-    if( !activator->takedamage )
-    {
+    if(!activator->takedamage) {
         return;
     }
-    
-    idSGameCombat::Damage( activator, self, self, nullptr, nullptr, self->damage, 0, MOD_TRIGGER_HURT );
+
+    idSGameCombat::Damage(activator, self, self, nullptr, nullptr,
+                          self->damage, 0, MOD_TRIGGER_HURT);
 }
 
 /*
@@ -534,15 +484,15 @@ void idSGameTarget::target_hurt_use( gentity_t* self, gentity_t* other, gentity_
 SP_target_hurt
 ===============
 */
-void idSGameTarget::SP_target_hurt( gentity_t* self )
-{
-    if( !self->targetname )
-    {
-        idSGameMain::Printf( S_COLOR_YELLOW "WARNING: untargeted %s at %s\n", self->classname, idSGameUtils::vtos( self->s.origin ) );
+void idSGameTarget::SP_target_hurt(gentity_t *self) {
+    if(!self->targetname) {
+        idSGameMain::Printf(S_COLOR_YELLOW "WARNING: untargeted %s at %s\n",
+                            self->classname, idSGameUtils::vtos(self->s.origin));
     }
-    
-    if( !self->damage )
+
+    if(!self->damage) {
         self->damage = 5;
-        
+    }
+
     self->use = target_hurt_use;
 }

@@ -55,18 +55,17 @@ typedef struct gclient_s gclient_t;
 #define FL_FORCE_GESTURE  0x00008000  // spawn point just for bots
 
 // movers are things like doors, plats, buttons, etc
-typedef enum
-{
+typedef enum {
     MOVER_POS1,
     MOVER_POS2,
     MOVER_1TO2,
     MOVER_2TO1,
-    
+
     ROTATOR_POS1,
     ROTATOR_POS2,
     ROTATOR_1TO2,
     ROTATOR_2TO1,
-    
+
     MODEL_POS1,
     MODEL_POS2,
     MODEL_1TO2,
@@ -77,47 +76,50 @@ typedef enum
 
 //============================================================================
 
-struct gentity_s
-{
+struct gentity_s {
     entityState_t     s;        // communicated by server to clients
     entityShared_t    r;        // shared by both the server system and game
-    
+
     // DO NOT MODIFY ANYTHING ABOVE THIS, THE SERVER
     // EXPECTS THE FIELDS IN THAT ORDER!
     //================================
-    
-    struct gclient_s*  client;        // nullptr if not a client
-    
+
+    struct gclient_s  *client;        // nullptr if not a client
+
     bool              inuse;
-    
-    valueType*             classname;     // set in QuakeEd
+
+    valueType             *classname;     // set in QuakeEd
     sint               spawnflags;     // set in QuakeEd
-    
-    valueType*             sound;
-    
+
+    valueType             *sound;
+
     bool              neverFree;      // if true, FreeEntity will only unlink
     // bodyque uses this
-    
+
     sint               flags;          // FL_* variables
-    
-    valueType*             model;
-    valueType*             model2;
+
+    valueType             *model;
+    valueType             *model2;
     sint               freetime;       // level.time when the object was freed
-    
+
     // bullet physics object
-    class btRigidBody* body;
-    
-    sint               eventTime;      // events will be cleared EVENT_VALID_MSEC after set
+    class btRigidBody *body;
+
+    sint
+    eventTime;      // events will be cleared EVENT_VALID_MSEC after set
     bool              freeAfterEvent;
     bool              unlinkAfterEvent;
-    
-    bool              physicsObject;  // if true, it can be pushed by movers and fall off edges
+
+    bool
+    physicsObject;  // if true, it can be pushed by movers and fall off edges
     // all game items are physicsObjects,
-    float32               physicsBounce;  // 1.0 = continuous bounce, 0.0 = no bounce
-    sint               clipmask;       // brushes with this content value will be collided against
+    float32
+    physicsBounce;  // 1.0 = continuous bounce, 0.0 = no bounce
+    sint
+    clipmask;       // brushes with this content value will be collided against
     // when moving.  items and corpses do not collide against
     // players, for instance
-    
+
     // movers
     moverState_t      moverState;
     sint               soundPos1;
@@ -125,92 +127,101 @@ struct gentity_s
     sint               sound2to1;
     sint               soundPos2;
     sint               soundLoop;
-    gentity_t*        parent;
-    gentity_t*        nextTrain;
-    gentity_t*        prevTrain;
+    gentity_t        *parent;
+    gentity_t        *nextTrain;
+    gentity_t        *prevTrain;
     vec3_t            pos1, pos2;
     float32               rotatorAngle;
-    gentity_t*        clipBrush;     // clipping brush for model doors
-    
-    valueType*             message;
-    
+    gentity_t        *clipBrush;     // clipping brush for model doors
+
+    valueType             *message;
+
     sint               timestamp;      // body queue sinking, etc
-    
+
     float32               angle;          // set in editor, -1 = up, -2 = down
-    valueType*             target;
-    valueType*             targetname;
-    valueType*             team;
-    valueType*             targetShaderName;
-    valueType*             targetShaderNewName;
-    gentity_t*        target_ent;
-    
+    valueType             *target;
+    valueType             *targetname;
+    valueType             *team;
+    valueType             *targetShaderName;
+    valueType             *targetShaderNewName;
+    gentity_t        *target_ent;
+
     float32               speed;
-    float32               lastSpeed;      // used by trains that have been restarted
+    float32
+    lastSpeed;      // used by trains that have been restarted
     vec3_t            movedir;
-    
+
     // acceleration evaluation
     bool              evaluateAcceleration;
     vec3_t            oldVelocity;
     vec3_t            acceleration;
     vec3_t            oldAccel;
     vec3_t            jerk;
-    
+
     sint               nextthink;
-    void ( *think )( gentity_t* self );
-    void ( *reached )( gentity_t* self );             // movers call this when hitting endpoint
-    void ( *blocked )( gentity_t* self, gentity_t* other );
-    void ( *touch )( gentity_t* self, gentity_t* other, trace_t* trace );
-    void ( *use )( gentity_t* self, gentity_t* other, gentity_t* activator );
-    void ( *pain )( gentity_t* self, gentity_t* attacker, sint damage );
-    void ( *die )( gentity_t* self, gentity_t* inflictor, gentity_t* attacker, sint damage, sint mod );
-    
+    void (*think)(gentity_t *self);
+    void (*reached)(gentity_t
+                    *self);                 // movers call this when hitting endpoint
+    void (*blocked)(gentity_t *self, gentity_t *other);
+    void (*touch)(gentity_t *self, gentity_t *other, trace_t *trace);
+    void (*use)(gentity_t *self, gentity_t *other, gentity_t *activator);
+    void (*pain)(gentity_t *self, gentity_t *attacker, sint damage);
+    void (*die)(gentity_t *self, gentity_t *inflictor, gentity_t *attacker,
+                sint damage, sint mod);
+
     sint               pain_debounce_time;
     sint               fly_sound_debounce_time;  // wind tunnel
     sint               last_move_time;
-    
+
     sint               health;
     sint               lastHealth; // currently only used for overmind
-    
+
     bool              takedamage;
-    
+
     sint               damage;
-    sint               splashDamage; // quad will increase this without increasing radius
+    sint
+    splashDamage; // quad will increase this without increasing radius
     sint               splashRadius;
     sint               methodOfDeath;
     sint               splashMethodOfDeath;
-    
+
     sint               count;
-    sint	              bounceCount;
+    sint                  bounceCount;
     bool              altFire;
-    
-    gentity_t*        chain;
-    gentity_t*        enemy;
-    gentity_t*        activator;
-    gentity_t*        teamchain;   // next entity in team
-    gentity_t*        teammaster;  // master of the team
-    
+
+    gentity_t        *chain;
+    gentity_t        *enemy;
+    gentity_t        *activator;
+    gentity_t        *teamchain;   // next entity in team
+    gentity_t        *teammaster;  // master of the team
+
     sint               watertype;
     sint               waterlevel;
-    
+
     sint               noise_index;
-    
+
     // timing variables
     float32               wait;
     float32               random;
-    
+
     team_t            stageTeam;
     stage_t           stageStage;
-    
+
     team_t            buildableTeam;      // buildable item team
-    gentity_t*        parentNode;        // for creep and defence/spawn dependencies
-    bool              active;             // for power repeater, but could be useful elsewhere
+    gentity_t
+    *parentNode;        // for creep and defence/spawn dependencies
+    bool
+    active;             // for power repeater, but could be useful elsewhere
     bool              locked;             // used for turret tracking
     bool              powered;            // for human buildables
-    sint               builtBy;            // clientNum of person that built this
-    gentity_t*        overmindNode;      // controlling overmind
+    sint
+    builtBy;            // clientNum of person that built this
+    gentity_t        *overmindNode;      // controlling overmind
     sint               dcc;                // controlled by how many dccs
-    bool              spawned;            // whether or not this buildable has finished spawning
-    sint               shrunkTime;         // time when a barricade shrunk or zero
+    bool
+    spawned;            // whether or not this buildable has finished spawning
+    sint
+    shrunkTime;         // time when a barricade shrunk or zero
     sint               buildTime;          // when this buildable was built
     sint               animTime;           // last animation change
     sint               time1000;           // timer evaluated every second
@@ -219,51 +230,68 @@ struct gentity_s
     sint               overmindAttackTimer;
     sint               overmindDyingTimer;
     sint               overmindSpawnsTimer;
-    sint               nextPhysicsTime;    // buildables don't need to check what they're sitting on
+    sint
+    nextPhysicsTime;    // buildables don't need to check what they're sitting on
     // every single frame.. so only do it periodically
-    sint               clientSpawnTime;    // the time until this spawn can spawn a client
+    sint
+    clientSpawnTime;    // the time until this spawn can spawn a client
     bool              lev1Grabbed;        // for turrets interacting with lev1s
-    sint               lev1GrabTime;       // for turrets interacting with lev1s
-    
-    sint               credits[ MAX_CLIENTS ];     // human credits for each client
-    bool              creditsHash[ MAX_CLIENTS ]; // track who has claimed credit
+    sint
+    lev1GrabTime;       // for turrets interacting with lev1s
+
+    sint
+    credits[ MAX_CLIENTS ];     // human credits for each client
+    bool
+    creditsHash[ MAX_CLIENTS ]; // track who has claimed credit
     sint               killedBy;                   // clientNum of killer
-    
-    gentity_t*        targeted;          // true if the player is currently a valid target of a turret
+
+    gentity_t
+    *targeted;          // true if the player is currently a valid target of a turret
     vec3_t            turretAim;          // aim vector for turrets
     vec3_t            turretAimRate;      // track turn speed for norfenturrets
     sint               turretSpinupTime;   // spinup delay for norfenturrets
-    
+
     vec4_t            animation;          // animated map objects
-    
-    gentity_t*        builder;           // occupant of this hovel
-    
-    bool              nonSegModel;        // this entity uses a nonsegmented player model
-    
-    buildable_t       bTriggers[ BA_NUM_BUILDABLES ]; // which buildables are triggers
-    class_t           cTriggers[ PCL_NUM_CLASSES ];   // which classes are triggers
-    weapon_t          wTriggers[ WP_NUM_WEAPONS ];    // which weapons are triggers
-    upgrade_t         uTriggers[ UP_NUM_UPGRADES ];   // which upgrades are triggers
-    
-    sint               triggerGravity;                 // gravity for this trigger
-    
-    sint               suicideTime;                    // when the client will suicide
-    
+
+    gentity_t        *builder;           // occupant of this hovel
+
+    bool
+    nonSegModel;        // this entity uses a nonsegmented player model
+
+    buildable_t
+    bTriggers[ BA_NUM_BUILDABLES ]; // which buildables are triggers
+    class_t
+    cTriggers[ PCL_NUM_CLASSES ];   // which classes are triggers
+    weapon_t
+    wTriggers[ WP_NUM_WEAPONS ];    // which weapons are triggers
+    upgrade_t
+    uTriggers[ UP_NUM_UPGRADES ];   // which upgrades are triggers
+
+    sint
+    triggerGravity;                 // gravity for this trigger
+
+    sint
+    suicideTime;                    // when the client will suicide
+
     sint               lastDamageTime;
     sint               nextRegenTime;
-    
-    bool              zapping;                        // adv maurader is zapping
-    bool              wasZapping;                     // adv maurader was zapping
+
+    bool
+    zapping;                        // adv maurader is zapping
+    bool
+    wasZapping;                     // adv maurader was zapping
     sint               zapTargets[ LEVEL2_AREAZAP_MAX_TARGETS ];
-    float32               zapDmg;                         // keep track of damage
-    
-    bool              ownerClear;                     // used for missle tracking
-    
-    bool              pointAgainstWorld;              // don't use the bbox for map collisions
+    float32
+    zapDmg;                         // keep track of damage
+
+    bool
+    ownerClear;                     // used for missle tracking
+
+    bool
+    pointAgainstWorld;              // don't use the bbox for map collisions
 };
 
-typedef enum
-{
+typedef enum {
     CON_DISCONNECTED,
     CON_CONNECTING,
     CON_CONNECTED
@@ -278,8 +306,7 @@ typedef enum
 // this is achieved by writing all the data to cvar strings at game shutdown
 // time and reading them back at connection time.  Anything added here
 // MUST be dealt with in idSGameLocal::InitSessionData() / idSGameLocal::ReadSessionData() / idSGameLocal::WriteSessionData()
-typedef struct
-{
+typedef struct {
     sint spectatorTime;    // for determining next-in-line to play
     spectatorState_t spectatorState;
     sint spectatorClient;  // for chasecam and follow mode
@@ -290,57 +317,64 @@ typedef struct
 } clientSession_t;
 
 // data to store details of clients that have abnormally disconnected
-typedef struct connectionRecord_s
-{
+typedef struct connectionRecord_s {
     sint       clientNum;
     sint       oldClient;
     team_t    clientTeam;
     sint       clientCredit;
-    
+
     sint       ptrCode;
 } connectionRecord_t;
 
 // client data that stays across multiple respawns, but is cleared
 // on each level change or team change at ClientBegin()
-typedef struct
-{
+typedef struct {
     clientConnected_t   connected;
-    usercmd_t           cmd;                // we would lose angles if not persistant
-    bool                localClient;        // true if "ip" info key is "localhost"
-    bool                initialSpawn;       // the first spawn should be at a cool location
-    bool                stickySpec;         // don't stop spectating a player after they get killed
+    usercmd_t
+    cmd;                // we would lose angles if not persistant
+    bool
+    localClient;        // true if "ip" info key is "localhost"
+    bool
+    initialSpawn;       // the first spawn should be at a cool location
+    bool
+    stickySpec;         // don't stop spectating a player after they get killed
     bool                pmoveFixed;         //
     valueType                netname[ MAX_NAME_LENGTH ];
     sint                 maxHealth;          // for handicapping
-    sint                 enterTime;          // level.time the client entered the game
+    sint
+    enterTime;          // level.time the client entered the game
     sint                 location;           // player locations
-    sint                 voteCount;          // to prevent people from constantly calling votes
+    sint
+    voteCount;          // to prevent people from constantly calling votes
     bool                teamInfo;           // send team overlay updates?
     float32                 flySpeed;           // for spectator/noclip moves
-    
-    class_t             classSelection;     // player class (copied to ent->client->ps.stats[ STAT_CLASS ] once spawned)
+
+    class_t
+    classSelection;     // player class (copied to ent->client->ps.stats[ STAT_CLASS ] once spawned)
     float32                 evolveHealthFraction;
     weapon_t            humanItemSelection; // humans have a starting item
-    team_t              teamSelection;      // player team (copied to ps.stats[ STAT_TEAM ])
-    
+    team_t
+    teamSelection;      // player team (copied to ps.stats[ STAT_TEAM ])
+
     sint                 teamChangeTime;     // level.time of last team change
-    bool                joinedATeam;        // used to tell when a PTR code is valid
-    connectionRecord_t*  connection;
-    
+    bool
+    joinedATeam;        // used to tell when a PTR code is valid
+    connectionRecord_t  *connection;
+
     sint                 nameChangeTime;
     sint                 nameChanges;
-    
+
     // used to save persistant[] values while in SPECTATOR_FOLLOW mode
     sint                 savedCredit;
-    
+
     // votes
     bool                vote;
     bool                teamVote;
-    
+
     // flood protection
     sint                 floodDemerits;
     sint                 floodTime;
-    
+
     vec3_t              lastDeathLocation;
     valueType                guid[ 33 ];
     valueType                ip[ 40 ];
@@ -350,12 +384,11 @@ typedef struct
     sint                 adminLevel;
     valueType                voice[ MAX_VOICE_NAME_LEN ];
     bool                useUnlagged;
-    g_admin_admin_t*    admin;
+    g_admin_admin_t    *admin;
 } clientPersistant_t;
 
 #define MAX_UNLAGGED_MARKERS 10
-typedef struct unlagged_s
-{
+typedef struct unlagged_s {
     vec3_t      origin;
     vec3_t      mins;
     vec3_t      maxs;
@@ -364,73 +397,79 @@ typedef struct unlagged_s
 
 // this structure is cleared on each ClientSpawn(),
 // except for 'client->pers' and 'client->sess'
-struct gclient_s
-{
+struct gclient_s {
     // ps MUST be the first element, because the server expects it
     playerState_t       ps;       // communicated by server to clients
-    
+
     // exported into pmove, but not communicated to clients
     pmoveExt_t          pmext;
-    
+
     // the rest of the structure is private to game
     clientPersistant_t  pers;
     clientSession_t     sess;
-    
-    class btKinematicCharacterController* characterController;
-    
+
+    class btKinematicCharacterController *characterController;
+
     bool                readyToExit;    // wishes to leave the intermission
-    
+
     bool                noclip;
-    
-    sint                 lastCmdTime;    // level.time of last usercmd_t, for EF_CONNECTION
+
+    sint
+    lastCmdTime;    // level.time of last usercmd_t, for EF_CONNECTION
     // we can't just use pers.lastCommand.time, because
     // of the g_sycronousclients case
     sint                 buttons;
     sint                 oldbuttons;
     sint                 latched_buttons;
-    
+
     vec3_t              oldOrigin;
-    
+
     // sum up damage over an entire frame, so
     // shotgun blasts give a single big kick
     sint                 damage_armor;     // damage absorbed by armor
     sint                 damage_blood;     // damage taken out of health
     sint                 damage_knockback; // impact damage
     vec3_t              damage_from;      // origin for vector calculation
-    bool                damage_fromWorld; // if true, don't use the damage_from vector
-    
+    bool
+    damage_fromWorld; // if true, don't use the damage_from vector
+
     //
-    sint                 lastkilled_client;// last client that this client killed
-    sint                 lasthurt_client;  // last client that damaged this client
+    sint
+    lastkilled_client;// last client that this client killed
+    sint
+    lasthurt_client;  // last client that damaged this client
     sint                 lasthurt_mod;     // type of damage the client did
-    
+
     // timers
     sint                 respawnTime;      // can respawn when time > this
     sint                 inactivityTime;   // kick players when time > this
-    bool                inactivityWarning;// true if the five seoond warning has been given
-    sint                 rewardTime;       // clear the EF_AWARD_IMPRESSIVE, etc when time > this
+    bool
+    inactivityWarning;// true if the five seoond warning has been given
+    sint
+    rewardTime;       // clear the EF_AWARD_IMPRESSIVE, etc when time > this
     sint                 boostedTime;      // last time we touched a booster
-    
+
     sint                 airOutTime;
-    
+
     sint                 lastKillTime;     // for multiple kill rewards
-    
+
     bool                fireHeld;         // used for hook
     bool                fire2Held;        // used for alt fire
-    gentity_t*           hook;            // grapple hook if out
-    
+    gentity_t           *hook;            // grapple hook if out
+
     sint                 switchTeamTime;   // time the player switched teams
-    
+
     sint                 time100;          // timer for 100ms interval events
-    sint                 time1000;         // timer for one second interval events
-    
-    valueType*                areabits;
-    
-    gentity_t*           hovel;
-    
+    sint
+    time1000;         // timer for one second interval events
+
+    valueType                *areabits;
+
+    gentity_t           *hovel;
+
     sint                 lastPoisonTime;
     sint                 poisonImmunityTime;
-    gentity_t*          lastPoisonClient;
+    gentity_t          *lastPoisonClient;
     sint                 lastPoisonCloudedTime;
     sint                 grabExpiryTime;
     sint                 lastLockTime;
@@ -438,29 +477,31 @@ struct gclient_s
     sint                 lastMedKitTime;
     sint                 medKitHealthToRestore;
     sint                 medKitIncrementTime;
-    sint                 lastCreepSlowTime;    // time until creep can be removed
-    
+    sint
+    lastCreepSlowTime;    // time until creep can be removed
+
     bool                charging;
-    
-    vec3_t              hovelOrigin;          // player origin before entering hovel
-    
-    sint                 lastFlameBall;        // s.number of the last flame ball fired
-    
+
+    vec3_t
+    hovelOrigin;          // player origin before entering hovel
+
+    sint
+    lastFlameBall;        // s.number of the last flame ball fired
+
     unlagged_t          unlaggedHist[ MAX_UNLAGGED_MARKERS ];
     unlagged_t          unlaggedBackup;
     unlagged_t          unlaggedCalc;
     sint                 unlaggedTime;
-    
+
     float32                 voiceEnthusiasm;
     valueType                lastVoiceCmd[ MAX_VOICE_CMD_LEN ];
-    
+
     sint                 lcannonStartTime;
-    
+
     sint                 lastCrushTime;        // Tyrant crush
 };
 
-typedef struct spawnQueue_s
-{
+typedef struct spawnQueue_s {
     sint clients[ MAX_CLIENTS ];
     sint front, back;
 } spawnQueue_t;
@@ -474,8 +515,7 @@ typedef struct spawnQueue_s
 #define MAX_COUNTRY_LENGTH 50
 
 // store locational damage regions
-typedef struct damageRegion_s
-{
+typedef struct damageRegion_s {
     valueType name[ 32 ];
     float32 area, modifier, minHeight, maxHeight;
     sint minAngle, maxAngle;
@@ -483,8 +523,7 @@ typedef struct damageRegion_s
 } damageRegion_t;
 
 //status of the warning of certain events
-typedef enum
-{
+typedef enum {
     TW_NOT = 0,
     TW_IMMINENT,
     TW_PASSED
@@ -496,151 +535,173 @@ typedef enum
 #define MAX_SPAWN_VARS      64
 #define MAX_SPAWN_VARS_CHARS  4096
 
-typedef struct
-{
-    struct gclient_s*  clients;   // [maxclients]
-    
-    struct gentity_s*  gentities;
+typedef struct {
+    struct gclient_s  *clients;   // [maxclients]
+
+    struct gentity_s  *gentities;
     sint               gentitySize;
     sint               num_entities;   // current number, <= MAX_GENTITIES
-    
+
     sint               warmupTime;     // restart match at this time
-    
+
     fileHandle_t      logFile;
-    
+
     // store latched cvars here that we want to get at often
     sint               maxclients;
-    
+
     sint               framenum;
     sint               time;                         // in msec
-    sint               previousTime;                 // so movers can back up when blocked
-    sint               frameMsec;                    // trap_Milliseconds() at end frame
-    
-    sint               startTime;                    // level.time the map was started
-    
+    sint
+    previousTime;                 // so movers can back up when blocked
+    sint
+    frameMsec;                    // trap_Milliseconds() at end frame
+
+    sint
+    startTime;                    // level.time the map was started
+
     sint               teamScores[ NUM_TEAMS ];
-    sint               lastTeamLocationTime;         // last time of client team location update
-    
-    bool              newSession;                   // don't use any old session data, because
+    sint
+    lastTeamLocationTime;         // last time of client team location update
+
+    bool
+    newSession;                   // don't use any old session data, because
     // we changed gametype
-    bool              restarted;                    // waiting for a map_restart to fire
-    
+    bool
+    restarted;                    // waiting for a map_restart to fire
+
     sint               numConnectedClients;
-    sint               numNonSpectatorClients;       // includes connecting clients
-    sint               numPlayingClients;            // connected, non-spectators
+    sint
+    numNonSpectatorClients;       // includes connecting clients
+    sint
+    numPlayingClients;            // connected, non-spectators
     sint               sortedClients[MAX_CLIENTS];   // sorted by score
-    
-    sint               snd_fry;                      // sound index for standing in lava
-    
-    sint               warmupModificationCount;      // for detecting if g_warmup is changed
-    
+
+    sint
+    snd_fry;                      // sound index for standing in lava
+
+    sint
+    warmupModificationCount;      // for detecting if g_warmup is changed
+
     // voting state
     valueType              voteString[MAX_STRING_CHARS];
     valueType              voteDisplayString[MAX_STRING_CHARS];
-    sint               voteTime;                     // level.time vote was called
-    sint               votePassThreshold;            // need at least this percent to pass
-    sint               voteExecuteTime;              // time the vote is executed
+    sint
+    voteTime;                     // level.time vote was called
+    sint
+    votePassThreshold;            // need at least this percent to pass
+    sint
+    voteExecuteTime;              // time the vote is executed
     sint               voteYes;
     sint               voteNo;
     sint               numVotingClients;             // set by CalculateRanks
-    
+
     // team voting state
     valueType              teamVoteString[ 2 ][ MAX_STRING_CHARS ];
     valueType              teamVoteDisplayString[ 2 ][ MAX_STRING_CHARS ];
-    sint               teamVoteTime[ 2 ];            // level.time vote was called
+    sint
+    teamVoteTime[ 2 ];            // level.time vote was called
     sint               teamVoteYes[ 2 ];
     sint               teamVoteNo[ 2 ];
     sint               numteamVotingClients[ 2 ];    // set by CalculateRanks
-    
+
     // spawn variables
-    bool              spawning;                     // the G_Spawn*() functions are valid
+    bool
+    spawning;                     // the G_Spawn*() functions are valid
     sint               numSpawnVars;
-    valueType*             spawnVars[ MAX_SPAWN_VARS ][ 2 ];  // key / value pairs
+    valueType
+    *spawnVars[ MAX_SPAWN_VARS ][ 2 ];  // key / value pairs
     sint               numSpawnVarChars;
     valueType              spawnVarChars[ MAX_SPAWN_VARS_CHARS ];
-    
+
     // intermission state
-    sint               intermissionQueued;           // intermission was qualified, but
+    sint
+    intermissionQueued;           // intermission was qualified, but
     // wait INTERMISSION_DELAY_TIME before
     // actually going there so the last
     // frag can be watched.  Disable future
     // kills during this delay
-    sint               intermissiontime;             // time the intermission was started
-    valueType*             changemap;
-    bool              readyToExit;                  // at least one client wants to exit
+    sint
+    intermissiontime;             // time the intermission was started
+    valueType             *changemap;
+    bool
+    readyToExit;                  // at least one client wants to exit
     sint               exitTime;
-    vec3_t            intermission_origin;          // also used for spectator spawns
+    vec3_t
+    intermission_origin;          // also used for spectator spawns
     vec3_t            intermission_angle;
-    
-    bool              locationLinked;               // target_locations get linked
-    gentity_t*        locationHead;                // head of the location list
-    
+
+    bool
+    locationLinked;               // target_locations get linked
+    gentity_t        *locationHead;                // head of the location list
+
     sint               numAlienSpawns;
     sint               numHumanSpawns;
-    
+
     sint               numAlienClients;
     sint               numHumanClients;
-    
+
     float32               averageNumAlienClients;
     sint               numAlienSamples;
     float32               averageNumHumanClients;
     sint               numHumanSamples;
-    
+
     sint               numLiveAlienClients;
     sint               numLiveHumanClients;
-    
+
     sint               alienBuildPoints;
     sint               alienBuildPointQueue;
     sint               alienNextQueueTime;
     sint               humanBuildPoints;
     sint               humanBuildPointQueue;
     sint               humanNextQueueTime;
-    
-    gentity_t*        markedBuildables[ MAX_GENTITIES ];
+
+    gentity_t        *markedBuildables[ MAX_GENTITIES ];
     sint               numBuildablesForRemoval;
-    
+
     sint               alienKills;
     sint               humanKills;
-    
+
     bool              reactorPresent;
     bool              overmindPresent;
     bool              overmindMuted;
-    
+
     sint               humanBaseAttackTimer;
-    
+
     team_t            lastWin;
-    
+
     bool              suddenDeath;
     sint               suddenDeathBeginTime;
     timeWarning_t     suddenDeathWarning;
     timeWarning_t     timelimitWarning;
-    
+
     spawnQueue_t      alienSpawnQueue;
     spawnQueue_t      humanSpawnQueue;
-    
+
     sint               alienStage2Time;
     sint               alienStage3Time;
     sint               humanStage2Time;
     sint               humanStage3Time;
-    
-    sint               alienStagedownCredits;    //credits at the time the opposing team
-    sint               humanStagedownCredits;   //became vulnerable to a stage-down
-    
-    
+
+    sint
+    alienStagedownCredits;    //credits at the time the opposing team
+    sint
+    humanStagedownCredits;   //became vulnerable to a stage-down
+
+
     bool              uncondAlienWin;
     bool              uncondHumanWin;
     bool              alienTeamLocked;
     bool              humanTeamLocked;
-    
+
     sint               unlaggedIndex;
     sint               unlaggedTimes[ MAX_UNLAGGED_MARKERS ];
-    
+
     valueType              layout[ MAX_QPATH ];
-    
+
     team_t            surrenderTeam;
-    
-    voice_t*          voices;
-    
+
+    voice_t          *voices;
+
     valueType              emoticons[ MAX_EMOTICONS ][ MAX_EMOTICON_NAME_LEN ];
     sint               emoticonCount;
     sint               numBots;
@@ -656,19 +717,17 @@ typedef struct
 #define CMD_LIVING        0x0080
 #define CMD_INTERMISSION  0x0100 // valid during intermission
 
-typedef struct
-{
-    valueType* cmdName;
+typedef struct {
+    valueType *cmdName;
     sint  cmdFlags;
-    void ( *cmdHandler )( gentity_t* ent );
+    void (*cmdHandler)(gentity_t *ent);
 } commands_t;
 
 #define MAX_ALIEN_BBOX  25
 
-typedef enum
-{
+typedef enum {
     IBE_NONE,
-    
+
     IBE_NOOVERMIND,
     IBE_ONEOVERMIND,
     IBE_NOALIENBP,
@@ -676,7 +735,7 @@ typedef enum
     IBE_NOCREEP,
     IBE_ONEHOVEL,
     IBE_HOVELEXIT,
-    
+
     IBE_ONEREACTOR,
     IBE_NOPOWERHERE,
     IBE_TNODEWARN, // not currently used
@@ -684,12 +743,12 @@ typedef enum
     IBE_RPTPOWERHERE,
     IBE_NOHUMANBP,
     IBE_NODCC,
-    
+
     IBE_NORMAL, // too steep
     IBE_NOROOM,
     IBE_PERMISSION,
     IBE_LASTSPAWN,
-    
+
     IBE_MAXERRORS
 } itemBuildError_t;
 
@@ -702,15 +761,14 @@ typedef enum
 
 #define MAX_ZAP_TARGETS LEVEL2_AREAZAP_MAX_TARGETS
 
-typedef struct zap_s
-{
+typedef struct zap_s {
     bool           used;
-    gentity_t*     creator;
-    gentity_t*     targets[ MAX_ZAP_TARGETS ];
+    gentity_t     *creator;
+    gentity_t     *targets[ MAX_ZAP_TARGETS ];
     sint            numTargets;
     sint            timeToLive;
     sint            damageUsed;
-    gentity_t*     effectChannel;
+    gentity_t     *effectChannel;
 } zap_t;
 
 #define MAX_MAP_ROTATIONS       16
@@ -719,30 +777,26 @@ typedef struct zap_s
 #define MAX_MAP_ROTATION_CONDS  4
 #define NOT_ROTATING           -1
 
-typedef enum
-{
+typedef enum {
     MCV_ERR,
     MCV_RANDOM,
     MCV_NUMCLIENTS,
     MCV_LASTWIN
 } mapConditionVariable_t;
 
-typedef enum
-{
+typedef enum {
     MCO_LT,
     MCO_EQ,
     MCO_GT
 } mapConditionOperator_t;
 
-typedef enum
-{
+typedef enum {
     MCT_ERR,
     MCT_MAP,
     MCT_ROTATION
 } mapConditionType_t;
 
-typedef struct mapRotationCondition_s
-{
+typedef struct mapRotationCondition_s {
     valueType                    dest[ MAX_QPATH ];
     bool                    unconditional;
     mapConditionVariable_t  lhs;
@@ -751,26 +805,24 @@ typedef struct mapRotationCondition_s
     team_t                  lastWin;
 } mapRotationCondition_t;
 
-typedef struct mapRotationEntry_s
-{
+typedef struct mapRotationEntry_s {
     valueType                    name[ MAX_QPATH ];
-    valueType                    postCmds[ MAX_MAP_COMMANDS ][ MAX_STRING_CHARS ];
+    valueType
+    postCmds[ MAX_MAP_COMMANDS ][ MAX_STRING_CHARS ];
     valueType                    layouts[ MAX_CVAR_VALUE_STRING ];
     sint                     numCmds;
     mapRotationCondition_t  conditions[ MAX_MAP_ROTATION_CONDS ];
     sint                     numConditions;
 } mapRotationEntry_t;
 
-typedef struct mapRotation_s
-{
+typedef struct mapRotation_s {
     valueType                name[ MAX_QPATH ];
     mapRotationEntry_t  maps[ MAX_MAP_ROTATION_MAPS ];
     sint                 numMaps;
     sint                 currentMap;
 } mapRotation_t;
 
-typedef struct mapRotations_s
-{
+typedef struct mapRotations_s {
     mapRotation_t   rotations[ MAX_MAP_ROTATIONS ];
     sint             numRotations;
 } mapRotations_t;
@@ -784,7 +836,8 @@ extern vmConvar_t mapname;
 extern vmConvar_t g_allowShare;
 extern vmConvar_t g_dedicated;
 extern vmConvar_t g_cheats;
-extern vmConvar_t g_maxclients;     // allow this many total, including spectators
+extern vmConvar_t
+g_maxclients;     // allow this many total, including spectators
 extern vmConvar_t g_maxGameClients;   // allow this many active
 extern vmConvar_t g_restarted;
 extern vmConvar_t g_minCommandPeriod;
@@ -882,23 +935,22 @@ extern vmConvar_t bot_fastchat;
 //
 // idGame
 //
-class idSGameLocal : public idSGame
-{
+class idSGameLocal : public idSGame {
 public:
     idSGameLocal();
     ~idSGameLocal();
-    
-    virtual void Init( sint levelTime, sint randomSeed, sint restart );
-    virtual void Shutdown( sint restart );
-    virtual void ClientBegin( sint clientNum );
-    virtual valueType* ClientConnect( sint clientNum, bool firstTime );
-    virtual void ClientThink( sint clientNum );
-    virtual void ClientUserinfoChanged( sint clientNum );
-    virtual void ClientDisconnect( sint clientNum );
-    virtual void ClientCommand( sint clientNum );
-    virtual void RunFrame( sint levelTime );
-    virtual bool ConsoleCommand( void );
-    virtual bool SnapshotCallback( sint entityNum, sint clientNum );
+
+    virtual void Init(sint levelTime, sint randomSeed, sint restart);
+    virtual void Shutdown(sint restart);
+    virtual void ClientBegin(sint clientNum);
+    virtual valueType *ClientConnect(sint clientNum, bool firstTime);
+    virtual void ClientThink(sint clientNum);
+    virtual void ClientUserinfoChanged(sint clientNum);
+    virtual void ClientDisconnect(sint clientNum);
+    virtual void ClientCommand(sint clientNum);
+    virtual void RunFrame(sint levelTime);
+    virtual bool ConsoleCommand(void);
+    virtual bool SnapshotCallback(sint entityNum, sint clientNum);
 };
 
 extern idSGameLocal sgameLocal;

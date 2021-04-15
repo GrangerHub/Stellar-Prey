@@ -31,29 +31,28 @@
 
 class idSGameLocal;
 
-class idSGameSvcmds : public idSGameLocal
-{
+class idSGameSvcmds : public idSGameLocal {
 public:
     idSGameSvcmds();
     ~idSGameSvcmds();
-    
-    static void EntityList_f( void );
-    static gclient_t* ClientForString( valueType* s );
-    static void Svcmd_Status_f( void );
-    static void Svcmd_ForceTeam_f( void );
-    static void Svcmd_LayoutSave_f( void );
-    static void Svcmd_LayoutLoad_f( void );
-    static void Svcmd_AdmitDefeat_f( void );
-    static void Svcmd_TeamWin_f( void );
-    static void Svcmd_Evacuation_f( void );
-    static void Svcmd_MapRotation_f( void );
-    static void Svcmd_TeamMessage_f( void );
-    static void Svcmd_SendMessage( void );
-    static void Svcmd_CenterPrint_f( void );
-    static void Svcmd_EjectClient_f( void );
-    static void Svcmd_DumpUser_f( void );
-    static void Svcmd_PrintQueue_f( void );
-    static void Svcmd_MessageWrapper( void );
+
+    static void EntityList_f(void);
+    static gclient_t *ClientForString(valueType *s);
+    static void Svcmd_Status_f(void);
+    static void Svcmd_ForceTeam_f(void);
+    static void Svcmd_LayoutSave_f(void);
+    static void Svcmd_LayoutLoad_f(void);
+    static void Svcmd_AdmitDefeat_f(void);
+    static void Svcmd_TeamWin_f(void);
+    static void Svcmd_Evacuation_f(void);
+    static void Svcmd_MapRotation_f(void);
+    static void Svcmd_TeamMessage_f(void);
+    static void Svcmd_SendMessage(void);
+    static void Svcmd_CenterPrint_f(void);
+    static void Svcmd_EjectClient_f(void);
+    static void Svcmd_DumpUser_f(void);
+    static void Svcmd_PrintQueue_f(void);
+    static void Svcmd_MessageWrapper(void);
 };
 
 #endif //!__SGAME_SVCMDS_H__

@@ -31,16 +31,15 @@
 
 class idCGameLocal;
 
-class idCGameMem : public idCGameLocal
-{
+class idCGameMem : public idCGameLocal {
 public:
     idCGameMem();
     ~idCGameMem();
-    
-    static void* Alloc( sint size );
-    static void Free( void* ptr );
-    static void InitMemory( void );
-    static void DefragmentMemory( void );
+
+    static void *Alloc(sint size);
+    static void Free(void *ptr);
+    static void InitMemory(void);
+    static void DefragmentMemory(void);
 };
 
 #endif //!__CGAME_MEM_H__
