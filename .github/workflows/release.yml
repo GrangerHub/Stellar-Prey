@@ -49,8 +49,8 @@ jobs:
     - name: Dist package
       id: dist
       run: |
-        cd basepath/
         source config.sh
+        cd basepath/
         zip -r "${GAME_APP_NAME}-${GAME_APP_VERSION}-${GAME_APP_STAGE}" .
         echo "::set-output name=game-app-name::$(echo $GAME_APP_NAME)"
         echo "::set-output name=dist-file::$(echo test.zip)"
