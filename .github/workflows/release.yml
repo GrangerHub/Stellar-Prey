@@ -6,9 +6,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     
-    strategy:
-      matrix:
-
     steps:
     - uses: actions/checkout@v2
     - name: Install dependencies
