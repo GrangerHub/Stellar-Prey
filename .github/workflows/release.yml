@@ -1,0 +1,94 @@
+name: release
+
+on: [release]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install dependencies
+      run: |        
+        apt-get update
+        apt-get install -y \
+        cmake \
+        cmake-curses-gui \
+        gdb \
+        git \
+        g++ \
+        libbz2-dev \
+        libcurl4-openssl-dev \
+        libfreetype6-dev \
+        libgeoip-dev \
+        libglew-dev \
+        libjpeg-dev \
+        libmysqlclient-dev \
+        libncursesw5-dev \
+        libogg-dev \
+        libopenal-dev \
+        libsdl1.2-dev \
+        libsdl2-dev \
+        libtdb-dev \
+        libvorbis-dev \
+        mysql-client \
+        ncurses-dev \
+        opencl-dev \
+        rsync \
+        tmux \
+        zip
+        apt-get clean
+    - name: Compile
+      run: |
+        ./sp-tools.sh default_config
+        ./sp-tools.sh init
+        ./sp-tools.sh install_default_paks
+        ./sp-tools.sh configure_cmake both
+        ./sp-tools.sh build both
+    - name: Dist package
+      id: dist
+      run: |
+        cd basepath/
+        source config.sh
+        zip -r "${GAME_APP_NAME}-${GAME_APP_VERSION}-${GAME_APP_STAGE}" .
+        echo "::set-output name=game-app-name::$(echo $GAME_APP_NAME)"
+        echo "::set-output name=dist-file::$(echo test.zip)"
+    - name: Create Draft Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.dist.outputs.game-app-name }}
+        release_name: ${{ steps.dist.outputs.game-app-name }}
+        draft: true
+        prerelease: true
+
+    - name: Upload Release
+      uses: actions/upload-release-asset@v1.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./${{ steps.dist.outputs.game-app-name }}
+        asset_name: ${{ steps.dist.outputs.game-app-name }}
+        asset_content_type: application/zip
+
+    - name: Publish Release - testing, disabled
+      if: false
+      uses: eregon/publish-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        release_id: ${{ steps.create_release.outputs.id }}
+      
+    - name: Publish Release (alternative) - testing, disabled
+      if: false
+      uses: elgohr/Github-Release-Action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+      with:
+        args: MyReleaseMessage
