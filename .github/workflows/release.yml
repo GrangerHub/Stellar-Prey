@@ -1,6 +1,8 @@
 name: release
 
-on: [release]
+on:
+  release:
+    types: [created]
 
 jobs:
   build:
@@ -71,8 +73,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./${{ steps.dist.outputs.game-app-name }}
-        asset_name: ${{ steps.dist.outputs.game-app-name }}
+        asset_path: "./${{ steps.dist.outputs.game-app-name }}"
+        asset_name: "${{ steps.dist.outputs.game-app-name }}"
         asset_content_type: application/zip
 
     - name: Publish Release - testing, disabled
