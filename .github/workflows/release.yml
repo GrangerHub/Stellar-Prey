@@ -10,8 +10,8 @@ jobs:
     - uses: actions/checkout@v2
     - name: Install dependencies
       run: |        
-        apt-get update
-        apt-get install -y \
+        sudo apt-get update && \
+        sudo apt-get install -y \
         cmake \
         cmake-curses-gui \
         gdb \
@@ -36,8 +36,8 @@ jobs:
         opencl-dev \
         rsync \
         tmux \
-        zip
-        apt-get clean
+        zip && \
+        sudo apt-get clean
     - name: Compile
       run: |
         ./sp-tools.sh default_config
