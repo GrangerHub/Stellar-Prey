@@ -42,7 +42,8 @@ jobs:
       run: |
         ./sp-tools.sh default_config
         ./sp-tools.sh init
-        ./sp-tools.sh install_default_paks
+        # following fails because of shallow clone on checkout
+        #./sp-tools.sh install_default_paks 
         ./sp-tools.sh configure_cmake both
         ./sp-tools.sh build both
     - name: Dist package
