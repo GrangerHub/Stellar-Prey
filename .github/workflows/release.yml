@@ -53,7 +53,7 @@ jobs:
       run: |
         source config.sh
         cd basepath/
-        export DIST_FILE="${GAME_APP_NAME}-${GAME_APP_VERSION}-${GAME_APP_STAGE}.${{ github.action }}.zip"
+        export DIST_FILE="${GAME_APP_NAME}-${GAME_APP_VERSION}-${GAME_APP_STAGE}.${{ github.workflow }}.zip"
         echo "::set-output name=dist-file::$(echo ${DIST_FILE})"
         zip -r "../${DIST_FILE}" .
         echo "::set-output name=game-app-name::$(echo $GAME_APP_NAME)"
