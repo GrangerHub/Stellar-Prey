@@ -2,7 +2,7 @@ name: release
 
 on:
   release:
-    types: [created]
+    types: [publish]
 
 jobs:
   build:
@@ -55,7 +55,7 @@ jobs:
         cd basepath/
         export DIST_FILE="${GAME_APP_NAME}-${GAME_APP_VERSION}-${GAME_APP_STAGE}.zip"
         echo "::set-output name=dist-file::$(echo ${DIST_FILE})"
-        zip -r "${DIST_FILE}" .
+        zip -r "../${DIST_FILE}" .
         echo "::set-output name=game-app-name::$(echo $GAME_APP_NAME)"
     - name: Create Draft Release
       id: create_release
