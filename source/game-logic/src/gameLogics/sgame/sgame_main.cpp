@@ -136,6 +136,8 @@ vmConvar_t  g_floodMinTime;
 vmConvar_t  g_layouts;
 vmConvar_t  g_layoutAuto;
 vmConvar_t  g_emoticonsAllowedInNames;
+vmConvar_t  g_newbieNameNumbering;
+vmConvar_t  g_newbieNamePrefix;
 vmConvar_t  g_admin;
 vmConvar_t  g_adminLog;
 vmConvar_t  g_adminParseSay;
@@ -143,7 +145,9 @@ vmConvar_t  g_adminNameProtect;
 vmConvar_t  g_adminTempBan;
 vmConvar_t  g_dretchPunt;
 vmConvar_t  g_privateMessages;
+vmConvar_t  g_specChat;
 vmConvar_t  g_publicAdminMessages;
+vmConvar_t  g_censorship;
 vmConvar_t  g_tag;
 vmConvar_t  bot_developer;
 vmConvar_t  bot_challenge;
@@ -277,6 +281,8 @@ static cvarTable_t   gameCvarTable[ ] = {
     { &g_layoutAuto, "g_layoutAuto", "1", CVAR_ARCHIVE, 0, false  },
 
     { &g_emoticonsAllowedInNames, "g_emoticonsAllowedInNames", "1", CVAR_LATCH | CVAR_ARCHIVE, 0, false  },
+    { &g_newbieNameNumbering, "g_newbieNameNumbering", "1", CVAR_ARCHIVE, 0, false  },
+    { &g_newbieNamePrefix, "g_newbieNamePrefix", "UnnamedPlayer#", CVAR_ARCHIVE, 0, false  },
 
     { &g_admin, "g_admin", "admin.dat", CVAR_ARCHIVE, 0, false  },
     { &g_adminLog, "g_adminLog", "admin.log", CVAR_ARCHIVE, 0, false  },
@@ -287,7 +293,10 @@ static cvarTable_t   gameCvarTable[ ] = {
     { &g_dretchPunt, "g_dretchPunt", "0", CVAR_ARCHIVE, 0, false  },
 
     { &g_privateMessages, "g_privateMessages", "1", CVAR_ARCHIVE, 0, false  },
+    { &g_specChat, "g_specChat", "1", CVAR_ARCHIVE, 0, false  },
     { &g_publicAdminMessages, "g_publicAdminMessages", "1", CVAR_ARCHIVE, 0, false  },
+
+    { &g_censorship, "g_censorship", "", CVAR_ARCHIVE, 0, false  },
 
     { &g_tag, "g_tag", "main", CVAR_INIT, 0, false },
 
@@ -578,6 +587,7 @@ void idSGameLocal::Init(sint levelTime, sint randomSeed, sint restart) {
     trap_Cvar_Set("g_mapConfigsLoaded", "0");
 
     adminLocal.AdminReadconfig(nullptr, 0);
+    idSGameCmds::LoadCensors();
 
     // initialize all entities for this game
     ::memset(g_entities, 0, MAX_GENTITIES * sizeof(g_entities[0]));

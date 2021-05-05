@@ -43,6 +43,8 @@ idSystem *idsystem;
 idClientGUISystem *idGUISystem;
 idClientScreenSystem *idScreenSystem;
 idParseSystem *ParseSystem;
+idClientCinemaSystem *idClientCinema;
+idClientLocalizationSystem *clientLocalization;
 
 #ifdef __LINUX__
 extern "C" idCGame *cgameEntry(cgameImports_t *cgimports)
@@ -64,6 +66,8 @@ Q_EXPORT idCGame *cgameEntry(cgameImports_t *cgimports)
     idGUISystem = imports->idGUISystem;
     idScreenSystem = imports->clientScreenSystem;
     ParseSystem = imports->parseSystem;
+    idClientCinema = imports->clientCinemaSystem;
+    clientLocalization = imports->clientLocalization;
 
     return cgame;
 }
@@ -559,23 +563,24 @@ void trap_SnapVector(float32 *v) {
 
 sint trap_CIN_PlayCinematic(pointer arg0, sint xpos, sint ypos, sint width,
                             sint height, sint bits) {
-    return imports->CIN_PlayCinematic(arg0, xpos, ypos, width, height, bits);
+    return imports->clientCinemaSystem->PlayCinematic(arg0, xpos, ypos, width,
+            height, bits);
 }
 
 e_status trap_CIN_StopCinematic(sint handle) {
-    return imports->CIN_StopCinematic(handle);
+    return imports->clientCinemaSystem->CinemaStopCinematic(handle);
 }
 
 e_status trap_CIN_RunCinematic(sint handle) {
-    return imports->CIN_RunCinematic(handle);
+    return imports->clientCinemaSystem->CinemaRunCinematic(handle);
 }
 
 void trap_CIN_DrawCinematic(sint handle) {
-    imports->CIN_DrawCinematic(handle);
+    imports->clientCinemaSystem->CinemaDrawCinematic(handle);
 }
 
 void trap_CIN_SetExtents(sint handle, sint x, sint y, sint w, sint h) {
-    imports->CIN_SetExtents(handle, x, y, w, h);
+    imports->clientCinemaSystem->SetExtents(handle, x, y, w, h);
 }
 
 void trap_R_RemapShader(pointer oldShader, pointer newShader,
@@ -629,7 +634,7 @@ void trap_Key_KeysForBinding(pointer binding, sint *key1, sint *key2) {
 }
 
 void trap_CG_TranslateString(pointer string, valueType *buf) {
-    imports->CL_TranslateString(string, buf);
+    imports->clientLocalization->TranslateString(string, buf);
 }
 
 bool trap_R_inPVS(const vec3_t p1, const vec3_t p2) {
@@ -668,7 +673,7 @@ sint trap_R_LightForPoint(vec3_t point, vec3_t ambientLight,
 }
 
 void trap_TranslateString(pointer string, valueType *buf) {
-    imports->CL_TranslateString(string, buf);
+    imports->clientLocalization->TranslateString(string, buf);
 }
 
 sfxHandle_t trap_S_RegisterSound(pointer sample) {

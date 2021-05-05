@@ -66,7 +66,10 @@ public:
     static void BodyFree(gentity_t *ent);
     static bool IsEmoticon(pointer s, bool *escaped);
     static bool NonSegModel(pointer filename);
-    static void ClientCleanName(pointer in, valueType *out, sint outSize);
+    static const valueType *G_ClientNewbieName(gclient_t *client);
+    static bool IsNewbieName(const valueType *name);
+    static void ClientCleanName(pointer in, valueType *out, sint outSize,
+                                gclient_t *client);
     static void BotBegin(sint clientNum);
 };
 

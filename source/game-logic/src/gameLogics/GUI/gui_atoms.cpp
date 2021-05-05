@@ -63,6 +63,35 @@ valueType *UI_Argv(sint arg) {
     return buffer;
 }
 
+valueType *UI_ConcatArgs(sint arg, valueType *buf, sint len) {
+    valueType *p;
+    sint      c;
+
+    if(len <= 0) {
+        return buf;
+    }
+
+    p = buf;
+    c = trap_Argc();
+
+    for(; arg < c; arg++) {
+        valueType *argp = UI_Argv(arg);
+
+        while(*argp && p < &buf[len - 1]) {
+            *p++ = *argp++;
+        }
+
+        if(p < &buf[len - 2]) {
+            *p++ = ' ';
+        } else {
+            break;
+        }
+    }
+
+    *p = '\0';
+
+    return buf;
+}
 
 valueType *UI_Cvar_VariableString(pointer var_name) {
     static valueType  buffer[MAX_STRING_CHARS];
@@ -96,60 +125,108 @@ static void UI_CloseMenus_f(void) {
 }
 
 static void UI_MessageMode_f(void) {
-    valueType *arg = UI_Argv(0);
-    valueType buffer[ MAX_SAY_TEXT ] = "";
-    sint i;
+    char *arg = UI_Argv(0);
 
-    for(i = 1; i < trap_Argc(); i++) {
-        Q_strcat(buffer, sizeof(buffer), UI_Argv(i));
+    if(!chatInfo.say_make_current_line_blank) {
+        char buffer[ MAX_CVAR_VALUE_STRING ];
+
+        trap_Cvar_VariableStringBuffer("ui_sayBuffer", buffer, sizeof(buffer));
+
+        if(buffer[0]) {
+            chatInfo.historyLine = chatInfo.nextHistoryLine;
+            chatInfo.say_history_current = true;
+            chatInfo.say_make_current_line_blank = true;
+            trap_Cvar_Set("ui_sayBuffer", "");
+        }
     }
 
-    trap_Cvar_Set("ui_sayBuffer", buffer);
-    uiInfo.chatTargetClientNum = -1;
-    uiInfo.chatTeam = false;
-    uiInfo.chatAdmins = false;
-    uiInfo.chatClan = false;
-    uiInfo.chatPrompt = false;
+    trap_Cvar_Set("ui_sayBuffer", "");
+
+    switch(arg[11]) {
+        default:
+        case '\0':
+            // Global
+            chatInfo.chat_mode = CHAT_GLOBAL;
+            chatInfo.clientNum = -1;
+            break;
+
+        case '2':
+            // Team
+            chatInfo.chat_mode = CHAT_TEAM;
+            chatInfo.clientNum = -1;
+            break;
+
+        case '3':
+            // Crosshair
+            chatInfo.chat_mode = CHAT_CROSSHAIR;
+            chatInfo.clientNum = trap_CrosshairPlayer();
+            break;
+
+        case '4':
+            // Area
+            chatInfo.chat_mode = CHAT_AREA;
+            chatInfo.clientNum = -1;
+            break;
+
+        case '5':
+            // Admins
+            chatInfo.chat_mode = CHAT_ADMINS;
+            chatInfo.clientNum = -1;
+            break;
+
+        case '6':
+            // Clan
+            chatInfo.chat_mode = CHAT_CLAN;
+            chatInfo.clientNum = -1;
+            break;
+    }
+
     trap_Key_SetCatcher(KEYCATCH_UI);
     Menus_CloseByName("say");
     Menus_CloseByName("say_team");
     Menus_CloseByName("say_crosshair");
-    Menus_CloseByName("say_attacker");
+    Menus_CloseByName("say_area");
     Menus_CloseByName("say_admins");
-    Menus_CloseByName("say_prompt");
     Menus_CloseByName("say_clan");
 
-    switch(arg[ 11 ]) {
-        default:
-        case '\0':
+    switch(chatInfo.chat_mode) {
+        case CHAT_GLOBAL:
             Menus_ActivateByName("say");
             break;
 
-        case '2':
-            uiInfo.chatTeam = true;
+        case CHAT_TEAM:
             Menus_ActivateByName("say_team");
             break;
 
-        case '3':
-            uiInfo.chatTargetClientNum = trap_CrosshairPlayer();
+        case CHAT_CROSSHAIR:
             Menus_ActivateByName("say_crosshair");
             break;
 
-        case '4':
-            uiInfo.chatTargetClientNum = trap_LastAttacker();
-            Menus_ActivateByName("say_attacker");
+        case CHAT_AREA:
+            Menus_ActivateByName("say_area");
             break;
 
-        case '5':
-            uiInfo.chatAdmins = true;
+        case CHAT_ADMINS:
             Menus_ActivateByName("say_admins");
             break;
 
-        case '6':
-            uiInfo.chatClan = true;
+        case CHAT_CLAN:
             Menus_ActivateByName("say_clan");
             break;
+
+        case NUM_CHAT_MODES:
+            chatInfo.chat_mode = CHAT_GLOBAL;
+            Menus_ActivateByName("say");
+            break;
     }
+}
+
+static void UI_Me_f(void) {
+    char buf[MAX_SAY_TEXT - 4];
+
+    UI_ConcatArgs(1, buf, sizeof(buf));
+
+    trap_Cmd_ExecuteText(EXEC_APPEND, va("say \"/me %s\"\n", buf));
 }
 
 static void UI_Prompt_f(void) {
@@ -193,6 +270,7 @@ struct {
     { "ui_load", UI_Load },
     { "ui_report", UI_Report },
     { "ui_cache", UI_Cache_f },
+    {"me", UI_Me_f},
     { "messagemode", UI_MessageMode_f },
     { "messagemode2", UI_MessageMode_f },
     { "messagemode3", UI_MessageMode_f },

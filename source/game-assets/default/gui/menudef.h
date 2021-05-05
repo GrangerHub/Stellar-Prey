@@ -30,20 +30,28 @@
 #ifndef __MENUDEF_H__
 #define __MENUDEF_H__
 
-#define ITEM_TYPE_TEXT                    0     // simple text
-#define ITEM_TYPE_BUTTON                  1     // button, basically text with a border
-#define ITEM_TYPE_RADIOBUTTON             2     // toggle button, may be grouped
-#define ITEM_TYPE_CHECKBOX                3     // check box
-#define ITEM_TYPE_EDITFIELD               4     // editable text, associated with a cvar
-#define ITEM_TYPE_COMBO                   5     // drop down list
-#define ITEM_TYPE_LISTBOX                 6     // scrollable list
-#define ITEM_TYPE_MODEL                   7     // model
-#define ITEM_TYPE_OWNERDRAW               8     // owner draw, name specs what it is
-#define ITEM_TYPE_NUMERICFIELD            9     // editable text, associated with a cvar
-#define ITEM_TYPE_SLIDER                  10    // mouse speed, volume, etc.
-#define ITEM_TYPE_YESNO                   11    // yes no cvar setting
-#define ITEM_TYPE_MULTI                   12    // multiple list setting, enumerated
-#define ITEM_TYPE_BIND                    13    // multiple list setting, enumerated
+enum
+{
+  ITEM_TYPE_ANY = -1,     // invalid type
+  ITEM_TYPE_NONE,         // no specified type
+  ITEM_TYPE_TEXT,         // simple text
+  ITEM_TYPE_BUTTON,       // button, basically text with a border
+  ITEM_TYPE_RADIOBUTTON,  // toggle button, may be grouped
+  ITEM_TYPE_CHECKBOX,     // check box
+  ITEM_TYPE_EDITFIELD,    // editable text, associated with a cvar
+  ITEM_TYPE_SAYFIELD,     // the chat field
+  ITEM_TYPE_CYCLE,        // cycling list
+  ITEM_TYPE_LISTBOX,      // scrollable list
+  ITEM_TYPE_COMBOBOX,     // drop down scrollable list
+  ITEM_TYPE_MODEL,        // model
+  ITEM_TYPE_OWNERDRAW,    // owner draw, has an associated ownerdraw number
+  ITEM_TYPE_NUMERICFIELD, // editable text, associated with a cvar
+  ITEM_TYPE_SLIDER,       // mouse speed, volume, etc.
+  ITEM_TYPE_YESNO,        // boolean cvar setting
+  ITEM_TYPE_MULTI,        // multiple list setting, enumerated
+  ITEM_TYPE_BIND,          // keyboard control configuration
+  ITEM_TYPE_IMAGE
+};
 
 #define ALIGN_LEFT                        0     // left alignment
 #define ALIGN_CENTER                      1     // center alignment

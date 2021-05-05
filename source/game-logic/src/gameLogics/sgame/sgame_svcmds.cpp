@@ -156,21 +156,14 @@ void idSGameSvcmds::EntityList_f(void) {
 }
 
 gclient_t *idSGameSvcmds::ClientForString(valueType *s) {
-    sint idnum, count;
-    sint pids[ MAX_CLIENTS ];
+    sint  idnum;
+    valueType err[ MAX_STRING_CHARS ];
 
-    if((count = idSGameCmds::ClientNumbersFromString(s, pids,
-                MAX_CLIENTS)) != 1) {
-        idnum = idSGameCmds::ClientNumberFromString(s);
+    idnum = idSGameCmds::ClientNumberFromString(s, err, sizeof(err));
 
-        if(idnum == -1) {
-            valueType err[ MAX_STRING_CHARS ];
-            idSGameCmds::MatchOnePlayer(pids, count, err, sizeof(err));
-            idSGameMain::Printf("%s\n", err);
-            return nullptr;
-        }
-    } else {
-        idnum = pids[0];
+    if(idnum == -1) {
+        idSGameMain::Printf("%s\n", err);
+        return nullptr;
     }
 
     return &level.clients[ idnum ];
@@ -508,14 +501,18 @@ void idSGameSvcmds::Svcmd_PrintQueue_f(void) {
 
 // dumb wrapper for "a" and "m"
 void idSGameSvcmds::Svcmd_MessageWrapper(void) {
-    valueType cmd[ 2 ];
+    char cmd[ 5 ];
 
     trap_Argv(0, cmd, sizeof(cmd));
 
     if(!Q_stricmp(cmd, "a")) {
-        idSGameCmds::AdminMessage_f(nullptr);
-    } else {
-        idSGameCmds::PrivateMessage_f(nullptr);
+        idSGameCmds::AdminMessage_f(NULL);
+    } else if(!Q_stricmp(cmd, "m")) {
+        idSGameCmds::PrivateMessage_f(NULL);
+    } else if(!Q_stricmp(cmd, "say")) {
+        idSGameCmds::Say(NULL, SAY_ALL, idSGameCmds::ConcatArgs(1));
+    } else if(!Q_stricmp(cmd, "chat")) {
+        idSGameCmds::Say(NULL, SAY_RAW, idSGameCmds::ConcatArgs(1));
     }
 }
 
@@ -539,11 +536,12 @@ struct {
     { "admitDefeat", false, &idSGameSvcmds::Svcmd_AdmitDefeat_f },
     { "evacuation", false, &idSGameSvcmds::Svcmd_Evacuation_f },
     { "printqueue", false, &idSGameSvcmds::Svcmd_PrintQueue_f },
+    { "loadcensors", false, &idSGameCmds::LoadCensors },
 
     // don't handle communication commands unless dedicated
     { "say_team", true, &idSGameSvcmds::Svcmd_TeamMessage_f },
-    { "say", true, &idSGameSvcmds::Svcmd_SendMessage },
-    { "chat", true, &idSGameSvcmds::Svcmd_SendMessage },
+    { "say", true, &idSGameSvcmds::Svcmd_MessageWrapper },
+    { "chat", true, &idSGameSvcmds::Svcmd_MessageWrapper },
     { "cp", true, &idSGameSvcmds::Svcmd_CenterPrint_f },
     { "m", true, &idSGameSvcmds::Svcmd_MessageWrapper },
     { "a", true, &idSGameSvcmds::Svcmd_MessageWrapper }
@@ -582,4 +580,3 @@ bool idSGameLocal::ConsoleCommand(void) {
 
     return false;
 }
-

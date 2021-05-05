@@ -975,7 +975,7 @@ typedef struct {
     bool showScores;
     bool scoreBoardShowing;
     sint scoreFadeTime;
-    valueType killerName[ MAX_NAME_LENGTH ];
+    valueType killerName[ MAX_COLORFUL_NAME_LENGTH ];
     valueType spectatorList[ MAX_STRING_CHARS ]; // list of names
     sint spectatorLen; // length of list
     float32 spectatorWidth; // width in device units

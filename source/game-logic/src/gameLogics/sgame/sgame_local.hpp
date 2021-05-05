@@ -316,6 +316,12 @@ typedef struct {
     clientList_t ignoreList;
 } clientSession_t;
 
+// for sending private messages to your previous recipients
+typedef struct prevRecipients_s {
+    int  id[(MAX_CLIENTS * 2) ];
+    int  count;
+} prevRecipients_t;
+
 // data to store details of clients that have abnormally disconnected
 typedef struct connectionRecord_s {
     sint       clientNum;
@@ -339,7 +345,7 @@ typedef struct {
     bool
     stickySpec;         // don't stop spectating a player after they get killed
     bool                pmoveFixed;         //
-    valueType                netname[ MAX_NAME_LENGTH ];
+    valueType                netname[ MAX_COLORFUL_NAME_LENGTH ];
     sint                 maxHealth;          // for handicapping
     sint
     enterTime;          // level.time the client entered the game
@@ -705,6 +711,9 @@ typedef struct {
     valueType              emoticons[ MAX_EMOTICONS ][ MAX_EMOTICON_NAME_LEN ];
     sint               emoticonCount;
     sint               numBots;
+
+    // for use by the server console
+    prevRecipients_t   prevRecipients;
 } level_locals_t;
 
 #define CMD_CHEAT         0x0001
@@ -916,6 +925,8 @@ extern vmConvar_t g_mapConfigs;
 extern vmConvar_t g_layouts;
 extern vmConvar_t g_layoutAuto;
 extern vmConvar_t g_emoticonsAllowedInNames;
+extern vmConvar_t g_newbieNameNumbering;
+extern vmConvar_t g_newbieNamePrefix;
 extern vmConvar_t g_admin;
 extern vmConvar_t g_adminLog;
 extern vmConvar_t g_adminParseSay;
@@ -923,7 +934,9 @@ extern vmConvar_t g_adminNameProtect;
 extern vmConvar_t g_adminTempBan;
 extern vmConvar_t g_dretchPunt;
 extern vmConvar_t g_privateMessages;
+extern vmConvar_t g_specChat;
 extern vmConvar_t g_publicAdminMessages;
+extern vmConvar_t g_censorship;
 extern vmConvar_t bot_developer;
 extern vmConvar_t bot_challenge;
 extern vmConvar_t bot_thinktime;

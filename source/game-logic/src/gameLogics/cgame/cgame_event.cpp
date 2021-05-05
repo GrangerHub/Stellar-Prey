@@ -55,7 +55,8 @@ void idCGameEvent::Obituary(entityState_t *ent) {
     sint mod, target, attacker;
     valueType *message, *message2;
     pointer targetInfo, attackerInfo;
-    valueType targetName[ MAX_NAME_LENGTH ], attackerName[ MAX_NAME_LENGTH ],
+    valueType targetName[ MAX_COLORFUL_NAME_LENGTH ],
+              attackerName[ MAX_COLORFUL_NAME_LENGTH ],
               className[ 64 ];
     gender_t gender;
     clientInfo_t *ci;
@@ -1180,4 +1181,3 @@ void idCGameEvent::CheckEvents(centity_t *cent) {
         cent->currentState._event = oldEvent;
     }
 }
-

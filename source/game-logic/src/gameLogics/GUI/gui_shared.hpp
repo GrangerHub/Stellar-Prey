@@ -81,7 +81,7 @@
 #define MAX_STRING_HANDLES 4096
 
 #define MAX_SCRIPT_ARGS 12
-#define MAX_EDITFIELD 256
+#define MAX_EDITFIELD 511
 #define ITEM_VALUE_OFFSET 8
 
 #define ART_FX_BASE      "menu/art/fx_base"
@@ -256,6 +256,16 @@ modelDef_t;
 #define CVAR_SHOW      0x00000004
 #define CVAR_HIDE      0x00000008
 
+typedef enum {
+    TYPE_ANY = -1,
+    TYPE_NONE,
+    TYPE_LIST,
+    TYPE_EDIT,
+    TYPE_MULTI,
+    TYPE_COMBO,
+    TYPE_MODEL
+} itemDataType_t;
+
 typedef struct itemDef_s {
     WinDow window;                 // common positional, border, style, layout info
     rectangle textRect;            // rectangle the text ( if any ) consumes
@@ -278,6 +288,7 @@ typedef struct itemDef_s {
     pointer onFocus;           // select script
     pointer leaveFocus;        // select script
     pointer onTextEntry;       // called when text entered
+    pointer onCharEntry;
     pointer cvar;              // associated cvar
     pointer cvarTest;          // associated cvar for enable actions
     pointer enableCvar;         // enable, disable, show, or hide based on value, this can contain a list
@@ -445,6 +456,8 @@ typedef struct {
     float32 cursory;
     float32 cursordx;
     float32 cursordy;
+    float smallFontScale;
+    float bigFontScale;
     bool debug;
 
     cachedAssets_t Assets;
@@ -489,7 +502,9 @@ void Menu_PaintAll(void);
 void Menu_Reset(void);
 bool Menus_AnyFullScreenVisible(void);
 menuDef_t *Menus_ActivateByName(pointer p);
+menuDef_t *Menus_ReplaceActiveByName(pointer p);
 void Menus_Activate(menuDef_t *menu);
+bool Menus_ReplaceActive(menuDef_t *menu);
 menuDef_t *Menu_Get(sint handle);
 
 displayContextDef_t *Display_GetContext(void);
@@ -547,5 +562,41 @@ sint      trap_PC_SourceFileAndLine(sint handle, valueType *filename,
 void    BindingFromName(pointer cvar);
 extern valueType g_nameBind1[ 32 ];
 extern valueType g_nameBind2[ 32 ];
+
+typedef enum {
+    CHAT_GLOBAL = 0,
+    CHAT_TEAM,
+    CHAT_CROSSHAIR,
+    CHAT_AREA,
+    CHAT_ADMINS,
+    CHAT_CLAN,
+
+    NUM_CHAT_MODES
+} chatMode_t;
+
+extern sint key_pressed_onCharEntry; // used by onCharEntry
+extern bool ctrl_held;
+
+#define MAX_SAY_HISTORY_LINES 32
+
+typedef struct chatInfo_s {
+    chatMode_t chat_mode;
+    sint       chat_mode_blink_time;
+    sint       clientNum;
+
+    bool       say_history_current;
+    bool       say_make_current_line_blank;
+    valueType  say_unsubmitted_line[MAX_CVAR_VALUE_STRING];
+    valueType  say_history_lines[MAX_SAY_HISTORY_LINES][MAX_CVAR_VALUE_STRING];
+    sint
+    nextHistoryLine; // the last line in the history buffer, not masked
+    sint       historyLine;     // the line being displayed from history buffer
+    // will be <= chatInfo.nextHistoryLine
+    sint       *say_cursor_pos;
+    sint       say_max_chars;
+    sint       say_length;
+} chatInfo_t;
+
+extern chatInfo_t chatInfo;
 
 #endif //!__GUI_SHARED_H__

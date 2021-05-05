@@ -841,16 +841,54 @@ bool idSGameClient::IsEmoticon(pointer s, bool *escaped) {
 
 /*
 ===========
-G_ClientCleanName
+idSGameClient::IsNewbieName
+============
+*/
+bool idSGameClient::IsNewbieName(const valueType *name) {
+    valueType testName[ MAX_NAME_LENGTH ];
+
+    idSGameCmds::DecolorString((valueType *)name, testName, sizeof(testName));
+
+    if(!Q_stricmp(testName, "UnnamedPlayer")) {
+        return true;
+    }
+
+    if(g_newbieNameNumbering.integer &&
+            g_newbieNamePrefix.string[ 0 ] &&
+            !Q_stricmpn(testName, g_newbieNamePrefix.string,
+                        strlen(g_newbieNamePrefix.string))) {
+        return true;
+    }
+
+    return false;
+}
+
+/*
+===========
+idSGameClient::ClientNewbieName
+============
+*/
+const valueType *idSGameClient::G_ClientNewbieName(gclient_t *client) {
+    static sint      nextNumber = 1;
+    static valueType name[ MAX_COLORFUL_NAME_LENGTH ];
+    sint             number;
+
+    return "UnnamedPlayer";
+}
+
+/*
+===========
+idSGameClient::ClientCleanName
 ============
 */
 void idSGameClient::ClientCleanName(pointer in, valueType *out,
-                                    sint outSize) {
-    sint   len, colorlessLen;
-    valueType  *p;
-    sint   spaces;
-    bool escaped;
-    bool invalid = false;
+                                    sint outSize, gclient_t *client) {
+    sint      len, colorlessLen;
+    valueType *p;
+    sint      spaces;
+    bool      escaped;
+    bool      invalid = false;
+    int       total_color_length = 0;
 
     //save room for trailing null byte
     outSize--;
@@ -868,29 +906,73 @@ void idSGameClient::ClientCleanName(pointer in, valueType *out,
         }
 
         // don't allow nonprinting characters or (dead) console keys
-        if(*in < ' ' || *in > '}' || *in == '`') {
+        if(*in < ' ' || *in > '}' || *in == '`' || *in == '~') {
             continue;
         }
 
         // check colors
         if(Q_IsColorString(in)) {
+            int color_string_length = Q_ColorStringLength(in);
+            int checked_index = color_string_length;
+            bool skip = false;
+            const char *temp_ptr = in;
+
+            //remove unused color strings
+            while(1) {
+                if(Q_IsColorString(temp_ptr + checked_index)) {
+                    skip = true;
+                    break;
+                } else if(*(temp_ptr + checked_index) == ' ') {
+                    //spaces don't use the color strings
+                    checked_index++;
+
+                    if(!(*(temp_ptr + checked_index))) {
+                        //reached the end of the name without using this string
+                        skip = true;
+                        break;
+                    }
+
+                    continue;
+                }
+
+                if(!(*(temp_ptr + checked_index))) {
+                    //reached the end of the name without using this string
+                    skip = true;
+                    break;
+                }
+
+                //this color string is used
+                break;
+            }
+
+            if(skip) {
+                in += (color_string_length - 1);
+                continue;
+            }
+
             in++;
 
             // make sure room in dest for both chars
-            if(len > outSize - 2) {
+            if(len > outSize - color_string_length) {
                 break;
             }
 
             *out++ = Q_COLOR_ESCAPE;
 
-            // don't allow black in a name, period
-            if(ColorIndex(*in) == 0) {
-                *out++ = COLOR_WHITE;
-            } else {
+            if(Q_IsHardcodedColor(in - 1) || Q_IsColorNULLString(in - 1)) {
                 *out++ = *in;
+            } else {
+                int i;
+
+                for(i = 0; i < (color_string_length - 1); i++) {
+                    *out++ = *(in + i);
+                }
+
+                in += color_string_length - 2;
             }
 
-            len += 2;
+            len += color_string_length;
+            total_color_length += color_string_length;
             continue;
         } else if(!g_emoticonsAllowedInNames.integer && IsEmoticon(in, &escaped)) {
             // make sure room in dest for both chars
@@ -907,6 +989,10 @@ void idSGameClient::ClientCleanName(pointer in, valueType *out,
             }
 
             continue;
+        } else if(Q_IsColorEscapeEscape(in)) {
+            *out++ = *in;
+            in++;
+            len++;
         }
 
         // don't allow too many consecutive spaces
@@ -921,6 +1007,10 @@ void idSGameClient::ClientCleanName(pointer in, valueType *out,
         }
 
         if(len > outSize - 1) {
+            break;
+        }
+
+        if((len - total_color_length) >= MAX_NAME_LENGTH) {
             break;
         }
 
@@ -946,9 +1036,16 @@ void idSGameClient::ClientCleanName(pointer in, valueType *out,
         invalid = true;
     }
 
+    // don't allow @ in names because it messes up player mentions
+    if(strchr(p, '@')) {
+        trap_SendServerCommand(client - level.clients, va(
+                                   "print \"'@' is not a valid character for player names\n\""));
+        invalid = true;
+    }
+
     // if something made the name bad, put them back to UnnamedPlayer
     if(invalid) {
-        Q_strncpyz(p, "UnnamedPlayer", outSize);
+        Q_strncpyz(p, G_ClientNewbieName(client), outSize);
     }
 }
 
@@ -1030,8 +1127,8 @@ void idSGameLocal::ClientUserinfoChanged(sint clientNum) {
     valueType      model[ MAX_QPATH ];
     valueType      buffer[ MAX_QPATH ];
     valueType      filename[ MAX_QPATH ];
-    valueType      oldname[ MAX_NAME_LENGTH ];
-    valueType      newname[ MAX_NAME_LENGTH ];
+    valueType      oldname[ MAX_COLORFUL_NAME_LENGTH ];
+    valueType      newname[ MAX_COLORFUL_NAME_LENGTH ];
     valueType      err[ MAX_STRING_CHARS ];
     bool  revertName = false;
     gclient_t *client;
@@ -1057,7 +1154,7 @@ void idSGameLocal::ClientUserinfoChanged(sint clientNum) {
     // set name
     Q_strncpyz(oldname, client->pers.netname, sizeof(oldname));
     s = Info_ValueForKey(userinfo, "name");
-    idSGameClient::ClientCleanName(s, newname, sizeof(newname));
+    idSGameClient::ClientCleanName(s, newname, sizeof(newname), client);
 
     if(strcmp(oldname, newname)) {
         if(client->pers.nameChangeTime &&
@@ -1098,6 +1195,11 @@ void idSGameLocal::ClientUserinfoChanged(sint clientNum) {
         }
     }
 
+    idSGameCmds::CensorString(client->pers.netname, newname,
+                              sizeof(client->pers.netname), ent);
+    Info_SetValueForKey(userinfo, "name", oldname);
+    trap_SetUserinfo(clientNum, userinfo);
+
     if(client->sess.spectatorState == SPECTATOR_SCOREBOARD) {
         Q_strncpyz(client->pers.netname, "scoreboard",
                    sizeof(client->pers.netname));
@@ -1107,9 +1209,10 @@ void idSGameLocal::ClientUserinfoChanged(sint clientNum) {
         if(strcmp(oldname, client->pers.netname)) {
             trap_SendServerCommand(-1, va("print \"%s" S_COLOR_WHITE
                                           " renamed to %s\n\"", oldname, client->pers.netname));
-            idSGameMain::LogPrintf("ClientRename: %i [%s] (%s) \"%s^7\" -> \"%s^7\"\n",
-                                   clientNum,
-                                   client->pers.ip, client->pers.guid, oldname, client->pers.netname);
+            idSGameMain::LogPrintf("ClientRename: %i [%s] (%s) \"%s^7\" -> \"%s^7\" \"%c%s%c^7\"\n",
+                                   clientNum, client->pers.ip, client->pers.guid,
+                                   oldname, client->pers.netname,
+                                   DECOLOR_OFF, client->pers.netname, DECOLOR_ON);
             adminLocal.AdminNamelogUpdate(client, false);
         }
     }

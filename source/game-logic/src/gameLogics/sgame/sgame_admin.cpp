@@ -327,8 +327,8 @@ bool idAdminLocal::AdminNameCheck(gentity_t *ent, valueType *name,
                                   valueType *err, sint len) {
     sint i;
     gclient_t *client;
-    valueType testName[ MAX_NAME_LENGTH ] = {""};
-    valueType name2[ MAX_NAME_LENGTH ] = {""};
+    valueType testName[ MAX_COLORFUL_NAME_LENGTH ] = {""};
+    valueType name2[ MAX_COLORFUL_NAME_LENGTH ] = {""};
 
     idSGameCmds::SanitiseString(name, name2, sizeof(name2));
 
@@ -738,7 +738,7 @@ void idAdminLocal::AdminLog(gentity_t *admin, valueType *cmd,
     g_admin_level_t *l;
     valueType flags[ MAX_ADMIN_FLAGS * 2 ];
     gentity_t *victim = nullptr;
-    valueType name[ MAX_NAME_LENGTH ];
+    valueType name[ MAX_COLORFUL_NAME_LENGTH ];
 
     if(!g_adminLog.string[0]) {
         return;
@@ -782,7 +782,8 @@ void idAdminLocal::AdminLog(gentity_t *admin, valueType *cmd,
     if(idSGameCmds::SayArgc() > 1 + skiparg) {
         idSGameCmds::SayArgv(1 + skiparg, name, sizeof(name));
 
-        if(idSGameCmds::ClientNumbersFromString(name, pids, MAX_CLIENTS) == 1) {
+        if(idSGameCmds::ClientNumbersFromString(name, pids, MAX_CLIENTS,
+                                                false) == 1) {
             victim = &g_entities[ pids[ 0 ] ];
         }
     }
@@ -824,9 +825,9 @@ sint idAdminLocal::AdminListAdmins(gentity_t *ent, sint start,
                                    valueType *search) {
     sint drawn = 0;
     valueType guid_stub[9];
-    valueType name[ MAX_NAME_LENGTH ] = {""};
-    valueType name2[ MAX_NAME_LENGTH ] = {""};
-    valueType lname[ MAX_NAME_LENGTH ] = {""};
+    valueType name[ MAX_COLORFUL_NAME_LENGTH ] = {""};
+    valueType name2[ MAX_COLORFUL_NAME_LENGTH ] = {""};
+    valueType lname[ MAX_COLORFUL_NAME_LENGTH ] = {""};
     sint i, j;
     gentity_t *vic;
     sint l = 0;
@@ -864,7 +865,10 @@ sint idAdminLocal::AdminListAdmins(gentity_t *ent, sint start,
 
                 for(colorlen = k = 0; g_admin_levels[j]->name[k]; k++) {
                     if(Q_IsColorString(&g_admin_levels[j]->name[k])) {
-                        colorlen += 2;
+                        colorlen +=
+                            Q_ColorStringLength(&g_admin_levels[j]->name[k]);
+                    } else if(Q_IsColorEscapeEscape(&g_admin_levels[j]->name[k])) {
+                        colorlen++;
                     }
                 }
 
@@ -928,7 +932,10 @@ sint idAdminLocal::AdminListAdmins(gentity_t *ent, sint start,
 
                 for(colorlen = k = 0; g_admin_levels[ j ]->name[ k ]; k++)
                     if(Q_IsColorString(&g_admin_levels[ j ]->name[ k ])) {
-                        colorlen += 2;
+                        colorlen +=
+                            Q_ColorStringLength(&g_admin_levels[j]->name[k]);
+                    } else if(Q_IsColorEscapeEscape(&g_admin_levels[j]->name[k])) {
+                        colorlen++;
                     }
 
                 Q_vsprintf_s(lname, sizeof(lname), sizeof(lname), "%*s",
@@ -1136,8 +1143,8 @@ idAdminLocal::AdminNamelogUpdate
 void idAdminLocal::AdminNamelogUpdate(gclient_t *client, bool disconnect) {
     sint i, j;
     g_admin_namelog_t *namelog;
-    valueType n1[ MAX_NAME_LENGTH ];
-    valueType n2[ MAX_NAME_LENGTH ];
+    valueType n1[ MAX_COLORFUL_NAME_LENGTH ];
+    valueType n2[ MAX_COLORFUL_NAME_LENGTH ];
     sint clientNum = (client - level.clients);
 
     idSGameCmds::SanitiseString(client->pers.netname, n1, sizeof(n1));
@@ -1416,10 +1423,10 @@ idGameLocal::SetClientSound
 ===============
 */
 bool idAdminLocal::AdminSetlevel(gentity_t *ent, sint skiparg) {
-    valueType name[ MAX_NAME_LENGTH ] = {""};
+    valueType name[ MAX_COLORFUL_NAME_LENGTH ] = {""};
     valueType lstr[ 11 ]; // 10 is max strlen() for 32-bit sint
-    valueType adminname[ MAX_NAME_LENGTH ] = {""};
-    valueType testname[ MAX_NAME_LENGTH ] = {""};
+    valueType adminname[ MAX_COLORFUL_NAME_LENGTH ] = {""};
+    valueType testname[ MAX_COLORFUL_NAME_LENGTH ] = {""};
     valueType guid[ 33 ];
     sint l, i, matches = 0, id = -1;
     gentity_t *vic = nullptr;
@@ -1705,8 +1712,10 @@ idAdminLocal::AdminKick
 ===============
 */
 bool idAdminLocal::AdminKick(gentity_t *ent, sint skiparg) {
-    sint pids[ MAX_CLIENTS ], found, minargc;
-    valueType name[ MAX_NAME_LENGTH ], *reason, err[ MAX_STRING_CHARS ];
+    sint pid, minargc;
+    valueType name[ MAX_COLORFUL_NAME_LENGTH ],
+              err[ MAX_STRING_CHARS ];
+    const valueType *reason;
     gentity_t *vic;
 
     minargc = 3 + skiparg;
@@ -1723,14 +1732,14 @@ bool idAdminLocal::AdminKick(gentity_t *ent, sint skiparg) {
     idSGameCmds::SayArgv(1 + skiparg, name, sizeof(name));
     reason = idSGameCmds::SayConcatArgs(2 + skiparg);
 
-    if((found = idSGameCmds::ClientNumbersFromString(name, pids,
-                MAX_CLIENTS)) != 1) {
-        idSGameCmds::MatchOnePlayer(pids, found, err, sizeof(err));
-        adminLocal.ADMP(va("^3!kick: ^7%s\n", err));
+
+    if((pid = idSGameCmds::ClientNumberFromString(name, err,
+              sizeof(err))) == -1) {
+        adminLocal.ADMP(va("^3kick: ^7%s", err));
         return false;
     }
 
-    vic = &g_entities[ pids[ 0 ] ];
+    vic = &g_entities[ pid ];
 
     if(!adminLocal.AdminHigher(ent, vic)) {
         adminLocal.ADMP("^3!kick: ^7sorry, but your intended victim has a higher admin level than you\n");
@@ -1751,14 +1760,14 @@ bool idAdminLocal::AdminKick(gentity_t *ent, sint skiparg) {
         adminLocal.AdminWriteConfig();
     }
 
-    trap_SendServerCommand(pids[ 0 ],
+    trap_SendServerCommand(pid,
                            va("disconnect \"You have been kicked.\n%s^7\nreason:\n%s\"",
                               (ent) ? va("admin:\n%s", ent->client->pers.netname) : "",
                               (*reason) ? reason : "kicked by admin"));
 
-    trap_DropClient(pids[ 0 ], va("has been kicked%s^7. reason: %s",
-                                  (ent) ? va(" by %s", ent->client->pers.netname) : "",
-                                  (*reason) ? reason : "kicked by admin"), 0);
+    trap_DropClient(pid, va("has been kicked%s^7. reason: %s",
+                            (ent) ? va(" by %s", ent->client->pers.netname) : "",
+                            (*reason) ? reason : "kicked by admin"), 0);
 
     return true;
 }
@@ -1770,7 +1779,7 @@ idAdminLocal::AdminBan
 */
 bool idAdminLocal::AdminBan(gentity_t *ent, sint skiparg) {
     sint seconds;
-    valueType search[ MAX_NAME_LENGTH ];
+    valueType search[ MAX_COLORFUL_NAME_LENGTH ];
     valueType secs[ MAX_TOKEN_CHARS ];
     valueType *reason;
     sint minargc;
@@ -1778,8 +1787,8 @@ bool idAdminLocal::AdminBan(gentity_t *ent, sint skiparg) {
     sint logmatch = -1, logmatches = 0;
     sint i, j;
     bool exactmatch = false;
-    valueType n2[ MAX_NAME_LENGTH ];
-    valueType s2[ MAX_NAME_LENGTH ];
+    valueType n2[ MAX_COLORFUL_NAME_LENGTH ];
+    valueType s2[ MAX_COLORFUL_NAME_LENGTH ];
     valueType guid_stub[ 9 ];
 
     if(adminLocal.AdminPermission(ent, ADMF_CAN_PERM_BAN) &&
@@ -2097,8 +2106,9 @@ idAdminLocal::AdminPutTeam
 ===============
 */
 bool idAdminLocal::AdminPutTeam(gentity_t *ent, sint skiparg) {
-    sint pids[ MAX_CLIENTS ], found;
-    valueType name[ MAX_NAME_LENGTH ], team[ 7 ], err[ MAX_STRING_CHARS ];
+    sint pid;
+    valueType name[ MAX_COLORFUL_NAME_LENGTH ], team[ 7 ],
+              err[ MAX_STRING_CHARS ];
     gentity_t *vic;
     team_t teamnum = TEAM_NONE;
 
@@ -2110,20 +2120,19 @@ bool idAdminLocal::AdminPutTeam(gentity_t *ent, sint skiparg) {
         return false;
     }
 
-    if((found = idSGameCmds::ClientNumbersFromString(name, pids,
-                MAX_CLIENTS)) != 1) {
-        idSGameCmds::MatchOnePlayer(pids, found, err, sizeof(err));
+
+    if((pid = idSGameCmds::ClientNumberFromString(name, err,
+              sizeof(err))) == -1) {
         adminLocal.ADMP(va("^3!putteam: ^7%s\n", err));
         return false;
-
     }
 
-    if(!adminLocal.AdminHigher(ent, &g_entities[ pids[ 0 ] ])) {
+    if(!adminLocal.AdminHigher(ent, &g_entities[ pid ])) {
         adminLocal.ADMP("^3!putteam: ^7sorry, but your intended victim has a higher admin level than you\n");
         return false;
     }
 
-    vic = &g_entities[ pids[ 0 ] ];
+    vic = &g_entities[ pid ];
     teamnum = idSGameTeam::TeamFromString(team);
 
     if(teamnum == NUM_TEAMS) {
@@ -2194,8 +2203,8 @@ idGameLocal::SetClientSound
 ===============
 */
 bool idAdminLocal::AdminMute(gentity_t *ent, sint skiparg) {
-    sint pids[ MAX_CLIENTS ], found;
-    valueType name[ MAX_NAME_LENGTH ], err[ MAX_STRING_CHARS ];
+    sint pid;
+    valueType name[ MAX_COLORFUL_NAME_LENGTH ], err[ MAX_STRING_CHARS ];
     valueType command[ MAX_ADMIN_CMD_LEN ], *cmd;
     gentity_t *vic;
 
@@ -2214,21 +2223,21 @@ bool idAdminLocal::AdminMute(gentity_t *ent, sint skiparg) {
 
     idSGameCmds::SayArgv(1 + skiparg, name, sizeof(name));
 
-    if((found = idSGameCmds::ClientNumbersFromString(name, pids,
-                MAX_CLIENTS)) != 1) {
-        idSGameCmds::MatchOnePlayer(pids, found, err, sizeof(err));
+
+    if((pid = idSGameCmds::ClientNumberFromString(name, err,
+              sizeof(err))) == -1) {
         adminLocal.ADMP(va("^3!%s: ^7%s\n", cmd, err));
         return false;
     }
 
-    if(!adminLocal.AdminHigher(ent, &g_entities[ pids[ 0 ] ])) {
+    if(!adminLocal.AdminHigher(ent, &g_entities[ pid ])) {
         adminLocal.ADMP(
             va("^3!%s: ^7sorry, but your intended victim has a higher admin level than you\n",
                cmd));
         return false;
     }
 
-    vic = &g_entities[ pids[ 0 ] ];
+    vic = &g_entities[ pid ];
 
     if(vic->client->pers.muted == true) {
         if(!Q_stricmp(cmd, "mute")) {
@@ -2238,7 +2247,7 @@ bool idAdminLocal::AdminMute(gentity_t *ent, sint skiparg) {
 
         vic->client->pers.muted = false;
 
-        CPx(pids[ 0 ], "cp \"^1You have been unmuted\"");
+        CPx(pid, "cp \"^1You have been unmuted\"");
         AP(va("print \"^3!unmute: ^7%s^7 has been unmuted by %s\n\"",
               vic->client->pers.netname, (ent) ? ent->client->pers.netname : "console"));
     } else {
@@ -2249,7 +2258,7 @@ bool idAdminLocal::AdminMute(gentity_t *ent, sint skiparg) {
 
         vic->client->pers.muted = true;
 
-        CPx(pids[ 0 ], "cp \"^1You've been muted\"");
+        CPx(pid, "cp \"^1You've been muted\"");
         AP(va("print \"^3!mute: ^7%s^7 has been muted by ^7%s\n\"",
               vic->client->pers.netname, (ent) ? ent->client->pers.netname : "console"));
     }
@@ -2263,8 +2272,8 @@ idAdminLocal::AdminDenyBuild
 ===============
 */
 bool idAdminLocal::AdminDenyBuild(gentity_t *ent, sint skiparg) {
-    sint pids[ MAX_CLIENTS ], found;
-    valueType name[ MAX_NAME_LENGTH ], err[ MAX_STRING_CHARS ];
+    sint pid;
+    valueType name[ MAX_COLORFUL_NAME_LENGTH ], err[ MAX_STRING_CHARS ];
     valueType command[ MAX_ADMIN_CMD_LEN ], *cmd;
     gentity_t *vic;
 
@@ -2282,21 +2291,20 @@ bool idAdminLocal::AdminDenyBuild(gentity_t *ent, sint skiparg) {
 
     idSGameCmds::SayArgv(1 + skiparg, name, sizeof(name));
 
-    if((found = idSGameCmds::ClientNumbersFromString(name, pids,
-                MAX_CLIENTS)) != 1) {
-        idSGameCmds::MatchOnePlayer(pids, found, err, sizeof(err));
+    if((pid = idSGameCmds::ClientNumberFromString(name, err,
+              sizeof(err))) == -1) {
         adminLocal.ADMP(va("^3!%s: ^7%s\n", cmd, err));
         return false;
     }
 
-    if(!adminLocal.AdminHigher(ent, &g_entities[ pids[ 0 ] ])) {
+    if(!adminLocal.AdminHigher(ent, &g_entities[ pid ])) {
         adminLocal.ADMP(
             va("^3!%s: ^7sorry, but your intended victim has a higher admin level than you\n",
                cmd));
         return false;
     }
 
-    vic = &g_entities[ pids[ 0 ] ];
+    vic = &g_entities[ pid ];
 
     if(vic->client->pers.denyBuild) {
         if(!Q_stricmp(cmd, "denybuild")) {
@@ -2306,7 +2314,7 @@ bool idAdminLocal::AdminDenyBuild(gentity_t *ent, sint skiparg) {
 
         vic->client->pers.denyBuild = false;
 
-        CPx(pids[ 0 ], "cp \"^1You've regained your building rights\"");
+        CPx(pid, "cp \"^1You've regained your building rights\"");
         AP(va("print \"^3!allowbuild: ^7building rights for ^7%s^7 restored by %s\n\"",
               vic->client->pers.netname, (ent) ? ent->client->pers.netname : "console"));
     } else {
@@ -2317,7 +2325,7 @@ bool idAdminLocal::AdminDenyBuild(gentity_t *ent, sint skiparg) {
 
         vic->client->pers.denyBuild = true;
         vic->client->ps.stats[ STAT_BUILDABLE ] = BA_NONE;
-        CPx(pids[ 0 ], "cp \"^1You've lost your building rights\"");
+        CPx(pid, "cp \"^1You've lost your building rights\"");
         AP(va("print \"^3!denybuild: ^7building rights for ^7%s^7 revoked by ^7%s\n\"",
               vic->client->pers.netname, (ent) ? ent->client->pers.netname : "console"));
     }
@@ -2332,8 +2340,8 @@ idAdminLocal::AdminListAdmins
 */
 bool idAdminLocal::AdminListAdmins(gentity_t *ent, sint skiparg) {
     sint i, found = 0;
-    valueType search[ MAX_NAME_LENGTH ] = {""};
-    valueType s[ MAX_NAME_LENGTH ] = {""};
+    valueType search[ MAX_COLORFUL_NAME_LENGTH ] = {""};
+    valueType s[ MAX_COLORFUL_NAME_LENGTH ] = {""};
     sint start = 0;
     bool numeric = true;
     sint drawn = 0;
@@ -2462,10 +2470,10 @@ bool idAdminLocal::AdminListPlayers(gentity_t *ent, sint skiparg) {
     sint i, j, l;
     gclient_t *p;
     valueType c[ 3 ], t[ 2 ]; // color and team letter
-    valueType n[ MAX_NAME_LENGTH ] = {""};
-    valueType n2[ MAX_NAME_LENGTH ] = {""};
-    valueType n3[ MAX_NAME_LENGTH ] = {""};
-    valueType lname[ MAX_NAME_LENGTH ];
+    valueType n[ MAX_COLORFUL_NAME_LENGTH ] = {""};
+    valueType n2[ MAX_COLORFUL_NAME_LENGTH ] = {""};
+    valueType n3[ MAX_COLORFUL_NAME_LENGTH ] = {""};
+    valueType lname[ MAX_COLORFUL_NAME_LENGTH ];
     valueType guid_stub[ 9 ];
     valueType muted[ 2 ], denied[ 2 ];
 
@@ -2543,12 +2551,14 @@ bool idAdminLocal::AdminListPlayers(gentity_t *ent, sint skiparg) {
 
                 for(colorlen = k = 0; g_admin_levels[j]->name[k]; k++) {
                     if(Q_IsColorString(&g_admin_levels[j]->name[k])) {
-                        colorlen += 2;
+                        colorlen += Q_ColorStringLength(&g_admin_levels[j]->name[k]);
+                    } else if(Q_IsColorEscapeEscape(&g_admin_levels[j]->name[k])) {
+                        colorlen++;
                     }
-
-                    Q_vsprintf_s(lname, sizeof(lname), sizeof(lname), "%*s",
-                                 admin_level_maxname + colorlen, g_admin_levels[j]->name);
                 }
+
+                Q_vsprintf_s(lname, sizeof(lname), sizeof(lname), "%*s",
+                             admin_level_maxname + colorlen, g_admin_levels[j]->name);
 
                 break;
             }
@@ -2584,8 +2594,8 @@ bool idAdminLocal::AdminShowBans(gentity_t *ent, sint skiparg) {
     valueType skip[ 11 ];
     valueType date[ 11 ];
     valueType *made;
-    valueType n1[ MAX_NAME_LENGTH ] = {""};
-    valueType n2[ MAX_NAME_LENGTH ] = {""};
+    valueType n1[ MAX_COLORFUL_NAME_LENGTH ] = {""};
+    valueType n2[ MAX_COLORFUL_NAME_LENGTH ] = {""};
 
     t = trap_RealTime(nullptr);
 
@@ -2683,7 +2693,9 @@ bool idAdminLocal::AdminShowBans(gentity_t *ent, sint skiparg) {
 
         for(colorlen = k = 0; g_admin_bans[i]->name[k]; k++) {
             if(Q_IsColorString(&g_admin_bans[i]->name[k])) {
-                colorlen += 2;
+                colorlen += Q_ColorStringLength(&g_admin_bans[i]->name[k]);
+            } else if(Q_IsColorEscapeEscape(&g_admin_bans[i]->name[k])) {
+                colorlen++;
             }
         }
 
@@ -2692,7 +2704,9 @@ bool idAdminLocal::AdminShowBans(gentity_t *ent, sint skiparg) {
 
         for(colorlen = k = 0; g_admin_bans[i]->banner[k]; k++) {
             if(Q_IsColorString(&g_admin_bans[i]->banner[k])) {
-                colorlen += 2;
+                colorlen += Q_ColorStringLength(&g_admin_bans[i]->banner[k]);
+            } else if(Q_IsColorEscapeEscape(&g_admin_bans[i]->banner[k])) {
+                colorlen++;
             }
         }
 
@@ -3013,10 +3027,10 @@ idAdminLocal::AdminRename
 ===============
 */
 bool idAdminLocal::AdminRename(gentity_t *ent, sint skiparg) {
-    sint pids[ MAX_CLIENTS ], found;
-    valueType name[ MAX_NAME_LENGTH ];
-    valueType newname[ MAX_NAME_LENGTH ];
-    valueType oldname[ MAX_NAME_LENGTH ];
+    sint pid;
+    valueType name[ MAX_COLORFUL_NAME_LENGTH ];
+    valueType newname[ MAX_COLORFUL_NAME_LENGTH ];
+    valueType oldname[ MAX_COLORFUL_NAME_LENGTH ];
     valueType err[ MAX_STRING_CHARS ];
     valueType userinfo[ MAX_INFO_STRING ];
     valueType *s;
@@ -3032,14 +3046,13 @@ bool idAdminLocal::AdminRename(gentity_t *ent, sint skiparg) {
     s = idSGameCmds::SayConcatArgs(2 + skiparg);
     Q_strncpyz(newname, s, sizeof(newname));
 
-    if((found = idSGameCmds::ClientNumbersFromString(name, pids,
-                MAX_CLIENTS)) != 1) {
-        idSGameCmds::MatchOnePlayer(pids, found, err, sizeof(err));
+    if((pid = idSGameCmds::ClientNumberFromString(name, err,
+              sizeof(err))) == -1) {
         adminLocal.ADMP(va("^3!rename: ^7%s\n", err));
         return false;
     }
 
-    victim = &g_entities[ pids[ 0 ] ];
+    victim = &g_entities[ pid ];
 
     if(!adminLocal.AdminHigher(ent, victim)) {
         adminLocal.ADMP("^3!rename: ^7sorry, but your intended victim has a higher admin level than you\n");
@@ -3051,18 +3064,18 @@ bool idAdminLocal::AdminRename(gentity_t *ent, sint skiparg) {
         return false;
     }
 
-    level.clients[ pids[ 0 ] ].pers.nameChanges--;
-    level.clients[ pids[ 0 ] ].pers.nameChangeTime = 0;
+    level.clients[ pid ].pers.nameChanges--;
+    level.clients[ pid ].pers.nameChangeTime = 0;
 
-    trap_GetUserinfo(pids[ 0 ], userinfo, sizeof(userinfo));
+    trap_GetUserinfo(pid, userinfo, sizeof(userinfo));
 
     s = Info_ValueForKey(userinfo, "name");
     Q_strncpyz(oldname, s, sizeof(oldname));
 
     Info_SetValueForKey(userinfo, "name", newname);
-    trap_SetUserinfo(pids[ 0 ], userinfo);
+    trap_SetUserinfo(pid, userinfo);
 
-    sgameLocal.ClientUserinfoChanged(pids[ 0 ]);
+    sgameLocal.ClientUserinfoChanged(pid);
 
     AP(va("print \"^3!rename: ^7%s^7 has been renamed to %s^7 by %s\n\"",
           oldname, newname, (ent) ? ent->client->pers.netname : "console"));
@@ -3179,9 +3192,9 @@ idAdminLocal::AdminNameLog
 */
 bool idAdminLocal::AdminNameLog(gentity_t *ent, sint skiparg) {
     sint i, j;
-    valueType search[ MAX_NAME_LENGTH ] = {""};
-    valueType s2[ MAX_NAME_LENGTH ] = {""};
-    valueType n2[ MAX_NAME_LENGTH ] = {""};
+    valueType search[ MAX_COLORFUL_NAME_LENGTH ] = {""};
+    valueType s2[ MAX_COLORFUL_NAME_LENGTH ] = {""};
+    valueType n2[ MAX_COLORFUL_NAME_LENGTH ] = {""};
     valueType guid_stub[ 9 ];
     bool found = false;
     sint printed = 0;

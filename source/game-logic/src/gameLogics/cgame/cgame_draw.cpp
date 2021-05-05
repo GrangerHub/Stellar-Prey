@@ -1775,6 +1775,8 @@ void idCGameDraw::DrawKiller(rectDef_t *rect, float32 scale, vec4_t color,
     }
 }
 
+#define SPECTATORS_PIXELS_PER_SECOND 30.0f
+
 /*
 ===============
 idCGameDraw::DrawAttackFeedback
@@ -1782,77 +1784,41 @@ idCGameDraw::DrawAttackFeedback
 */
 void idCGameDraw::DrawTeamSpectators(rectDef_t *rect, float32 scale,
                                      sint textvalign, vec4_t color, qhandle_t shader) {
-    float32 y;
+    float y;
+    char   *text = cg.spectatorList;
+    float  textWidth = UI_Text_Width(text, scale, 0);
+    vec4_t region;
 
-    if(cg.spectatorLen) {
-        float32 maxX;
+    AlignText(rect, text, scale, 0.0f, 0.0f, ALIGN_LEFT, textvalign, nullptr,
+              &y);
 
-        if(cg.spectatorWidth == -1) {
-            cg.spectatorWidth = 0;
-            cg.spectatorPaintX = rect->x + 1;
-            cg.spectatorPaintX2 = -1;
+    if(textWidth > rect->w) {
+        // The text is too wide to fit, so scroll it
+        int now = trap_Milliseconds();
+        int delta = now - cg.spectatorTime;
+
+        region[0] = rect->x;
+        region[1] = rect->y;
+        region[2] = rect->x + rect->w;
+        region[3] = rect->y + rect->h;
+        trap_R_SetClipRegion(region);
+
+        UI_Text_Paint(rect->x - cg.spectatorOffset, y, scale, color, text, 0, 0,
+                      0);
+        UI_Text_Paint(rect->x + textWidth - cg.spectatorOffset, y, scale, color,
+                      text, 0, 0, 0);
+
+        trap_R_SetClipRegion(nullptr);
+
+        cg.spectatorOffset += (delta / 1000.0f) * SPECTATORS_PIXELS_PER_SECOND;
+
+        while(cg.spectatorOffset > textWidth) {
+            cg.spectatorOffset -= textWidth;
         }
 
-        if(cg.spectatorOffset > cg.spectatorLen) {
-            cg.spectatorOffset = 0;
-            cg.spectatorPaintX = rect->x + 1;
-            cg.spectatorPaintX2 = -1;
-        }
-
-        if(cg.time > cg.spectatorTime) {
-            cg.spectatorTime = cg.time + 10;
-
-            if(cg.spectatorPaintX <= rect->x + 2) {
-                if(cg.spectatorOffset < cg.spectatorLen) {
-                    // skip colour directives
-                    if(Q_IsColorString(&cg.spectatorList[cg.spectatorOffset])) {
-                        cg.spectatorOffset += 2;
-                    } else {
-                        cg.spectatorPaintX += UI_Text_Width(
-                                                  &cg.spectatorList[ cg.spectatorOffset ], scale, 1) - 1;
-                        cg.spectatorOffset++;
-                    }
-                } else {
-                    cg.spectatorOffset = 0;
-
-                    if(cg.spectatorPaintX2 >= 0) {
-                        cg.spectatorPaintX = cg.spectatorPaintX2;
-                    } else {
-                        cg.spectatorPaintX = rect->x + rect->w - 2;
-                    }
-
-                    cg.spectatorPaintX2 = -1;
-                }
-            } else {
-                cg.spectatorPaintX--;
-
-                if(cg.spectatorPaintX2 >= 0) {
-                    cg.spectatorPaintX2--;
-                }
-            }
-        }
-
-        maxX = rect->x + rect->w - 2;
-        AlignText(rect, nullptr, 0.0f, 0.0f, UI_Text_EmHeight(scale), ALIGN_LEFT,
-                  textvalign, nullptr, &y);
-
-        UI_Text_Paint_Limit(&maxX, cg.spectatorPaintX, y, scale, color,
-                            &cg.spectatorList[ cg.spectatorOffset ], 0, 0);
-
-        if(cg.spectatorPaintX2 >= 0) {
-            float32 maxX2 = rect->x + rect->w - 2;
-            UI_Text_Paint_Limit(&maxX2, cg.spectatorPaintX2, y, scale, color,
-                                cg.spectatorList, 0, cg.spectatorOffset);
-        }
-
-        if(cg.spectatorOffset && maxX > 0) {
-            // if we have an offset ( we are skipping the first part of the string ) and we fit the string
-            if(cg.spectatorPaintX2 == -1) {
-                cg.spectatorPaintX2 = rect->x + rect->w - 2;
-            }
-        } else {
-            cg.spectatorPaintX2 = -1;
-        }
+        cg.spectatorTime = now;
+    } else {
+        UI_Text_Paint(rect->x, y, scale, color, text, 0, 0, 0);
     }
 }
 

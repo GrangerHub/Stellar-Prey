@@ -29,6 +29,9 @@
 #ifndef __SGAME_CMDS_H__
 #define __SGAME_CMDS_H__
 
+#define DECOLOR_OFF '\16'
+#define DECOLOR_ON  '\17'
+
 class idSGameLocal;
 
 class idSGameCmds : public idSGameLocal {
@@ -37,16 +40,18 @@ public:
     ~idSGameCmds();
 
     static void AdminMessage_f(gentity_t *ent);
+    static void LoadCensors(void);
+    static void CensorString(valueType *out, const valueType *in, sint len,
+                             gentity_t *ent);
     static void SanitiseString(valueType *in, valueType *out, sint len);
     static void PrivateMessage_f(gentity_t *ent);
-    static sint ClientNumberFromString(valueType *s);
-    static sint ClientNumbersFromString(valueType *s, sint *plist, sint max);
+    static sint ClientNumberFromString(valueType *s, valueType *err, sint len);
+    static sint ClientNumbersFromString(valueType *s, sint *plist, sint max,
+                                        bool alphanumeric);
     static sint SayArgc(void);
     static bool SayArgv(sint n, valueType *buffer, sint bufferLength);
     static valueType *SayConcatArgs(sint start);
     static void DecolorString(valueType *in, valueType *out, sint len);
-    static void MatchOnePlayer(sint *plist, sint num, valueType *err,
-                               sint len);
     static void Cmd_Give_f(gentity_t *ent);
     static void Cmd_God_f(gentity_t *ent);
     static void Cmd_Notarget_f(gentity_t *ent);
@@ -54,10 +59,10 @@ public:
     static void Cmd_LevelShot_f(gentity_t *ent);
     static void Cmd_Kill_f(gentity_t *ent);
     static void Cmd_Team_f(gentity_t *ent);
-    static void SayTo(gentity_t *ent, gentity_t *other, sint mode, sint color,
-                      pointer name, pointer message);
-    static void Say(gentity_t *ent, gentity_t *target, sint mode,
-                    pointer chatText);
+    static bool SayTo(
+        gentity_t *ent, gentity_t *other, saymode_t mode, pointer message);
+    static void Say(gentity_t *ent, saymode_t mode,
+                    const valueType *chatText);
     static void Cmd_SayArea_f(gentity_t *ent);
     static void Cmd_Say_f(gentity_t *ent);
     static void Cmd_Tell_f(gentity_t *ent);

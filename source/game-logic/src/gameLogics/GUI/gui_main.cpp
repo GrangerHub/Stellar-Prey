@@ -101,6 +101,8 @@ vmConvar_t  ui_screenname;
 vmConvar_t  ui_winner;
 
 vmConvar_t  ui_emoticons;
+vmConvar_t  ui_chatCommands;
+vmConvar_t  ui_clantag;
 
 vmConvar_t ui_autoredirect;
 vmConvar_t ui_profile;
@@ -137,6 +139,8 @@ static cvarTable_t    cvarTable[ ] = {
     { &cl_defaultProfile, "cl_defaultProfile", "", CVAR_ROM },
     { &cl_defaultProfile, "cl_defaultProfile", "", CVAR_ROM },
     { &ui_profile, "ui_profile", "", CVAR_ROM },
+    { &ui_chatCommands, "ui_chatCommands", "1", CVAR_ARCHIVE },
+    { &ui_clantag, "ui_clantag", "", CVAR_ARCHIVE },
 };
 
 static sint    cvarTableSize = sizeof(cvarTable) / sizeof(cvarTable[0]);
@@ -613,7 +617,7 @@ static void UI_BuildFindPlayerList(bool force) {
     static sint numFound, numTimeOuts;
     sint i, j, k, resend;
     serverStatusInfo_t info;
-    valueType name[MAX_NAME_LENGTH + 2];
+    valueType name[MAX_COLORFUL_NAME_LENGTH + 2];
     valueType infoString[MAX_STRING_CHARS];
     bool duplicate;
 
@@ -793,6 +797,62 @@ static void UI_BuildFindPlayerList(bool force) {
         // show the server status info for the selected server
         UI_FeederSelection(FEEDER_FINDPLAYER, uiInfo.currentFoundPlayerServer);
     }
+}
+
+/*
+==================
+UI_ClientNumbersFromString
+
+Sets plist to an array of integers that represent client numbers that have
+names that are a partial match for s.
+
+Returns number of matching clientids up to max.
+==================
+*/
+static void UI_BuildPlayerList();
+sint UI_ClientNumbersFromString(valueType *s, sint *plist, sint max) {
+    sint i, found = 0;
+    valueType n2[MAX_COLORFUL_NAME_LENGTH] = {""};
+    valueType s2[MAX_COLORFUL_NAME_LENGTH] = {""};
+    valueType n2_temp[MAX_COLORFUL_NAME_LENGTH] = {""};
+    valueType s2_temp[MAX_COLORFUL_NAME_LENGTH] = {""};
+
+    if(max == 0) {
+        return 0;
+    }
+
+    UI_BuildPlayerList();
+
+    if(!s[0]) {
+        for(i = 0; i < uiInfo.playerCount && found < max; i++) {
+            *plist++ = i;
+            found++;
+        }
+
+        return found;
+    }
+
+    // now look for name matches
+    Q_strncpyz(s2_temp, s, sizeof(s2_temp));
+    Q_CleanStr(s2_temp);
+    Q_StringToLower(s2_temp, s2, sizeof(s2));
+
+    if(!s2[0]) {
+        return 0;
+    }
+
+    for(i = 0; i < uiInfo.playerCount && found < max; i++) {
+        Q_strncpyz(n2_temp, uiInfo.playerNames[i], sizeof(n2_temp));
+        Q_CleanStr(n2_temp);
+        Q_StringToLower(n2_temp, n2, sizeof(n2));
+
+        if(strstr(n2, s2)) {
+            *plist++ = i;
+            found++;
+        }
+    }
+
+    return found;
 }
 
 /*
@@ -1861,9 +1921,9 @@ static void UI_BuildPlayerList(void) {
             bggame->ClientListParse(&uiInfo.ignoreList[ uiInfo.playerCount ],
                                     Info_ValueForKey(info, "ig"));
             Q_strncpyz(uiInfo.rawPlayerNames[uiInfo.playerCount],
-                       Info_ValueForKey(info, "n"), MAX_NAME_LENGTH);
+                       Info_ValueForKey(info, "n"), MAX_COLORFUL_NAME_LENGTH);
             Q_strncpyz(uiInfo.playerNames[uiInfo.playerCount],
-                       Info_ValueForKey(info, "n"), MAX_NAME_LENGTH);
+                       Info_ValueForKey(info, "n"), MAX_COLORFUL_NAME_LENGTH);
             Q_CleanStr(uiInfo.playerNames[uiInfo.playerCount]);
             uiInfo.clientNums[uiInfo.playerCount] = n;
 
@@ -1877,9 +1937,9 @@ static void UI_BuildPlayerList(void) {
 
             if(team2 == team) {
                 Q_strncpyz(uiInfo.rawTeamNames[uiInfo.myTeamCount],
-                           Info_ValueForKey(info, "n"), MAX_NAME_LENGTH);
+                           Info_ValueForKey(info, "n"), MAX_COLORFUL_NAME_LENGTH);
                 Q_strncpyz(uiInfo.teamNames[uiInfo.myTeamCount],
-                           Info_ValueForKey(info, "n"), MAX_NAME_LENGTH);
+                           Info_ValueForKey(info, "n"), MAX_COLORFUL_NAME_LENGTH);
                 Q_CleanStr(uiInfo.teamNames[uiInfo.myTeamCount]);
                 uiInfo.teamClientNums[uiInfo.myTeamCount] = n;
 
@@ -2990,6 +3050,196 @@ void UI_ScreenChange(valueType **args) {
     trap_Cvar_Set("ui_screenname", screenshots[ current_screen ]);
 }
 
+/*
+===============
+UI_PartialGetEnteredPartialNameFromBuffer
+
+Copies the entered partial name to entered_partial_name as output.
+Returns true if the entered partial name is incomplete.
+===============
+*/
+static bool UI_PartialGetEnteredPartialNameFromBuffer(
+    sint at_pos, valueType *buffer, valueType *clean_name,
+    valueType *entered_partial_name,
+    sint size_of_entered_partial_name,
+    sint *uncleaned_entered_partial_name_length) {
+    valueType      lower_case_entered_partial_name[MAX_CVAR_VALUE_STRING] = "";
+    const sint clean_name_length = strlen(clean_name);
+    sint       i, j;
+
+    memset(entered_partial_name, 0, size_of_entered_partial_name);
+
+    if(uncleaned_entered_partial_name_length) {
+        *uncleaned_entered_partial_name_length = 0;
+    }
+
+    for(
+        i = at_pos + 1, j = 0;
+        i <= chatInfo.say_length && j < clean_name_length; i++, j++) {
+        valueType *s = &buffer[i];
+
+        //skip over color codes for comparing
+        if(Q_IsColorString(s)) {
+            sint color_string_length = Q_ColorStringLength(s);
+
+            i += color_string_length - 1;
+            s += color_string_length - 1;
+
+            if(uncleaned_entered_partial_name_length) {
+                *uncleaned_entered_partial_name_length += color_string_length;
+            }
+        } else if(s[0] >= 0x20 && s[0] <= 0x7E) {
+            if(Q_IsColorEscapeEscape(s)) {
+                i++;
+                s++;
+
+                if(uncleaned_entered_partial_name_length) {
+                    (*uncleaned_entered_partial_name_length)++;
+                }
+            }
+        }
+
+        entered_partial_name[j] = s[0];
+        lower_case_entered_partial_name[j] = tolower(s[0]);
+
+
+
+        if(
+            entered_partial_name[0] &&
+            entered_partial_name[0] != ' ' &&
+            strstr(clean_name, lower_case_entered_partial_name)) {
+            if(uncleaned_entered_partial_name_length) {
+                (*uncleaned_entered_partial_name_length)++;
+            }
+        } else {
+            entered_partial_name[j] = '\0';
+            return true;
+        }
+    }
+
+    if(strlen(entered_partial_name) != clean_name_length) {
+        return true;
+    }
+
+    return false;
+}
+
+static void UI_CleanStr(
+    const valueType *string_in, valueType *string_out,
+    size_t size_of_string_out) {
+    valueType string_temp[MAX_COLORFUL_NAME_LENGTH] = {""};
+
+    Q_strncpyz(string_temp, string_in, sizeof(string_temp));
+    Q_CleanStr(string_temp);
+    Q_StringToLower(string_temp, string_out, size_of_string_out);
+}
+
+/*
+===============
+UI_TabCompleteName
+===============
+*/
+static void UI_TabCompleteName(
+    valueType *string, valueType *buffer, valueType *playerName, sint at_pos,
+    bool add_space) {
+    sint  i, j;
+    valueType n2[MAX_NAME_LENGTH] = {""};
+    valueType s2[MAX_NAME_LENGTH] = {""};
+    bool passed_end_of_string = false;
+    bool moved_text = false;
+
+    UI_CleanStr(string, s2, sizeof(s2));
+    UI_CleanStr(playerName, n2, sizeof(n2));
+
+    if(!s2[0] || Q_strncmp(s2, n2, sizeof(n2))) {
+        valueType entered_partial_name[MAX_CVAR_VALUE_STRING];
+        sint uncleaned_entered_partial_name_length;
+
+        // check that the name isn't already complete in the buffer doesn't already
+        // complete
+
+        if(UI_PartialGetEnteredPartialNameFromBuffer(
+                    at_pos, buffer, n2, entered_partial_name, sizeof(entered_partial_name),
+                    &uncleaned_entered_partial_name_length)) {
+            valueType  clean_name[MAX_NAME_LENGTH] = {""};
+            sint clean_name_length;
+
+            Q_strncpyz(
+                clean_name, playerName, sizeof(clean_name));
+            Q_CleanStr(clean_name);
+
+            clean_name_length = strlen(clean_name);
+
+            if(uncleaned_entered_partial_name_length > 0) {
+                bool end_of_buffer =
+                    !buffer[at_pos + uncleaned_entered_partial_name_length];
+
+                //delete the unclean partial name for replacement by the completed clean name
+                if(end_of_buffer) {
+                    buffer[at_pos + 1] = '\0';
+                } else {
+                    memmove(
+                        &buffer[at_pos + 1],
+                        &buffer[at_pos + uncleaned_entered_partial_name_length + 1],
+                        chatInfo.say_length -
+                        (at_pos + uncleaned_entered_partial_name_length + 1));
+                    buffer[
+                        chatInfo.say_length -
+                        uncleaned_entered_partial_name_length] = '\0';
+                }
+            }
+
+            //tab complete the name
+            if(!trap_Key_GetOverstrikeMode()) {
+                if(
+                    buffer[at_pos + 1] &&
+                    (*chatInfo.say_cursor_pos < chatInfo.say_length) &&
+                    (chatInfo.say_length <  MAX_EDITFIELD - clean_name_length) &&
+                    (
+                        !chatInfo.say_max_chars ||
+                        chatInfo.say_length < chatInfo.say_max_chars)) {
+
+                    //move the subsequent text to the right for insertion
+                    memmove(
+                        &buffer[at_pos + clean_name_length + 1 + (add_space ? 1 : 0)],
+                        &buffer[at_pos + 1],
+                        chatInfo.say_length - (at_pos + 1));
+
+                    moved_text = true;
+                }
+            }
+
+            for(
+                i = at_pos + 1, j = 0;
+                i < MAX_EDITFIELD && j < clean_name_length;
+                i++, j++) {
+                if(!moved_text && buffer[i] == '\0') {
+                    passed_end_of_string = true;
+                }
+
+                buffer[i] = clean_name[j];
+            }
+
+            if(add_space && (i < MAX_EDITFIELD) && (buffer[i] != ' ')) {
+                if(!moved_text && buffer[i] == '\0') {
+                    passed_end_of_string = true;
+                }
+
+                buffer[i] = ' ';
+                i++;
+            }
+
+            if(passed_end_of_string) {
+                buffer[i] = '\0';
+            }
+
+            *chatInfo.say_cursor_pos =
+                at_pos + clean_name_length + 1 + (add_space ? 1 : 0);
+            trap_Cvar_Set("ui_sayBuffer", buffer);
+        }
+    }
+}
+
 //FIXME: lookup table
 static void UI_RunMenuScript(valueType **args) {
     pointer name, name2;
@@ -3138,35 +3388,401 @@ static void UI_RunMenuScript(valueType **args) {
                 trap_FS_FCloseFile(f);
             }
         } else if(Q_stricmp(name, "Say") == 0) {
-            valueType buffer[MAX_CVAR_VALUE_STRING];
+            valueType buffer[ MAX_CVAR_VALUE_STRING ];
+            valueType clantagDecolored[ 32 ];
+
             trap_Cvar_VariableStringBuffer("ui_sayBuffer", buffer, sizeof(buffer));
 
-            if(!buffer[0]) {
-            } else if(uiInfo.chatTargetClientNum != -1) {
-                trap_Cmd_ExecuteText(EXEC_APPEND, va("tell %i \"%s\"\n",
-                                                     uiInfo.chatTargetClientNum, buffer));
-            } else if(uiInfo.chatTeam) {
-                trap_Cmd_ExecuteText(EXEC_APPEND, va("say_team \"%s\"\n", buffer));
-            } else if(uiInfo.chatAdmins) {
-                trap_Cmd_ExecuteText(EXEC_APPEND, va("say_admins \"%s\"\n", buffer));
-            } else if(uiInfo.chatClan) {
-                valueType clantagDecolored[32];
-                trap_Cvar_VariableStringBuffer("cl_clantag", clantagDecolored,
-                                               sizeof(clantagDecolored));
-                Q_CleanStr(clantagDecolored);
-
-                if(strlen(clantagDecolored) > 2 && strlen(clantagDecolored) < 11) {
-                    trap_Cmd_ExecuteText(EXEC_APPEND, va("m \"%s\" \"%s\"\n", clantagDecolored,
-                                                         buffer));
-                } else {
-                    Com_Printf("^3Error: Your clantag has to be between 3 and 10 chars long. Current value is:^7 %s^7\n",
-                               clantagDecolored);
-                }
-            } else if(uiInfo.chatPrompt) {
-                trap_Cmd_ExecuteText(EXEC_APPEND, va("vstr \"%s\"\n",
-                                                     uiInfo.chatPromptCallback));
+            if(!buffer[ 0 ]) {
+                ;
             } else {
-                trap_Cmd_ExecuteText(EXEC_APPEND, va("say \"%s\"\n", buffer));
+
+                // copy line to history buffer
+                if(
+                    !chatInfo.say_history_current) {
+                    Q_strncpyz(
+                        chatInfo.say_history_lines[chatInfo.nextHistoryLine %
+                                                                            MAX_SAY_HISTORY_LINES],
+                        chatInfo.say_unsubmitted_line, MAX_CVAR_VALUE_STRING);
+                    chatInfo.nextHistoryLine++;
+                }
+
+                Q_strncpyz(
+                    chatInfo.say_history_lines[chatInfo.nextHistoryLine %
+                                                                        MAX_SAY_HISTORY_LINES],
+                    buffer, MAX_CVAR_VALUE_STRING);
+                chatInfo.nextHistoryLine++;
+                chatInfo.historyLine = chatInfo.nextHistoryLine;
+                chatInfo.say_history_current = true;
+
+                if(ui_chatCommands.integer && (buffer[ 0 ] == '/' ||
+                                               buffer[ 0 ] == '\\')) {
+                    trap_Cmd_ExecuteText(EXEC_APPEND, va("%s\n", buffer + 1));
+                } else {
+                    switch(chatInfo.chat_mode) {
+                        case CHAT_GLOBAL:
+                            trap_Cmd_ExecuteText(EXEC_APPEND, va("say \"%s\"\n", buffer));
+                            break;
+
+                        case CHAT_TEAM:
+                            trap_Cmd_ExecuteText(EXEC_APPEND, va("say_team \"%s\"\n", buffer));
+                            break;
+
+                        case CHAT_CROSSHAIR:
+                            trap_Cmd_ExecuteText(EXEC_APPEND, va("m %d \"%s\"\n", chatInfo.clientNum,
+                                                                 buffer));
+                            break;
+
+                        case CHAT_AREA:
+                            trap_Cmd_ExecuteText(EXEC_APPEND, va("say_area \"%s\"\n", buffer));
+                            break;
+
+                        case CHAT_ADMINS:
+                            trap_Cmd_ExecuteText(EXEC_APPEND, va("a \"%s\"\n", buffer));
+                            break;
+
+                        case CHAT_CLAN:
+                            Q_strncpyz(
+                                clantagDecolored, ui_clantag.string,
+                                sizeof(clantagDecolored));
+                            Q_CleanStr(clantagDecolored);
+
+                            if(
+                                strlen(clantagDecolored) > 2 &&
+                                strlen(clantagDecolored) < 11) {
+                                trap_Cmd_ExecuteText(
+                                    EXEC_APPEND,
+                                    va("m \"%s\" \"%s\"\n", clantagDecolored, buffer));
+                            } else {
+                                //string isnt long enough
+                                Com_Printf(
+                                    "^3Error:your ui_clantag has to be between 3 and 10 characters long. current value is:^7 %s^7\n",
+                                    clantagDecolored);
+                                key_pressed_onCharEntry = K_NONE;
+                                return;
+                            }
+
+                            break;
+
+                        case NUM_CHAT_MODES:
+                            chatInfo.chat_mode = CHAT_GLOBAL;
+                            trap_Cmd_ExecuteText(EXEC_APPEND, va("say \"%s\"\n", buffer));
+                            break;
+                    }
+                }
+
+                chatInfo.say_unsubmitted_line[0] = '\0';
+                chatInfo.clientNum = -1;
+                trap_Cvar_Set("ui_sayBuffer", "");
+            }
+        } else if(Q_stricmp(name, "SayKeydown") == 0) {
+            valueType buffer[ MAX_CVAR_VALUE_STRING ];
+
+            trap_Cvar_VariableStringBuffer("ui_sayBuffer", buffer, sizeof(buffer));
+
+            if(chatInfo.say_history_current && !chatInfo.say_make_current_line_blank) {
+                Q_strncpyz(chatInfo.say_unsubmitted_line, buffer,
+                           sizeof(chatInfo.say_unsubmitted_line));
+            }
+
+            if(ui_chatCommands.integer) {
+                if(buffer[ 0 ] == '/' || buffer[ 0 ] == '\\') {
+                    Menus_ReplaceActiveByName("say_command");
+                } else {
+                    switch(chatInfo.chat_mode) {
+                        case CHAT_GLOBAL:
+                            Menus_ReplaceActiveByName("say");
+                            break;
+
+                        case CHAT_TEAM:
+                            Menus_ReplaceActiveByName("say_team");
+                            break;
+
+                        case CHAT_CROSSHAIR:
+                            Menus_ReplaceActiveByName("say_crosshair");
+                            break;
+
+                        case CHAT_AREA:
+                            Menus_ReplaceActiveByName("say_area");
+                            break;
+
+                        case CHAT_ADMINS:
+                            Menus_ReplaceActiveByName("say_admins");
+                            break;
+
+                        case CHAT_CLAN:
+                            Menus_ReplaceActiveByName("say_clan");
+                            break;
+
+                        case NUM_CHAT_MODES:
+                            chatInfo.chat_mode = CHAT_GLOBAL;
+                            trap_Cmd_ExecuteText(EXEC_APPEND, va("say \"%s\"\n", buffer));
+                            break;
+                    }
+                }
+
+                //handle player name tab completion
+                if(key_pressed_onCharEntry == K_TAB) {
+                    sint at_pos = -1;
+                    sint i;
+
+                    //find the position of the nearest @ from the left of the
+                    //cursor
+                    i = *chatInfo.say_cursor_pos;
+
+                    while(i >= 0) {
+                        if(buffer[i] == '@') {
+                            at_pos = i;
+                            break;
+                        }
+
+                        i--;
+                    }
+
+                    if(at_pos >= 0) {
+                        valueType string[MAX_CVAR_VALUE_STRING];
+                        valueType string_clean[MAX_CVAR_VALUE_STRING];
+                        sint      pids[MAX_CLIENTS];
+                        sint      matches = 0;
+                        sint      j;
+
+                        memset(string, 0, sizeof(string));
+
+                        for(
+                            i = at_pos + 1, j = 0;
+                            i <= *chatInfo.say_cursor_pos &&
+                            j < MAX_CVAR_VALUE_STRING;
+                            i++, j++) {
+                            if(
+                                (i == *chatInfo.say_cursor_pos) &&
+                                (buffer[1] == ' ')) {
+                                break;
+                            }
+
+                            string[j] = buffer[i];
+                        }
+
+                        matches =
+                            UI_ClientNumbersFromString(
+                                string, pids, MAX_CLIENTS);
+
+                        if(matches == 0) {
+                            //try one more time ignoring the cursor location
+                            string[j - 1] = '\0';
+                            matches =
+                                UI_ClientNumbersFromString(
+                                    string, pids, MAX_CLIENTS);
+                        } else {
+                            //make sure that the cursor is at the end of the
+                            //entered partial name
+                            while(
+                                buffer[i] &&
+                                (UI_ClientNumbersFromString(
+                                     string, pids, MAX_CLIENTS) > 0)) {
+                                (*chatInfo.say_cursor_pos)++;
+                                string[j] = buffer[i];
+                                i++;
+                                j++;
+                            }
+                        }
+
+                        Q_strncpyz(
+                            string_clean, string, sizeof(string_clean));
+                        Q_CleanStr(string_clean);
+
+                        if(matches > 1) {
+                            valueType tab_completed_name[MAX_CVAR_VALUE_STRING] = "";
+                            sint      max_entered_partial_name_length =
+                                strlen(string_clean);
+
+                            for(i = 0; i < matches; i++) {
+                                valueType  entered_partial_name[MAX_CVAR_VALUE_STRING];
+                                valueType  clean_name[MAX_NAME_LENGTH] = {""};
+                                sint       entered_partial_name_length;
+                                sint       clean_name_length;
+                                sint       new_matches;
+                                sint       temp_pids[MAX_CLIENTS];
+
+                                UI_CleanStr(
+                                    uiInfo.playerNames[pids[i]], clean_name,
+                                    sizeof(clean_name));
+                                clean_name_length = strlen(clean_name);
+
+                                //check if any of the matches can be completed
+                                //without reducing the matches
+                                if(
+                                    (
+                                        clean_name_length >
+                                        max_entered_partial_name_length) &&
+                                    (
+                                        matches ==
+                                        UI_ClientNumbersFromString(
+                                            uiInfo.playerNames[pids[i]],
+                                            temp_pids, MAX_CLIENTS))) {
+                                    Q_strncpyz(
+                                        tab_completed_name,
+                                        uiInfo.playerNames[pids[i]],
+                                        sizeof(tab_completed_name));
+                                    max_entered_partial_name_length =
+                                        clean_name_length;
+                                }
+
+                                //check if partial name entered into the buffer better matches
+                                //this name
+                                UI_PartialGetEnteredPartialNameFromBuffer(
+                                    at_pos, buffer, clean_name,
+                                    entered_partial_name,
+                                    sizeof(entered_partial_name), nullptr);
+                                entered_partial_name_length =
+                                    strlen(entered_partial_name);
+                                new_matches =
+                                    UI_ClientNumbersFromString(
+                                        entered_partial_name, temp_pids,
+                                        MAX_CLIENTS);
+
+                                if(
+                                    (
+                                        entered_partial_name_length >
+                                        max_entered_partial_name_length) &&
+                                    new_matches &&
+                                    (new_matches < matches)) {
+                                    Q_strncpyz(
+                                        tab_completed_name, entered_partial_name,
+                                        sizeof(tab_completed_name));
+                                    max_entered_partial_name_length = entered_partial_name_length;
+                                    //reset the matches
+                                    matches = new_matches;
+
+                                    for(j = 0; j < matches; j++) {
+                                        pids[j] = temp_pids[j];
+                                    }
+
+                                    i = 0;
+                                } else if(
+                                    clean_name_length >
+                                    max_entered_partial_name_length) {
+                                    valueType *s_ptr =
+                                        strstr(clean_name, entered_partial_name);
+                                    valueType *start = s_ptr;
+                                    valueType partial_completion[MAX_CVAR_VALUE_STRING];
+
+                                    //check if we can have a partial tab name
+                                    //completion
+                                    Q_strncpyz(
+                                        partial_completion, entered_partial_name,
+                                        sizeof(partial_completion));
+
+                                    for(
+                                        j = strlen(entered_partial_name);
+                                        s_ptr[j]; j++) {
+                                        partial_completion[j] = s_ptr[j];
+
+                                        //don't change the matches
+                                        if(
+                                            matches !=
+                                            UI_ClientNumbersFromString(
+                                                partial_completion, temp_pids,
+                                                MAX_CLIENTS)) {
+                                            break;
+                                        }
+                                    }
+
+                                    partial_completion[j] = '\0';
+
+                                    //check if we can have a partial tab name
+                                    //completion to the left of the string
+                                    for(
+                                        s_ptr = start - 1;
+                                        s_ptr - clean_name >= 0; s_ptr--) {
+                                        sint      partial_completion_length =
+                                            strlen(partial_completion);
+                                        valueType backup[MAX_CVAR_VALUE_STRING];
+
+                                        memcpy(
+                                            backup, partial_completion,
+                                            sizeof(backup));
+
+                                        memmove(
+                                            &partial_completion[1],
+                                            &partial_completion[0],
+                                            partial_completion_length);
+
+                                        partial_completion[0] = s_ptr[0];
+
+                                        if(
+                                            matches !=
+                                            UI_ClientNumbersFromString(
+                                                partial_completion,
+                                                temp_pids, MAX_CLIENTS)) {
+                                            //restore to the previous value
+                                            //that still worked
+                                            memcpy(
+                                                partial_completion, backup,
+                                                sizeof(partial_completion));
+                                            break;
+                                        }
+                                    }
+
+                                    if(
+                                        strlen(partial_completion) >
+                                        max_entered_partial_name_length) {
+                                        max_entered_partial_name_length = j;
+                                        Q_strncpyz(
+                                            tab_completed_name,
+                                            partial_completion,
+                                            sizeof(tab_completed_name));
+                                    }
+                                }
+                            }
+
+                            if(tab_completed_name[0]) {
+                                UI_TabCompleteName(
+                                    "\0", buffer, tab_completed_name, at_pos, (matches <= 1));
+                            }
+
+                            //print the multiple possibile matches
+                            for(i = 0; i < matches; i++) {
+                                Com_Printf(
+                                    "    %s\n", uiInfo.playerNames[pids[i]]);
+                            }
+                        } else if(matches == 1) {
+                            UI_TabCompleteName(
+                                string, buffer,
+                                uiInfo.playerNames[pids[0]], at_pos, true);
+                        }
+                    }
+                }
+            } else {
+                switch(chatInfo.chat_mode) {
+                    case CHAT_GLOBAL:
+                        Menus_ReplaceActiveByName("say");
+                        break;
+
+                    case CHAT_TEAM:
+                        Menus_ReplaceActiveByName("say_team");
+                        break;
+
+                    case CHAT_CROSSHAIR:
+                        Menus_ReplaceActiveByName("say_crosshair");
+                        break;
+
+                    case CHAT_AREA:
+                        Menus_ReplaceActiveByName("say_area");
+                        break;
+
+                    case CHAT_ADMINS:
+                        Menus_ReplaceActiveByName("say_admins");
+                        break;
+
+                    case CHAT_CLAN:
+                        Menus_ReplaceActiveByName("say_clan");
+                        break;
+
+                    case NUM_CHAT_MODES:
+                        chatInfo.chat_mode = CHAT_GLOBAL;
+                        trap_Cmd_ExecuteText(EXEC_APPEND, va("say \"%s\"\n", buffer));
+                        break;
+                }
             }
         } else if(Q_stricmp(name, "playMovie") == 0) {
             if(uiInfo.previewMovie >= 0) {
@@ -3435,8 +4051,6 @@ static void UI_RunMenuScript(valueType **args) {
                               strlen(ui_profile.string) + 2, f);
                 trap_FS_FCloseFile(f);
             }
-
-            trap_Cvar_Set("name", ui_profile.string);
         } else if(Q_stricmp(name, "applyProfile") == 0) {
             Q_strncpyz(cl_profile.string, ui_profile.string,
                        sizeof(cl_profile.string));
@@ -4270,6 +4884,9 @@ void idUserInterfaceManagerLocal::Init(bool inGameLoad) {
     uiInfo.uiDC.aspectScale = ((640.0f * uiInfo.uiDC.glconfig.vidHeight) /
                                (480.0f * uiInfo.uiDC.glconfig.vidWidth));
 
+    uiInfo.uiDC.smallFontScale = trap_Cvar_VariableValue("ui_smallFont");
+    uiInfo.uiDC.bigFontScale = trap_Cvar_VariableValue("ui_bigFont");
+
     uiInfo.uiDC.registerShaderNoMip = &trap_R_RegisterShaderNoMip;
     uiInfo.uiDC.setColor = &UI_SetColor;
     uiInfo.uiDC.drawHandlePic = &UI_DrawHandlePic;
@@ -4457,7 +5074,10 @@ void idUserInterfaceManagerLocal::SetActiveMenu(uiMenuCommand_t menu) {
     // enusure minumum menu data is cached
 
     if(Menu_Count() > 0) {
-        vec3_t v;
+        menuDef_t *focused_menu;
+        bool      keep_editing = false;
+        vec3_t    v;
+
         v[0] = v[1] = v[2] = 0;
 
         menutype = menu;
@@ -4473,11 +5093,24 @@ void idUserInterfaceManagerLocal::SetActiveMenu(uiMenuCommand_t menu) {
 
             case UIMENU_MAIN:
                 trap_Key_SetCatcher(KEYCATCH_UI);
-                Menus_CloseAll(true);
+                focused_menu = Menu_GetFocused();
+
+                if(!cl_profile.string[0]) {
+                    keep_editing =
+                        g_editingField &&
+                        !Q_stricmp(focused_menu->window.name, "profilefirstrunlogin");
+                } else {
+                    keep_editing =
+                        g_editingField &&
+                        !Q_stricmp(focused_menu->window.name, "main");
+                }
+
+                Menus_CloseAll(!keep_editing);
                 Menus_ActivateByName("backgroundmusic");
 
                 // makes sure it doesn't get restarted every time you reach the main menu
                 if(!cl_profile.string[0]) {
+                    Menus_ActivateByName("profilefirstrunloginbackground");
                     Menus_ActivateByName("profilefirstrunlogin");
                 } else {
                     Menus_ActivateByName("main");
@@ -4766,15 +5399,15 @@ void idUserInterfaceManagerLocal::DrawConnectScreen(bool overlay) {
     /*  if( !overlay ) {
         BG_DrawConnectScreen( false );
     }*/
-    char           *s;
+    valueType       *s;
     uiClientState_t cstate;
-    char            info[MAX_INFO_VALUE];
-    char text[256];
-    float centerPoint, yStart, scale;
-    vec4_t color = { 0.3f, 0.3f, 0.3f, 0.8f };
+    valueType       info[MAX_INFO_VALUE];
+    valueType       text[256];
+    float           centerPoint, yStart, scale;
+    vec4_t          color = { 0.3f, 0.3f, 0.3f, 0.8f };
     //  static bool playingMusic = false;
 
-    char downloadName[MAX_INFO_VALUE];
+    valueType downloadName[MAX_INFO_VALUE];
 
     menuDef_t *menu = Menus_FindByName("Connect");
 
@@ -4829,9 +5462,9 @@ void idUserInterfaceManagerLocal::DrawConnectScreen(bool overlay) {
     // DHM - Nerve :: This now accepts strings up to 256 chars long, and will break them up into multiple lines.
     //                  They are also now printed in Yellow for readability.
     if(cstate.connState < CA_CONNECTED) {
-        char   *s;
-        char    ps[60];
-        int     i, len, index = 0, yPrint = yStart + 210;
+        valueType   *s;
+        valueType    ps[60];
+        sint         i, len, index = 0, yPrint = yStart + 210;
         bool neednewline = false;
 
         s = trap_TranslateString(cstate.messageString);

@@ -3799,10 +3799,10 @@ bool idBothGamesLocal::ClientListTest(clientList_t *list, sint clientNum) {
         return false;
     }
 
-    if(clientNum < 32) {
+    if(clientNum < 64) {
         return ((list->lo & (1 << clientNum)) != 0);
     } else {
-        return ((list->hi & (1 << (clientNum - 32))) != 0);
+        return ((list->hi & (1 << (clientNum - 64))) != 0);
     }
 }
 
@@ -3816,10 +3816,10 @@ void idBothGamesLocal::ClientListAdd(clientList_t *list, sint clientNum) {
         return;
     }
 
-    if(clientNum < 32) {
+    if(clientNum < 64) {
         list->lo |= (1 << clientNum);
     } else {
-        list->hi |= (1 << (clientNum - 32));
+        list->hi |= (1 << (clientNum - 64));
     }
 }
 
@@ -3834,10 +3834,10 @@ void idBothGamesLocal::ClientListRemove(clientList_t *list,
         return;
     }
 
-    if(clientNum < 32) {
+    if(clientNum < 64) {
         list->lo &= ~(1 << clientNum);
     } else {
-        list->hi &= ~(1 << (clientNum - 32));
+        list->hi &= ~(1 << (clientNum - 64));
     }
 }
 
@@ -4018,4 +4018,3 @@ valueType *idBothGamesLocal::TeamName(team_t team) {
 
     return "<team>";
 }
-

@@ -39,6 +39,8 @@ void UI_ClearScores(void);
 void UI_LoadArenas(void);
 void UI_ServerInfo(void);
 
+sint UI_ClientNumbersFromString(valueType *s, sint *plist, sint max);
+
 void UI_RegisterCvars(void);
 void UI_UpdateCvars(void);
 void UI_DrawConnectScreen(bool overlay);
@@ -186,10 +188,10 @@ typedef struct {
     sint playerNumber;
     sint myPlayerIndex;
     sint ignoreIndex;
-    valueType playerNames[MAX_CLIENTS][MAX_NAME_LENGTH];
-    valueType rawPlayerNames[MAX_CLIENTS][MAX_NAME_LENGTH];
-    valueType teamNames[MAX_CLIENTS][MAX_NAME_LENGTH];
-    valueType rawTeamNames[MAX_CLIENTS][MAX_NAME_LENGTH];
+    valueType playerNames[MAX_CLIENTS][MAX_COLORFUL_NAME_LENGTH];
+    valueType rawPlayerNames[MAX_CLIENTS][MAX_COLORFUL_NAME_LENGTH];
+    valueType teamNames[MAX_CLIENTS][MAX_COLORFUL_NAME_LENGTH];
+    valueType rawTeamNames[MAX_CLIENTS][MAX_COLORFUL_NAME_LENGTH];
     sint clientNums[MAX_CLIENTS];
     sint teamClientNums[MAX_CLIENTS];
     clientList_t ignoreList[MAX_CLIENTS];
@@ -329,4 +331,3 @@ public:
 extern idUserInterfaceManagerLocal uiManagerLocal;
 
 #endif //!__GUI_LOCAL_H__
-

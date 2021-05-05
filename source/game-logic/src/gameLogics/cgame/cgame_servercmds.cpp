@@ -903,47 +903,228 @@ void idCGameServerCmds::Menu(sint menu, sint arg) {
 idCGameServerCmds::Say
 =================
 */
-void idCGameServerCmds::Say(sint clientNum, valueType *text) {
-    clientInfo_t *ci;
-    valueType sayText[ MAX_SAY_TEXT ] = {""};
+void idCGameServerCmds::Say(sint clientNum, saymode_t mode,
+                            const valueType *text) {
+    valueType       *name;
+    valueType       prefix[ 13 ] = "";
+    valueType       mention[25] = "";
+    valueType       *ignore = "";
+    valueType       *location = "";
+    valueType       *maybeColon;
+    valueType       *tmsgcolor = S_COLOR_YELLOW;
+    valueType       text2[((MAX_SAY_TEXT * 2) + 1)];
+    const valueType *color;
+    const valueType *text_ptr;
+    const valueType *p;
+    valueType       *p2;
 
-    if(clientNum < 0 || clientNum >= MAX_CLIENTS) {
-        return;
+    text_ptr = text;
+
+    while(*text_ptr) {
+        //check if this is a mention
+        if(*text_ptr == '@') {
+            const valueType *s = text_ptr + 1;
+            valueType       n2[MAX_COLORFUL_NAME_LENGTH] = {""};
+            valueType       n2_temp[MAX_COLORFUL_NAME_LENGTH] = {""};
+            bool            name_match = true;
+            unsigned long   length = 0;
+
+            Q_strncpyz(n2_temp, cgs.clientinfo[cg.clientNum].name, sizeof(n2_temp));
+            Q_CleanStr(n2_temp);
+            Q_StringToLower(n2_temp, n2, sizeof(n2));
+
+            if(!(*s)) {
+                name_match = false;
+            } else {
+                while(*s && n2[length]) {
+                    if(Q_IsColorString(s)) {
+                        s += Q_ColorStringLength(s) - 1;
+                    } else if(s[0] >= 0x20 && s[0] <= 0x7E) {
+                        if(Q_IsColorEscapeEscape(s)) {
+                            s++;
+                        }
+                    }
+
+                    if(tolower(s[0]) != n2[length]) {
+                        name_match = false;
+                        break;
+                    }
+
+                    s++;
+                    length++;
+                }
+
+                if(length != strlen(n2)) {
+                    name_match = false;
+                }
+            }
+
+            if(name_match) {
+                Q_strncpyz(mention, "^1>^3-^1>^3-^1>^3-^1> ^7", sizeof(mention));
+                break;
+            }
+        }
+
+        text_ptr++;
     }
 
-    ci = &cgs.clientinfo[ clientNum ];
-    Q_vsprintf_s(sayText, sizeof(sayText), sizeof(sayText),
-                 "%s: " S_COLOR_WHITE S_COLOR_GREEN "%s" S_COLOR_WHITE "\n", ci->name,
-                 text);
+    if(clientNum >= 0 && clientNum < MAX_CLIENTS) {
+        clientInfo_t    *ci = &cgs.clientinfo[ clientNum ];
+        const valueType *tcolor = S_COLOR_WHITE;
+        const valueType *tbcolor = S_COLOR_YELLOW;
 
-    if(bggame->ClientListTest(&cgs.ignoreList, clientNum)) {
-        Printf("[skipnotify]%s", sayText);
+        name = ci->name;
+
+        if(!(ci->team == TEAM_NONE)) {
+            tmsgcolor = S_COLOR_CYAN;
+        }
+
+        if(ci->team == TEAM_ALIENS) {
+            tcolor = S_COLOR_MAGENTA;
+            tbcolor = S_COLOR_RED;
+        } else if(ci->team == TEAM_HUMANS) {
+            tcolor = S_COLOR_CYAN;
+            tbcolor = S_COLOR_BLUE;
+        }
+
+        Q_vsprintf_s(prefix, sizeof(prefix), sizeof(prefix),
+                     "%s[%s%c%s]" S_COLOR_WHITE " ",
+                     tbcolor, tcolor,
+                     toupper((bggame->TeamName(ci->team))[0]),
+                     tbcolor);
+
+        if((mode == SAY_TEAM || mode == SAY_AREA) &&
+                cg.snap->ps.pm_type != PM_INTERMISSION) {
+            sint locationNum;
+
+            if(clientNum == cg.snap->ps.clientNum) {
+                centity_t     *locent;
+
+                locent = idCGamePlayers::GetPlayerLocation();
+
+                if(locent) {
+                    locationNum = locent->currentState.generic1;
+                } else {
+                    locationNum = -1;
+                }
+            } else {
+                locationNum = ci->location;
+            }
+
+            if(locationNum >= 0 && locationNum < MAX_LOCATIONS) {
+                const char *s =
+                    idCGameMain::ConfigString(CS_LOCATIONS + locationNum);
+
+                if(*s) {
+                    location = va(" (%s" S_COLOR_WHITE ")", s);
+                }
+            }
+        }
     } else {
-        Printf("%s", sayText);
-    }
-}
-
-/*
-=================
-idCGameServerCmds::SayTeam
-=================
-*/
-void idCGameServerCmds::SayTeam(sint clientNum, valueType *text) {
-    clientInfo_t *ci;
-    valueType sayText[ MAX_SAY_TEXT ] = {""};
-
-    if(clientNum < 0 || clientNum >= MAX_CLIENTS) {
-        return;
+        name = "console";
     }
 
-    ci = &cgs.clientinfo[ clientNum ];
-    Q_vsprintf_s(sayText, sizeof(sayText), sizeof(sayText),
-                 "%s: " S_COLOR_CYAN "%s" S_COLOR_WHITE "\n", ci->name, text);
-
-    if(bggame->ClientListTest(&cgs.ignoreList, clientNum)) {
-        Printf("[skipnotify]%s", sayText);
+    // IRC-like /me parsing
+    if(mode != SAY_RAW && Q_stricmpn(text, "/me ", 4) == 0) {
+        text += 4;
+        Q_strcat(prefix, sizeof(prefix), "* ");
+        maybeColon = "";
     } else {
-        Printf("%s", sayText);
+        maybeColon = ":";
+    }
+
+    //unformat the chat
+    ::memset(text2, 0, sizeof(text2));
+    p = text;
+    p2 = text2;
+
+    while(*p != 0) {
+        if(*p == '%') {
+            *p2 = '%';
+            p2++;
+            *p2 = *p;
+            p++;
+            p2++;
+            continue;
+        } else {
+            *p2 = *p;
+            p++;
+            p2++;
+            continue;
+        }
+    }
+
+    switch(mode) {
+        case SAY_ALL:
+
+            // might already be ignored but in that case no harm is done
+            if(cg_teamChatsOnly.integer) {
+                ignore = "[skipnotify]";
+            }
+
+            Printf("%s%s%s%s" S_COLOR_WHITE "%s %c" S_COLOR_GREEN "%s\n",
+                   ignore, mention, prefix, name, maybeColon, INDENT_MARKER, text2);
+            break;
+
+        case SAY_TEAM:
+            Printf("%s%s%s(%s" S_COLOR_WHITE ")%s%s %c%s%s\n",
+                   ignore, mention, prefix, name, location, maybeColon, INDENT_MARKER,
+                   tmsgcolor, text2);
+            break;
+
+        case SAY_ADMINS:
+        case SAY_ADMINS_PUBLIC:
+            Printf("%s%s%s%s%s" S_COLOR_WHITE "%s %c" S_COLOR_MAGENTA "%s\n",
+                   ignore, mention, prefix,
+                   (mode == SAY_ADMINS) ? "[ADMIN]" : "[PLAYER]",
+                   name, maybeColon, INDENT_MARKER, text2);
+            break;
+
+        case SAY_AREA:
+            Printf("%s%s%s<%s" S_COLOR_WHITE ">%s%s %c" S_COLOR_BLUE "%s\n",
+                   ignore, mention, prefix, name, location, maybeColon, INDENT_MARKER, text2);
+            break;
+
+        case SAY_PRIVMSG:
+        case SAY_TPRIVMSG:
+            color = (mode == SAY_TPRIVMSG) ? S_COLOR_CYAN : S_COLOR_GREEN;
+            Printf("%s%s[%s" S_COLOR_WHITE " -> %s" S_COLOR_WHITE "]%s %c%s%s\n",
+                   ignore, prefix, name, cgs.clientinfo[ cg.clientNum ].name,
+                   maybeColon, INDENT_MARKER, color, text2);
+
+            if(!ignore[0]) {
+                idCGameDraw::CenterPrint(
+                    va("%sPrivate message from: " S_COLOR_WHITE "%s",
+                       color, name), 200, GIANTCHAR_WIDTH * 4);
+
+                if(clientNum < 0 || clientNum >= MAX_CLIENTS) {
+                    clientNum = cg.clientNum;
+                }
+
+                Printf(">> to reply, say: /m %d [your message] <<\n", clientNum);
+            }
+
+            break;
+
+        case SAY_RAW:
+            Printf("%s\n", text2);
+            break;
+    }
+
+    switch(mode) {
+        case SAY_TEAM:
+        case SAY_AREA:
+        case SAY_TPRIVMSG:
+            if(cg.snap->ps.stats[ STAT_TEAM ] == TEAM_ALIENS) {
+                trap_S_StartLocalSound(cgs.media.alienTalkSound, CHAN_LOCAL_SOUND);
+                break;
+            } else if(cg.snap->ps.stats[ STAT_TEAM ] == TEAM_HUMANS) {
+                trap_S_StartLocalSound(cgs.media.humanTalkSound, CHAN_LOCAL_SOUND);
+                break;
+            }
+
+        default:
+            trap_S_StartLocalSound(cgs.media.talkSound, CHAN_LOCAL_SOUND);
     }
 }
 
@@ -1055,11 +1236,11 @@ void idCGameServerCmds::ParseVoice(void) {
     if(!cg_noVoiceText.integer) {
         switch(vChan) {
             case VOICE_CHAN_ALL:
-                Say(clientNum, sayText);
+                Say(clientNum, SAY_ALL, sayText);
                 break;
 
             case VOICE_CHAN_TEAM:
-                SayTeam(clientNum, sayText);
+                Say(clientNum, SAY_TEAM, sayText);
                 break;
 
             default:
@@ -1125,50 +1306,12 @@ idCGameServerCmds::Chat_f
 =================
 */
 void idCGameServerCmds::Chat_f(void) {
-    valueType cmd[ 6 ], text[ MAX_SAY_TEXT ], text2[ ((MAX_SAY_TEXT * 2) + 1) ];
-    char *p, *p2;
-    bool team;
+    sint clientNum = atoi(idCGameMain::Argv(1));
+    saymode_t mode = (saymode_t)atoi(idCGameMain::Argv(2));
+    valueType text[ MAX_SAY_TEXT ];
 
-    trap_Argv(0, cmd, sizeof(cmd));
-    team = Q_stricmp(cmd, "chat");
-
-    if(team && cg_teamChatsOnly.integer) {
-        return;
-    }
-
-    Q_strncpyz(text, idCGameMain::Argv(1), sizeof(text));
-
-    if(Q_stricmpn(text, "[skipnotify]", 12)) {
-        if(team && cg.snap->ps.stats[STAT_TEAM] == TEAM_ALIENS) {
-            trap_S_StartLocalSound(cgs.media.alienTalkSound, CHAN_LOCAL_SOUND);
-        } else if(team && cg.snap->ps.stats[STAT_TEAM] == TEAM_HUMANS) {
-            trap_S_StartLocalSound(cgs.media.humanTalkSound, CHAN_LOCAL_SOUND);
-        } else {
-            trap_S_StartLocalSound(cgs.media.talkSound, CHAN_LOCAL_SOUND);
-        }
-    }
-
-    //unformat the chat
-    ::memset(text2, 0, sizeof(text2));
-    p = text;
-    p2 = text2;
-    while(*p != 0) {
-        if(*p == '%') {
-            *p2 = '%';
-            p2++;
-            *p2 = *p;
-            p++;
-            p2++;
-            continue;
-        } else {
-            *p2 = *p;
-            p++;
-            p2++;
-            continue;
-        }
-    }
-
-    Printf("%s\n", text2);
+    Q_strncpyz(text, idCGameMain::Argv(3), sizeof(text));
+    Say(clientNum, mode, text);
 }
 
 /*

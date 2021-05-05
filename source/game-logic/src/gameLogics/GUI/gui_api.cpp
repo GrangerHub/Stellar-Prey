@@ -42,6 +42,8 @@ idCGame *idCgame;
 idClientLANSystem *idLANSystem;
 idClientGUISystem *idGUISystem;
 idClientScreenSystem *idScreenSystem;
+idClientCinemaSystem *idClientCinema;
+idClientLocalizationSystem *idClientLocalization;
 
 #ifdef __LINUX__
 extern "C" idUserInterfaceManager *guiEntry(guiImports_t *guiimports)
@@ -62,6 +64,8 @@ Q_EXPORT idUserInterfaceManager *guiEntry(guiImports_t *guiimports)
     idLANSystem = imports->idLANSystem;
     idGUISystem = imports->idGUISystem;
     idScreenSystem = imports->clientScreenSystem;
+    idClientCinema = imports->clientCinemaSystem;
+    idClientLocalization = imports->clientLocalization;
 
     return uiManager;
 }
@@ -453,19 +457,20 @@ sint trap_RealTime(qtime_t *qtime) {
 
 sint trap_CIN_PlayCinematic(pointer arg0, sint xpos, sint ypos, sint width,
                             sint height, sint bits) {
-    return imports->PlayCinematic(arg0, xpos, ypos, width, height, bits);
+    imports->clientCinemaSystem->PlayCinematic(arg0, xpos, ypos, width, height,
+            bits);
 }
 
 e_status trap_CIN_StopCinematic(sint handle) {
-    return imports->StopCinematic(handle);
+    return imports->clientCinemaSystem->CinemaStopCinematic(handle);
 }
 
 e_status trap_CIN_RunCinematic(sint handle) {
-    return imports->RunCinematic(handle);
+    return imports->clientCinemaSystem->CinemaRunCinematic(handle);
 }
 
 void trap_CIN_DrawCinematic(sint handle) {
-    imports->DrawCinematic(handle);
+    imports->clientCinemaSystem->CinemaDrawCinematic(handle);
 }
 
 void trap_CIN_SetExtents(sint handle, sint x, sint y, sint w, sint h) {
@@ -485,7 +490,7 @@ valueType *trap_TranslateString(pointer string) {
     buf = staticbuf[bufcount++ % 2];
 
 #ifdef LOCALIZATION_SUPPORT
-    imports->TranslateString(string, buf);
+    imports->clientLocalization->TranslateString(string, buf);
 #else
     Q_strncpyz(buf, string, MAX_VA_STRING);
 #endif                          // LOCALIZATION_SUPPORT

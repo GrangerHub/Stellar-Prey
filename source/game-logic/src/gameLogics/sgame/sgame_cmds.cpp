@@ -74,17 +74,18 @@ void idSGameCmds::SanitiseString(valueType *in, valueType *out, sint len) {
         }
 
         if(Q_IsColorString(in)) {
-            in += 2;    // skip color code
+            in += Q_ColorStringLength(in);    // skip color code
             continue;
-        }
-
-        if(*in < 32) {
+        } else if(Q_IsColorEscapeEscape(in)) {
             in++;
-            continue;
         }
 
-        *out++ = tolower(*in++);
-        len--;
+        if(isalnum(*in)) {
+            *out++ = tolower(*in);
+            len--;
+        }
+
+        in++;
     }
 
     out -= spaces;
@@ -99,34 +100,70 @@ Returns a player number for either a number or name string
 Returns -1 if invalid
 ==================
 */
-sint idSGameCmds::ClientNumberFromString(valueType *s) {
+sint idSGameCmds::ClientNumberFromString(valueType *s, valueType *err,
+        sint len) {
     gclient_t *cl;
-    sint       i;
-    valueType      s2[ MAX_NAME_LENGTH ];
-    valueType      n2[ MAX_NAME_LENGTH ];
+    sint       i, found = 0, m = -1;
+    valueType      s2[ MAX_COLORFUL_NAME_LENGTH ];
+    valueType      n2[ MAX_COLORFUL_NAME_LENGTH ];
+    valueType      *p = err;
+    sint       l, l2 = len;
+
+    if(!s[ 0 ]) {
+        if(p) {
+            Q_strncpyz(p, "no player name or slot # provided\n", len);
+        }
+
+        return -1;
+    }
 
     // numeric values are just slot numbers
-    for(i = 0; s[ i ] && isdigit(s[ i ]); i++);
+    for(i = 0; s[ i ] && isdigit(s[ i ]); i++) {
+        if(!s[ i ]) {
+            i = atoi(s);
 
-    if(!s[ i ]) {
-        i = atoi(s);
+            if(i < 0 || i >= level.maxclients) {
+                if(p) {
+                    Q_strncpyz(p, "invalid slot #\n", len);
+                }
 
-        if(i < 0 || i >= level.maxclients) {
-            return -1;
+                return -1;
+            }
+
+            cl = &level.clients[ i ];
+
+            if(cl->pers.connected == CON_DISCONNECTED) {
+                if(p) {
+                    Q_strncpyz(p, "no player connected in that slot #\n", len);
+                }
+
+                return -1;
+            }
+
+            return i;
         }
-
-        cl = &level.clients[ i ];
-
-        if(cl->pers.connected == CON_DISCONNECTED) {
-            return -1;
-        }
-
-        return i;
     }
 
     // check for a name match
     SanitiseString(s, s2, sizeof(s2));
 
+    if(!s2[ 0 ]) {
+        if(p) {
+            Q_strncpyz(p, "no player name provided\n", len);
+        }
+
+        return -1;
+    }
+
+    if(p) {
+        Q_strncpyz(p, "more than one player name matches. "
+                   "be more specific or use the slot #:\n", l2);
+        l = strlen(p);
+        p += l;
+        l2 -= l;
+    }
+
+    // check for a name match
     for(i = 0, cl = level.clients; i < level.maxclients; i++, cl++) {
         if(cl->pers.connected == CON_DISCONNECTED) {
             continue;
@@ -137,52 +174,35 @@ sint idSGameCmds::ClientNumberFromString(valueType *s) {
         if(!strcmp(n2, s2)) {
             return i;
         }
+
+        if(strstr(n2, s2)) {
+            if(p) {
+                valueType line[ MAX_COLORFUL_NAME_LENGTH + 10 ] = {""};
+
+                Q_vsprintf_s(line, sizeof(line), sizeof(line), "%2i - %s^7\n",
+                             i, cl->pers.netname);
+
+                if(strlen(err) + strlen(line) > len) {
+                    break;
+                }
+
+                Q_strcat(err, len, line);
+            }
+
+            found++;
+            m = i;
+        }
+    }
+
+    if(found == 1) {
+        return m;
+    }
+
+    if(found == 0 && err) {
+        Q_strncpyz(err, "no connected player by that name or slot #\n", len);
     }
 
     return -1;
-}
-
-
-/*
-==================
-idSGameCmds::MatchOnePlayer
-
-This is a companion function to idSGameCmds::ClientNumbersFromString()
-
-err will be populated with an error message.
-==================
-*/
-void idSGameCmds::MatchOnePlayer(sint *plist, sint num, valueType *err,
-                                 sint len) {
-    gclient_t *cl;
-    sint i;
-    valueType line[ MAX_NAME_LENGTH + 10 ] = {""};
-
-    err[ 0 ] = '\0';
-
-    if(num == 0) {
-        Q_strcat(err, len, "no connected player by that name or slot #");
-    } else if(num > 1) {
-        Q_strcat(err, len, "more than one player name matches. "
-                 "be more specific or use the slot #:\n");
-
-        for(i = 0; i < num; i++) {
-            cl = &level.clients[ plist[ i ] ];
-
-            if(cl->pers.connected == CON_DISCONNECTED) {
-                continue;
-            }
-
-            Q_vsprintf_s(line, sizeof(line), sizeof(line), "%2i - %s^7\n",
-                         plist[ i ], cl->pers.netname);
-
-            if(strlen(err) + strlen(line) > len) {
-                break;
-            }
-
-            Q_strcat(err, len, line);
-        }
-    }
 }
 
 /*
@@ -196,22 +216,32 @@ Returns number of matching clientids up to max.
 ==================
 */
 sint idSGameCmds::ClientNumbersFromString(valueType *s, sint *plist,
-        sint max) {
+        sint max, bool alphanumeric) {
     gclient_t *p;
     sint i, found = 0;
-    valueType n2[ MAX_NAME_LENGTH ] = {""};
-    valueType s2[ MAX_NAME_LENGTH ] = {""};
+    valueType *s_start = s;
+    valueType *endptr;
+    valueType n2[ MAX_COLORFUL_NAME_LENGTH ] = {""};
+    valueType s2[ MAX_COLORFUL_NAME_LENGTH ] = {""};
+    valueType n2_temp[ MAX_COLORFUL_NAME_LENGTH ] = {""};
+    valueType s2_temp[ MAX_COLORFUL_NAME_LENGTH ] = {""};
 
     if(max == 0) {
         return 0;
     }
 
+    if(*s_start == '@') {
+        s_start++;
+    }
+
+    if(!s_start[ 0 ]) {
+        return 0;
+    }
+
     // if a number is provided, it is a clientnum
-    for(i = 0; s[ i ] && isdigit(s[ i ]); i++);
+    i = strtol(s_start, &endptr, 10);
 
-    if(!s[ i ]) {
-        i = atoi(s);
-
+    if(*endptr == '\0') {
         if(i >= 0 && i < level.maxclients) {
             p = &level.clients[ i ];
 
@@ -226,9 +256,15 @@ sint idSGameCmds::ClientNumbersFromString(valueType *s, sint *plist,
     }
 
     // now look for name matches
-    SanitiseString(s, s2, sizeof(s2));
+    if(alphanumeric) {
+        SanitiseString(s_start, s2, sizeof(s2));
+    } else {
+        Q_strncpyz(s2_temp, s, sizeof(s2_temp));
+        Q_CleanStr(s2_temp);
+        Q_StringToLower(s2_temp, s2, sizeof(s2));
+    }
 
-    if(strlen(s2) < 1) {
+    if(!s2[ 0 ]) {
         return 0;
     }
 
@@ -239,7 +275,13 @@ sint idSGameCmds::ClientNumbersFromString(valueType *s, sint *plist,
             continue;
         }
 
-        SanitiseString(p->pers.netname, n2, sizeof(n2));
+        if(alphanumeric) {
+            SanitiseString(p->pers.netname, n2, sizeof(n2));
+        } else {
+            Q_strncpyz(n2_temp, p->pers.netname, sizeof(n2_temp));
+            Q_CleanStr(n2_temp);
+            Q_StringToLower(n2_temp, n2, sizeof(n2));
+        }
 
         if(strstr(n2, s2)) {
             *plist++ = i;
@@ -675,173 +717,345 @@ void idSGameCmds::Cmd_Team_f(gentity_t *ent) {
     idSGameTeam::ChangeTeam(ent, team);
 }
 
+/*
+==================
+idSGameCmds::CensorString
+==================
+*/
+static valueType censors[ 20000 ];
+static sint numcensors;
+
+void idSGameCmds::LoadCensors(void) {
+    valueType *text_p, *token;
+    valueType text[ 20000 ];
+    valueType *term;
+    sint  len;
+    fileHandle_t f;
+
+    numcensors = 0;
+
+    if(!g_censorship.string[ 0 ]) {
+        return;
+    }
+
+    len = trap_FS_FOpenFile(g_censorship.string, &f, FS_READ);
+
+    if(len < 0) {
+        idSGameMain::LogPrintf(S_COLOR_RED
+                               "ERROR: Censors file %s doesn't exist\n",
+                               g_censorship.string);
+        return;
+    }
+
+    if(len == 0 || len >= sizeof(text) - 1) {
+        trap_FS_FCloseFile(f);
+        idSGameMain::LogPrintf(S_COLOR_RED "ERROR: Censors file %s is %s\n",
+                               g_censorship.string, len == 0 ? "empty" : "too long");
+        return;
+    }
+
+    trap_FS_Read(text, len, f);
+    trap_FS_FCloseFile(f);
+    text[ len ] = 0;
+
+    term = censors;
+
+    text_p = text;
+
+    while(1) {
+        token = COM_Parse(&text_p);
+
+        if(!*token || sizeof(censors) - (term - censors) < 4) {
+            break;
+        }
+
+        Q_strncpyz(term, token, sizeof(censors) - (term - censors));
+        Q_strlwr(term);
+        term += strlen(term) + 1;
+
+        if(sizeof(censors) - (term - censors) == 0) {
+            break;
+        }
+
+        token = COM_ParseExt(&text_p, false);
+        Q_strncpyz(term, token, sizeof(censors) - (term - censors));
+        term += strlen(term) + 1;
+        numcensors++;
+    }
+
+    idSGameMain::LogPrintf("Parsed %d string replacements\n", numcensors);
+}
+
+void idSGameCmds::CensorString(valueType *out, const valueType *in,
+                               sint len,
+                               gentity_t *ent) {
+    const valueType *s, *m;
+    sint  i;
+
+    if(!numcensors || adminLocal.AdminPermission(ent, ADMF_NOCENSORFLOOD)) {
+        Q_strncpyz(out, in, len);
+        return;
+    }
+
+    len--;
+
+    while(*in) {
+        if(Q_IsColorString(in)) {
+            sint color_string_length = Q_ColorStringLength(in);
+            sint i;
+
+            if(len < color_string_length) {
+                break;
+            }
+
+            for(i = 0; i < color_string_length; i++) {
+                *out++ = *in++;
+            }
+
+            len -= color_string_length;
+            continue;
+        } else if(Q_IsColorEscapeEscape(in)) {
+            if(len < 1) {
+                break;
+            }
+
+            *out++ = *in++;
+            len--;
+        }
+
+        if(!isalnum(*in)) {
+            if(len < 1) {
+                break;
+            }
+
+            *out++ = *in++;
+            len--;
+            continue;
+        }
+
+        m = censors;
+
+        for(i = 0; i < numcensors; i++, m++) {
+            s = in;
+
+            while(*s && *m) {
+                if(Q_IsColorString(s)) {
+                    s += Q_ColorStringLength(s);
+                    continue;
+                } else if(Q_IsColorEscapeEscape(s)) {
+                    s++;
+                }
+
+                if(!isalnum(*s)) {
+                    s++;
+                    continue;
+                }
+
+                if(tolower(*s) != *m) {
+                    break;
+                }
+
+                s++;
+                m++;
+            }
+
+            // match
+            if(!*m) {
+                in = s;
+                m++;
+
+                while(*m) {
+                    if(len < 1) {
+                        break;
+                    }
+
+                    *out++ = *m++;
+                    len--;
+                }
+
+                break;
+            } else {
+                while(*m) {
+                    m++;
+                }
+
+                m++;
+
+                while(*m) {
+                    m++;
+                }
+            }
+        }
+
+        if(len < 1) {
+            break;
+        }
+
+        // no match
+        if(i == numcensors) {
+            *out++ = *in++;
+            len--;
+        }
+    }
+
+    *out = 0;
+}
+
 
 /*
 ==================
-G_Say
+idSGameCmds::SayTo
 ==================
 */
-void idSGameCmds::SayTo(gentity_t *ent, gentity_t *other, sint mode,
-                        sint color, pointer name, pointer message) {
-    bool ignore = false;
-
+bool idSGameCmds::SayTo(
+    gentity_t *ent, gentity_t *other, saymode_t mode, pointer message) {
     if(!other) {
-        return;
+        return false;
     }
 
     if(!other->inuse) {
-        return;
+        return false;
     }
 
     if(!other->client) {
-        return;
+        return false;
     }
 
     if(other->client->pers.connected != CON_CONNECTED) {
-        return;
-    }
-
-    if(mode == SAY_TEAM && !idSGameTeam::OnSameTeam(ent, other)) {
-        if(other->client->pers.teamSelection != TEAM_NONE) {
-            return;
-        }
-
-        if(!adminLocal.AdminPermission(other, ADMF_SPEC_ALLCHAT)) {
-            return;
-        }
-
-        // specs with ADMF_SPEC_ALLCHAT flag can see team chat
+        return false;
     }
 
     if(bggame->ClientListTest(&other->client->sess.ignoreList,
                               ent - g_entities)) {
-        ignore = true;
+        return false;
     }
 
-    trap_SendServerCommand(other - g_entities, va("%s \"%s%s%c%c%s%s\"",
-                           mode == SAY_TEAM ? "tchat" : "chat",
-                           (ignore) ? "[skipnotify]" : "",
-                           name, Q_COLOR_ESCAPE, color, message, S_COLOR_WHITE));
+    if((ent && !idSGameTeam::OnSameTeam(ent, other)) &&
+            (mode == SAY_TEAM || mode == SAY_AREA || mode == SAY_TPRIVMSG)) {
+        if(other->client->pers.teamSelection != TEAM_NONE) {
+            return false;
+        }
+
+        // specs with ADMF_SPEC_ALLCHAT flag can see team chat
+        if(!adminLocal.AdminPermission(other, ADMF_SPEC_ALLCHAT) &&
+                mode != SAY_TPRIVMSG) {
+            return false;
+        }
+    }
+
+    trap_SendServerCommand(other - g_entities, va("chat %d %d \"%s\"",
+                           (int)(ent ? ent - g_entities : -1),
+                           mode,
+                           message));
+
+    return true;
 }
 
-void idSGameCmds::Say(gentity_t *ent, gentity_t *target, sint mode,
-                      pointer chatText) {
-    sint         j;
+/*
+==================
+idSGameCmds::Say
+==================
+*/
+void idSGameCmds::Say(gentity_t *ent, saymode_t mode,
+                      const valueType *chatText) {
+    valueType   j;
     gentity_t   *other;
-    sint         color;
-    pointer  prefix;
-    valueType        name[ 64 ];
     // don't let text be too long for malicious reasons
-    valueType        text[ MAX_SAY_TEXT ];
-    valueType        location[ 64 ];
+    valueType   text[ MAX_SAY_TEXT ];
+    valueType   *tmsgcolor = S_COLOR_YELLOW;
 
-    if(g_chatTeamPrefix.integer) {
-        prefix = bggame->TeamName(ent->client->pers.teamSelection);
-        prefix = va("[%c] ", toupper(*prefix));
-    } else {
-        prefix = "";
+    // check if blocked by g_specChat 0
+    if((!g_specChat.integer) && (mode != SAY_TEAM) &&
+            (ent) && (ent->client->pers.teamSelection == TEAM_NONE) &&
+            (!adminLocal.AdminPermission(ent, ADMF_NOCENSORFLOOD))) {
+        trap_SendServerCommand(
+            ent - g_entities,
+            "print \"say: Global chatting for "
+            "spectators has been disabled. You may only use team chat.\n\"");
+        mode = SAY_TEAM;
     }
 
     switch(mode) {
-        default:
         case SAY_ALL:
-            idSGameMain::LogPrintf("say: %s^7: %s\n", ent->client->pers.netname,
-                                   chatText);
-            Q_vsprintf_s(name, sizeof(name), sizeof(name), "%s%s" S_COLOR_WHITE ": ",
-                         prefix,
-                         ent->client->pers.netname);
-            color = COLOR_GREEN;
+            idSGameMain::LogPrintf(
+                "Say: %d \"%s" S_COLOR_WHITE "\": " S_COLOR_GREEN "%s\n",
+                (int)((ent) ? ent - g_entities : -1),
+                (ent) ? ent->client->pers.netname : "console", chatText);
             break;
 
         case SAY_TEAM:
-            idSGameMain::LogPrintf("sayteam: %s^7: %s\n", ent->client->pers.netname,
-                                   chatText);
 
-            if(idSGameTeam::Team_GetLocationMsg(ent, location, sizeof(location)))
-                Q_vsprintf_s(name, sizeof(name), sizeof(name),
-                             "(%s" S_COLOR_WHITE ") (%s): ",
-                             ent->client->pers.netname, location);
-            else
-                Q_vsprintf_s(name, sizeof(name), sizeof(name), "(%s" S_COLOR_WHITE "): ",
-                             ent->client->pers.netname);
+            // console say_team is handled in g_svscmds, not here
+            if(!(ent->client->pers.teamSelection == TEAM_NONE)) {
+                tmsgcolor = S_COLOR_CYAN;
+            }
 
-            color = COLOR_CYAN;
+            if(!ent || !ent->client) {
+                Com_Error(ERR_FATAL, "SAY_TEAM by non-client entity");
+            }
+
+            idSGameMain::LogPrintf(
+                "SayTeam: %d \"%s" S_COLOR_WHITE "\": %s%s\n",
+                (int)(ent - g_entities), ent->client->pers.netname, tmsgcolor,
+                chatText);
             break;
 
-        case SAY_TELL:
-            if(target && idSGameTeam::OnSameTeam(target, ent) &&
-                    idSGameTeam::Team_GetLocationMsg(ent, location, sizeof(location)))
-                Q_vsprintf_s(name, sizeof(name), sizeof(name),
-                             "[%s" S_COLOR_WHITE "] (%s): ",
-                             ent->client->pers.netname, location);
-            else
-                Q_vsprintf_s(name, sizeof(name), sizeof(name), "[%s" S_COLOR_WHITE "]: ",
-                             ent->client->pers.netname);
+        case SAY_RAW:
+            if(ent) {
+                Com_Error(ERR_FATAL, "SAY_RAW by client entity");
+            }
 
-            color = COLOR_MAGENTA;
+            idSGameMain::LogPrintf("Chat: -1 \"console\": %s\n", chatText);
+
+        default:
             break;
     }
 
-    Q_strncpyz(text, chatText, sizeof(text));
-
-    if(target) {
-        SayTo(ent, target, mode, color, name, text);
-        return;
-    }
-
-    if(g_adminParseSay.integer) {
-        if(adminLocal.AdminCmdCheck(ent, true)) {
-            return;
-        }
-    }
+    CensorString(text, chatText, sizeof(text), ent);
 
     // send it to all the apropriate clients
     for(j = 0; j < level.maxclients; j++) {
         other = &g_entities[ j ];
-        SayTo(ent, other, mode, color, name, text);
+        SayTo(ent, other, mode, text);
     }
 }
 
 void idSGameCmds::Cmd_SayArea_f(gentity_t *ent) {
     sint    entityList[ MAX_GENTITIES ];
     sint    num, i;
-    sint    color = COLOR_BLUE;
-    pointer  prefix;
     vec3_t range = { 1000.0f, 1000.0f, 1000.0f };
     vec3_t mins, maxs;
-    valueType   *msg = ConcatArgs(1);
-    valueType   name[ 64 ];
+    valueType   *msg;
+
+    if(trap_Argc() < 2) {
+        adminLocal.ADMP("usage: say_area [message]\n");
+        return;
+    }
+
+    msg = ConcatArgs(1);
 
     for(i = 0; i < 3; i++) {
         range[ i ] = g_sayAreaRange.value;
     }
 
-    if(g_chatTeamPrefix.integer) {
-        prefix = bggame->TeamName(ent->client->pers.teamSelection);
-        prefix = va("[%c] ", toupper(*prefix));
-    } else {
-        prefix = "";
-    }
+    idSGameMain::LogPrintf(
+        "SayArea: %d \"%s" S_COLOR_WHITE "\": " S_COLOR_BLUE "%s\n",
+        (sint)(ent - g_entities), ent->client->pers.netname, msg);
 
-    idSGameMain::LogPrintf("sayarea: %s%s^7: %s\n", prefix,
-                           ent->client->pers.netname, msg);
-    Q_vsprintf_s(name, sizeof(name), sizeof(name), "%s<%s%c%c> ", prefix,
-                 ent->client->pers.netname, Q_COLOR_ESCAPE, COLOR_WHITE);
-
-    VectorAdd(ent->s.origin, range, maxs);
-    VectorSubtract(ent->s.origin, range, mins);
+    VectorAdd(ent->r.currentOrigin, range, maxs);
+    VectorSubtract(ent->r.currentOrigin, range, mins);
 
     num = trap_EntitiesInBox(mins, maxs, entityList, MAX_GENTITIES);
 
     for(i = 0; i < num; i++) {
-        SayTo(ent, &g_entities[ entityList[ i ] ], SAY_TEAM, color, name, msg);
+        SayTo(ent, &g_entities[ entityList[ i ] ], SAY_AREA, msg);
     }
 
     //Send to ADMF_SPEC_ALLCHAT candidates
     for(i = 0; i < level.maxclients; i++) {
-        if((&g_entities[ i ])->client->pers.teamSelection == TEAM_NONE &&
+        if(g_entities[ i ].client->pers.teamSelection == TEAM_NONE &&
                 adminLocal.AdminPermission(&g_entities[ i ], ADMF_SPEC_ALLCHAT)) {
-            SayTo(ent, &g_entities[ i ], SAY_TEAM, color, name, msg);
+            SayTo(ent, &g_entities[ i ], SAY_AREA, msg);
         }
     }
 }
@@ -852,92 +1066,23 @@ Cmd_Say_f
 ==================
 */
 void idSGameCmds::Cmd_Say_f(gentity_t *ent) {
-    valueType    *p;
-    valueType    *args;
-    sint     mode = SAY_ALL;
-
-    args = SayConcatArgs(0);
-
-    if(Q_stricmpn(args, "say_team ", 9) == 0) {
-        mode = SAY_TEAM;
-    }
-
-    // support parsing /m out of say text since some people have a hard
-    // time figuring out what the console is.
-    if(!Q_stricmpn(args, "say /m ", 7) ||
-            !Q_stricmpn(args, "say_team /m ", 12) ||
-            !Q_stricmpn(args, "say /mt ", 8) ||
-            !Q_stricmpn(args, "say_team /mt ", 13)) {
-        PrivateMessage_f(ent);
-        return;
-    }
-
-    // support parsing /a out of say text for the same reason
-    if(!Q_stricmpn(args, "say /a ", 7) ||
-            !Q_stricmpn(args, "say_team /a ", 12)) {
-        AdminMessage_f(ent);
-        return;
-    }
-
-    if(g_allowShare.integer) {
-        args = SayConcatArgs(0);
-
-        if(!Q_stricmpn(args, "say /share", 10) ||
-                !Q_stricmpn(args, "say_team /share", 15)) {
-            Share_f(ent);
-            return;
-        }
-    }
+    valueType *p;
+    valueType cmd[ MAX_TOKEN_CHARS ];
+    saymode_t mode = SAY_ALL;
 
     if(trap_Argc() < 2) {
         return;
+    }
+
+    trap_Argv(0, cmd, sizeof(cmd));
+
+    if(Q_stricmp(cmd, "say_team") == 0) {
+        mode = SAY_TEAM;
     }
 
     p = ConcatArgs(1);
 
-    if(strlen(p) >= MAX_SAY_TEXT) {
-        p[MAX_SAY_TEXT - 1] = '\0';
-        idSGameMain::LogPrintf("Cmd_Say_f from %d (%s) has been truncated: %s\n",
-                               ent->s.number, ent->client->pers.netname, p);
-        return;
-    }
-
-    Say(ent, nullptr, mode, p);
-}
-
-/*
-==================
-Cmd_Tell_f
-==================
-*/
-void idSGameCmds::Cmd_Tell_f(gentity_t *ent) {
-    sint     targetNum;
-    gentity_t *target;
-    valueType    *p;
-    valueType    arg[MAX_TOKEN_CHARS];
-
-    if(trap_Argc() < 2) {
-        return;
-    }
-
-    trap_Argv(1, arg, sizeof(arg));
-    targetNum = atoi(arg);
-
-    if(targetNum < 0 || targetNum >= level.maxclients) {
-        return;
-    }
-
-    target = &g_entities[ targetNum ];
-
-    if(!target || !target->inuse || !target->client) {
-        return;
-    }
-
-    p = ConcatArgs(2);
-
-    idSGameMain::LogPrintf("tell: %s^7 to %s^7: %s\n",
-                           ent->client->pers.netname, target->client->pers.netname, p);
-    Say(ent, target, SAY_TELL, p);
+    Say(ent, mode, p);
 }
 
 /*
@@ -1091,9 +1236,9 @@ Cmd_CallVote_f
 void idSGameCmds::Cmd_CallVote_f(gentity_t *ent) {
     sint   i;
     valueType  arg1[ MAX_STRING_TOKENS ];
-    valueType  arg2[ MAX_NAME_LENGTH ];
+    valueType  arg2[ MAX_COLORFUL_NAME_LENGTH ];
     sint   clientNum = -1;
-    valueType  name[ MAX_NAME_LENGTH ];
+    valueType  name[ MAX_COLORFUL_NAME_LENGTH ];
 
     if(!g_allowVote.integer) {
         trap_SendServerCommand(ent - g_entities,
@@ -1138,7 +1283,7 @@ void idSGameCmds::Cmd_CallVote_f(gentity_t *ent) {
     if(!Q_stricmp(arg1, "kick") ||
             !Q_stricmp(arg1, "mute") ||
             !Q_stricmp(arg1, "unmute")) {
-        sint clientNums[ MAX_CLIENTS ];
+        valueType err[ MAX_STRING_CHARS ];
 
         if(!arg2[ 0 ]) {
             trap_SendServerCommand(ent - g_entities,
@@ -1146,21 +1291,15 @@ void idSGameCmds::Cmd_CallVote_f(gentity_t *ent) {
             return;
         }
 
-        if(ClientNumbersFromString(arg2, clientNums, MAX_CLIENTS) == 1) {
-            // there was only one partial name match
-            clientNum = clientNums[ 0 ];
-        } else {
-            // look for an exact name match (sets clientNum to -1 if it fails)
-            clientNum = ClientNumberFromString(arg2);
-        }
+        // with a little extra work only players from the right team are considered
+        clientNum = ClientNumberFromString(arg2, err, sizeof(err));
 
         if(clientNum != -1) {
             Q_strncpyz(name, level.clients[ clientNum ].pers.netname,
                        sizeof(name));
             Q_CleanStr(name);
         } else {
-            trap_SendServerCommand(ent - g_entities,
-                                   "print \"callvote: invalid player\n\"");
+            adminLocal.ADMP(va("callvote: %s", err));
             return;
         }
     }
@@ -1344,9 +1483,9 @@ Cmd_CallTeamVote_f
 void idSGameCmds::Cmd_CallTeamVote_f(gentity_t *ent) {
     sint   i, team, cs_offset = 0;
     valueType  arg1[ MAX_STRING_TOKENS ];
-    valueType  arg2[ MAX_NAME_LENGTH ];
+    valueType  arg2[ MAX_COLORFUL_NAME_LENGTH ];
     sint   clientNum = -1;
-    valueType  name[ MAX_NAME_LENGTH ];
+    valueType  name[ MAX_COLORFUL_NAME_LENGTH ];
 
     team = ent->client->pers.teamSelection;
 
@@ -1389,7 +1528,7 @@ void idSGameCmds::Cmd_CallTeamVote_f(gentity_t *ent) {
     if(!Q_stricmp(arg1, "kick") ||
             !Q_stricmp(arg1, "denybuild") ||
             !Q_stricmp(arg1, "allowbuild")) {
-        sint clientNums[ MAX_CLIENTS ];
+        valueType err[ MAX_STRING_CHARS ];
 
         if(!arg2[ 0 ]) {
             trap_SendServerCommand(ent - g_entities,
@@ -1397,13 +1536,8 @@ void idSGameCmds::Cmd_CallTeamVote_f(gentity_t *ent) {
             return;
         }
 
-        if(ClientNumbersFromString(arg2, clientNums, MAX_CLIENTS) == 1) {
-            // there was only one partial name match
-            clientNum = clientNums[ 0 ];
-        } else {
-            // look for an exact name match (sets clientNum to -1 if it fails)
-            clientNum = ClientNumberFromString(arg2);
-        }
+        // with a little extra work only players from the right team are considered
+        clientNum = ClientNumberFromString(arg2, err, sizeof(err));
 
         // make sure this player is on the same team
         if(clientNum != -1 && level.clients[ clientNum ].pers.teamSelection !=
@@ -1416,8 +1550,7 @@ void idSGameCmds::Cmd_CallTeamVote_f(gentity_t *ent) {
                        sizeof(name));
             Q_CleanStr(name);
         } else {
-            trap_SendServerCommand(ent - g_entities,
-                                   "print \"callteamvote: invalid player\n\"");
+            adminLocal.ADMP(va("callteamvote: %s", err));
             return;
         }
     }
@@ -2771,25 +2904,22 @@ Cmd_Follow_f
 =================
 */
 void idSGameCmds::Cmd_Follow_f(gentity_t *ent) {
-    sint   i;
-    sint   pids[ MAX_CLIENTS ];
-    valueType  arg[ MAX_NAME_LENGTH ];
+    sint      i;
+    valueType arg[ MAX_COLORFUL_NAME_LENGTH ];
 
     if(trap_Argc() != 2) {
         ToggleFollow(ent);
     } else {
+        valueType err[ MAX_STRING_CHARS ];
+
         trap_Argv(1, arg, sizeof(arg));
 
-        if(ClientNumbersFromString(arg, pids, MAX_CLIENTS) == 1) {
-            i = pids[ 0 ];
-        } else {
-            i = ClientNumberFromString(arg);
+        i = ClientNumberFromString(arg, err, sizeof(err));
 
-            if(i == -1) {
-                trap_SendServerCommand(ent - g_entities,
-                                       "print \"follow: invalid player\n\"");
-                return;
-            }
+        if(i == -1) {
+            trap_SendServerCommand(ent - g_entities,
+                                   va("print \"follow: %s\"", err));
+            return;
         }
 
         // can't follow self
@@ -2934,12 +3064,12 @@ void idSGameCmds::Cmd_PTRCRestore_f(gentity_t *ent) {
 }
 
 void idSGameCmds::Cmd_Ignore_f(gentity_t *ent) {
-    sint pids[ MAX_CLIENTS ];
-    valueType name[ MAX_NAME_LENGTH ];
+    sint      pids[ MAX_CLIENTS ];
+    valueType name[ MAX_COLORFUL_NAME_LENGTH ];
     valueType cmd[ 9 ];
-    sint matches = 0;
-    sint i;
-    bool ignore = false;
+    sint      matches = 0;
+    sint      i;
+    bool      ignore = false;
 
     trap_Argv(0, cmd, sizeof(cmd));
 
@@ -2954,7 +3084,7 @@ void idSGameCmds::Cmd_Ignore_f(gentity_t *ent) {
     }
 
     Q_strncpyz(name, ConcatArgs(1), sizeof(name));
-    matches = ClientNumbersFromString(name, pids, MAX_CLIENTS);
+    matches = ClientNumbersFromString(name, pids, MAX_CLIENTS, true);
 
     if(matches < 1) {
         trap_SendServerCommand(ent - g_entities, va("print \"[skipnotify]"
@@ -3145,6 +3275,7 @@ void idSGameCmds::Share_f(gentity_t *ent) {
     valueType  arg2[MAX_STRING_TOKENS];
     team_t team;
     valueType data[255];
+    valueType err[ MAX_STRING_TOKENS ];
 
     if(!ent || !ent->client ||
             (ent->client->pers.teamSelection == TEAM_NONE)) {
@@ -3182,18 +3313,11 @@ void idSGameCmds::Share_f(gentity_t *ent) {
 
         if(clientNum >= 0) {
             clientNum = atoi(arg1);
-        } else if(ClientNumbersFromString(arg1, clientNums, MAX_CLIENTS) == 1) {
-            // there was one partial name match
-            clientNum = clientNums[0];
-        } else {
-            // look for an exact name match before bailing out
-            clientNum = ClientNumberFromString(arg1);
-
-            if(clientNum == -1) {
-                trap_SendServerCommand(ent - g_entities,
-                                       "print \"share: invalid player name specified.\n\"");
-                return;
-            }
+        } else if((clientNum = ClientNumberFromString(arg1, err,
+                               sizeof(err))) == -1) {
+            trap_SendServerCommand(ent - g_entities,
+                                   va("print \"share: %s.\n\"", err));
+            return;
         }
     } else { // arg1 not set
         vec3_t      forward, end;
@@ -3320,7 +3444,7 @@ commands_t cmds[ ] = {
     { "unignore", 0, &idSGameCmds::Cmd_Ignore_f },
 
     // communication commands
-    { "tell", CMD_MESSAGE, &idSGameCmds::Cmd_Tell_f },
+    { "tell", CMD_MESSAGE, &idSGameCmds::PrivateMessage_f },
     { "callvote", CMD_MESSAGE, &idSGameCmds::Cmd_CallVote_f },
     { "callteamvote", CMD_MESSAGE | CMD_TEAM, &idSGameCmds::Cmd_CallTeamVote_f },
     { "say_area", CMD_MESSAGE | CMD_TEAM, &idSGameCmds::Cmd_SayArea_f },
@@ -3333,6 +3457,8 @@ commands_t cmds[ ] = {
     { "m", CMD_MESSAGE | CMD_INTERMISSION, &idSGameCmds::PrivateMessage_f },
     { "mt", CMD_MESSAGE | CMD_INTERMISSION, &idSGameCmds::PrivateMessage_f },
     { "a", CMD_MESSAGE | CMD_INTERMISSION, &idSGameCmds::AdminMessage_f },
+    { "r", CMD_MESSAGE | CMD_INTERMISSION, &idSGameCmds::PrivateMessage_f },
+    { "rt", CMD_MESSAGE | CMD_INTERMISSION, &idSGameCmds::PrivateMessage_f },
 
     { "score", CMD_INTERMISSION, &idSGameCmds::ScoreboardMessage },
 
@@ -3566,17 +3692,25 @@ valueType *idSGameCmds::SayConcatArgs(sint start) {
 }
 
 void idSGameCmds::DecolorString(valueType *in, valueType *out, sint len) {
+    bool decolor = true;
+
     len--;
 
     while(*in && len > 0) {
-        if(Q_IsColorString(in)) {
+        if(*in == DECOLOR_OFF || *in == DECOLOR_ON) {
+            decolor = (*in == DECOLOR_ON);
             in++;
-
-            if(*in) {
-                in++;
-            }
-
             continue;
+        }
+
+        if(Q_IsColorString(in) && decolor) {
+            in += Q_ColorStringLength(in);
+            continue;
+        }
+
+        if(Q_IsColorEscapeEscape(in)) {
+            *out++ = *in++;
+            len--;
         }
 
         *out++ = *in++;
@@ -3587,134 +3721,69 @@ void idSGameCmds::DecolorString(valueType *in, valueType *out, sint len) {
 }
 
 void idSGameCmds::PrivateMessage_f(gentity_t *ent) {
-    sint pids[ MAX_CLIENTS ];
-    sint ignoreids[ MAX_CLIENTS ];
-    valueType name[ MAX_NAME_LENGTH ];
-    valueType cmd[ 12 ];
-    valueType str[ MAX_STRING_CHARS ];
-    valueType *msg;
-    valueType color;
-    sint pcount, matches, ignored = 0;
-    sint i;
-    sint skipargs = 0;
-    bool teamonly = false;
-    gentity_t *tmpent;
+    sint             pids[ MAX_CLIENTS ];
+    valueType        name[ MAX_COLORFUL_NAME_LENGTH ];
+    valueType        cmd[ 12 ];
+    valueType        text[ MAX_STRING_CHARS ];
+    valueType        *msg;
+    valueType        color;
+    sint             scrimming = 0;
+    sint             i;
+    sint             count = 0;
+    sint             pcount;
+    bool             teamonly = false;
+    valueType        recipients[ MAX_STRING_CHARS ] = "";
 
     if(!g_privateMessages.integer && ent) {
         adminLocal.ADMP("Sorry, but private messages have been disabled\n");
         return;
     }
 
-    SayArgv(0, cmd, sizeof(cmd));
+    trap_Argv(0, cmd, sizeof(cmd));
 
-    if(!Q_stricmp(cmd, "say") || !Q_stricmp(cmd, "say_team")) {
-        skipargs = 1;
-        SayArgv(1, cmd, sizeof(cmd));
-    }
-
-    if(SayArgc() < 3 + skipargs) {
+    if(trap_Argc() < 3) {
         adminLocal.ADMP(va("usage: %s [name|slot#] [message]\n", cmd));
         return;
     }
 
-    if(!Q_stricmp(cmd, "mt") || !Q_stricmp(cmd, "/mt")) {
+    trap_Argv(1, name, sizeof(name));
+    msg = ConcatArgs(2);
+
+    if(!Q_stricmp(cmd, "mt")) {
         teamonly = true;
     }
 
-    SayArgv(1 + skipargs, name, sizeof(name));
-    msg = SayConcatArgs(2 + skipargs);
-    pcount = ClientNumbersFromString(name, pids, MAX_CLIENTS);
+    CensorString(text, msg, sizeof(text), ent);
 
-    if(ent) {
-        sint count = 0;
+    // send the message
+    pcount = ClientNumbersFromString(name, pids, MAX_CLIENTS, false);
 
-        for(i = 0; i < pcount; i++) {
-            tmpent = &g_entities[ pids[ i ] ];
-
-            if(teamonly && !idSGameTeam::OnSameTeam(ent, tmpent)) {
-                continue;
-            }
-
-            if(bggame->ClientListTest(&tmpent->client->sess.ignoreList,
-                                      ent - g_entities)) {
-                ignoreids[ ignored++ ] = pids[ i ];
-                continue;
-            }
-
-            pids[ count ] = pids[ i ];
+    for(i = 0; i < pcount; i++) {
+        if(SayTo(ent, &g_entities[ pids[ i ] ],
+                 (teamonly)
+                 ? SAY_TPRIVMSG : SAY_PRIVMSG, text)) {
             count++;
+            Q_strcat(recipients, sizeof(recipients), va("%s" S_COLOR_WHITE ", ",
+                     level.clients[ pids[ i ] ].pers.netname));
         }
-
-        matches = count;
-    } else {
-        matches = pcount;
     }
 
-    color = teamonly ? COLOR_CYAN : COLOR_YELLOW;
+    // report the results
+    color = (teamonly)
+            ? COLOR_CYAN : COLOR_YELLOW;
 
-    Q_vsprintf_s(str, sizeof(str), sizeof(str), "^%csent to %i player%s: ^7",
-                 color, matches, (matches == 1) ? "" : "s");
-
-    for(i = 0; i < matches; i++) {
-        tmpent = &g_entities[ pids[ i ] ];
-
-        if(i > 0) {
-            Q_strcat(str, sizeof(str), "^7, ");
-        }
-
-        Q_strcat(str, sizeof(str), tmpent->client->pers.netname);
-        trap_SendServerCommand(pids[ i ], va(
-                                   "chat \"%s^%c -> ^7%s^7: (%d recipient%s): ^%c%s^7\" %i",
-                                   (ent) ? ent->client->pers.netname : "console",
-                                   color,
-                                   name,
-                                   matches,
-                                   (matches == 1) ? "" : "s",
-                                   color,
-                                   msg,
-                                   ent ? (sint)(ent - g_entities) : -1));
-
-        if(ent) {
-            trap_SendServerCommand(pids[ i ], va(
-                                       "print \">> to reply, say: /m %d [your message] <<\n\"",
-                                       (sint)(ent - g_entities)));
-        }
-
-        trap_SendServerCommand(pids[ i ], va(
-                                   "cp \"^%cprivate message from ^7%s^7\"", color,
-                                   (ent) ? ent->client->pers.netname : "console"));
-    }
-
-    if(!matches)
+    if(!count) {
         adminLocal.ADMP(
             va("^3No player matching ^7\'%s^7\' ^3to send message to.\n",
                name));
-    else {
-        adminLocal.ADMP(va("^%cPrivate message: ^7%s\n", color, msg));
-        adminLocal.ADMP(va("%s\n", str));
 
-        idSGameMain::LogPrintf("%s: %s^7: %s^7: %s\n",
-                               (teamonly) ? "tprivmsg" : "privmsg",
-                               (ent) ? ent->client->pers.netname : "console",
-                               name, msg);
-    }
-
-    if(ignored) {
-        Q_vsprintf_s(str, sizeof(str), sizeof(str),
-                     "^%cignored by %i player%s: ^7", color,
-                     ignored, (ignored == 1) ? "" : "s");
-
-        for(i = 0; i < ignored; i++) {
-            tmpent = &g_entities[ ignoreids[ i ] ];
-
-            if(i > 0) {
-                Q_strcat(str, sizeof(str), "^7, ");
-            }
-
-            Q_strcat(str, sizeof(str), tmpent->client->pers.netname);
-        }
-
-        adminLocal.ADMP(va("%s\n", str));
+    } else {
+        adminLocal.ADMP(va("^%cPrivate message: ^7%s\n", color, text));
+        // remove trailing ", "
+        recipients[ strlen(recipients) - 2 ] = '\0';
+        adminLocal.ADMP(va("^%csent to %i player%s: " S_COLOR_WHITE "%s\n", color,
+                           count,
+                           count == 1 ? "" : "s", recipients));
     }
 }
 

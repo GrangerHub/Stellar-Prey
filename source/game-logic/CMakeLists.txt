@@ -19,6 +19,7 @@ set( URL_MASTER_SERVER "" CACHE        STRING "The URL for the Master Server")
 set( URL_MOTD_SERVER "" CACHE          STRING "The URL for the MOTD Server")
 set( URL_AUTHORIZE_SERVER "" CACHE     STRING "The URL for the Authorize Server")
 set( URL_AUTOUPDATE_SERVER "" CACHE    STRING "The URL for the Autoupdate Server")
+set( URL_COMMUNITY_SERVER "" CACHE     STRING "The URL for the Community Server. Example: xxx.xxx.xxx.xxx:port")
 
 string( REPLACE " " "" GAME_APP_NAME_UPPER ${GAME_APP_NAME} )
 string( TOLOWER ${GAME_APP_NAME} GAME_APP_NAME_LOWER )
@@ -49,6 +50,10 @@ endif()
 
 if("${URL_AUTOUPDATE_SERVER}" STREQUAL "")
 	message(FATAL_ERROR "Please set URL_AUTOUPDATE_SERVER first")
+endif()
+
+if("${URL_COMMUNITY_SERVER}" STREQUAL "")
+	message(FATAL_ERROR "Please set URL_COMMUNITY_SERVER first")
 endif()
 
 project(${GAME_APP_NAME} C CXX)

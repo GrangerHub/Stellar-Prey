@@ -98,26 +98,26 @@ typedef struct g_admin_cmd {
 
 typedef struct g_admin_level {
     sint level;
-    valueType name[ MAX_NAME_LENGTH ];
+    valueType name[ MAX_COLORFUL_NAME_LENGTH ];
     valueType flags[ MAX_ADMIN_FLAGS ];
 } g_admin_level_t;
 
 typedef struct g_admin_admin {
     valueType guid[ 33 ];
-    valueType name[ MAX_NAME_LENGTH ];
+    valueType name[ MAX_COLORFUL_NAME_LENGTH ];
     sint level;
     valueType flags[ MAX_ADMIN_FLAGS ];
     sint counter;
 } g_admin_admin_t;
 
 typedef struct g_admin_ban {
-    valueType name[ MAX_NAME_LENGTH ];
+    valueType name[ MAX_COLORFUL_NAME_LENGTH ];
     valueType guid[ 33 ];
     valueType ip[ 40 ];
     valueType reason[ MAX_ADMIN_BAN_REASON ];
     valueType made[ 18 ]; // big enough for strftime() %c
     sint expires;
-    valueType banner[ MAX_NAME_LENGTH ];
+    valueType banner[ MAX_COLORFUL_NAME_LENGTH ];
 } g_admin_ban_t;
 
 typedef struct g_admin_command {
@@ -128,7 +128,7 @@ typedef struct g_admin_command {
 } g_admin_command_t;
 
 typedef struct g_admin_namelog {
-    valueType name[ MAX_ADMIN_NAMELOG_NAMES ][MAX_NAME_LENGTH ];
+    valueType name[ MAX_ADMIN_NAMELOG_NAMES ][MAX_COLORFUL_NAME_LENGTH ];
     valueType ip[ 40 ];
     valueType guid[ 33 ];
     sint slot;
@@ -136,7 +136,7 @@ typedef struct g_admin_namelog {
 } g_admin_namelog_t;
 
 typedef struct g_admin_adminlog {
-    valueType name[MAX_NAME_LENGTH];
+    valueType name[MAX_COLORFUL_NAME_LENGTH];
     valueType command[MAX_ADMIN_CMD_LEN];
     valueType args[MAX_ADMIN_ADMINLOG_ARGS];
     sint id;

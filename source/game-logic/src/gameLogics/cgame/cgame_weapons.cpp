@@ -1528,7 +1528,7 @@ void idCGameWeapons::DrawItemSelect(rectDef_t *rect, vec4_t color) {
                     break;
 
                 case 2:
-                    color = colorMdGrey;
+                    color = colorGray;
                     break;
             }
 

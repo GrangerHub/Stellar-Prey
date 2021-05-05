@@ -84,7 +84,8 @@ Set_Config_To_Defaults() {
   printf "URL_MASTER_SERVER=\"master.stellarprey.com\"\n" >> $SCRIPTPATH/config.sh
   printf "URL_MOTD_SERVER=\"motd.stellarprey.com\"\n" >> $SCRIPTPATH/config.sh
   printf "URL_AUTHORIZE_SERVER=\"auth.stellarprey.com\"\n" >> $SCRIPTPATH/config.sh
-  printf "URL_AUTOUPDATE_SERVER=\"update.stellarprey.com\"\n\n" >> $SCRIPTPATH/config.sh
+  printf "URL_AUTOUPDATE_SERVER=\"update.stellarprey.com\"\n" >> $SCRIPTPATH/config.sh
+  printf "URL_COMMUNITY_SERVER=\"community.stellarprey.com\"\n\n" >> $SCRIPTPATH/config.sh
 
   printf "FS_GAME=\"$BASEGAME\"\n\n" >> $SCRIPTPATH/config.sh
   printf "DOWNLOAD_URL=\"http://dl.lonestellar.site.nfoservers.com/\"\n\n" >> $SCRIPTPATH/config.sh
@@ -123,7 +124,8 @@ Cache_Config_File() {
   printf "CACHED_URL_MASTER_SERVER=\"$URL_MASTER_SERVER\"\n" >> $SCRIPTPATH/.cache-config.sh
   printf "CACHED_URL_MOTD_SERVER=\"$URL_MOTD_SERVER\"\n" >> $SCRIPTPATH/.cache-config.sh
   printf "CACHED_URL_AUTHORIZE_SERVER=\"$URL_AUTHORIZE_SERVER\"\n" >> $SCRIPTPATH/.cache-config.sh
-  printf "CACHED_URL_AUTOUPDATE_SERVER=\"$URL_AUTOUPDATE_SERVER\"\n\n" >> $SCRIPTPATH/.cache-config.sh
+  printf "CACHED_URL_AUTOUPDATE_SERVER=\"$URL_AUTOUPDATE_SERVER\"\n" >> $SCRIPTPATH/.cache-config.sh
+  printf "CACHED_URL_COMMUNITY_SERVER=\"$URL_COMMUNITY_SERVER\"\n\n" >> $SCRIPTPATH/.cache-config.sh
 
   printf "CACHED_FS_GAME=\"$FS_GAME\"\n\n" >> $SCRIPTPATH/.cache-config.sh
   printf "CACHED_DOWNLOAD_URL=\"$DOWNLOAD_URL\"\n\n" >> $SCRIPTPATH/.cache-config.sh
@@ -186,7 +188,8 @@ Save_Cached_Variables() {
   printf "CACHED_URL_MASTER_SERVER=\"$CACHED_URL_MASTER_SERVER\"\n" >> $SCRIPTPATH/.cache-config.sh
   printf "CACHED_URL_MOTD_SERVER=\"$CACHED_URL_MOTD_SERVER\"\n" >> $SCRIPTPATH/.cache-config.sh
   printf "CACHED_URL_AUTHORIZE_SERVER=\"$CACHED_URL_AUTHORIZE_SERVER\"\n" >> $SCRIPTPATH/.cache-config.sh
-  printf "CACHED_URL_AUTOUPDATE_SERVER=\"$CACHED_URL_AUTOUPDATE_SERVER\"\n\n" >> $SCRIPTPATH/.cache-config.sh
+  printf "CACHED_URL_AUTOUPDATE_SERVER=\"$CACHED_URL_AUTOUPDATE_SERVER\"\n" >> $SCRIPTPATH/.cache-config.sh
+  printf "CACHED_URL_COMMUNITY_SERVER=\"$CACHED_URL_COMMUNITY_SERVER\"\n\n" >> $SCRIPTPATH/.cache-config.sh
 
   printf "CACHED_FS_GAME=\"$CACHED_FS_GAME\"\n\n" >> $SCRIPTPATH/.cache-config.sh
   printf "CACHED_DOWNLOAD_URL=\"$CACHED_DOWNLOAD_URL\"\n\n" >> $SCRIPTPATH/.cache-config.sh
@@ -447,6 +450,7 @@ Configure_cmake_game_logic() {
     -DURL_MOTD_SERVER="$URL_MOTD_SERVER" \
     -DURL_AUTHORIZE_SERVER="$URL_AUTHORIZE_SERVER" \
     -DURL_AUTOUPDATE_SERVER="$URL_AUTOUPDATE_SERVER" \
+    -DURL_COMMUNITY_SERVER="$URL_COMMUNITY_SERVER" \
     -DCMAKE_BUILD_TYPE="$CMAKE_BUILD_TYPE" .
   cd $CURRENTPATH
 }
@@ -469,6 +473,7 @@ Configure_cmake_engine() {
     -DURL_MOTD_SERVER="$URL_MOTD_SERVER" \
     -DURL_AUTHORIZE_SERVER="$URL_AUTHORIZE_SERVER" \
     -DURL_AUTOUPDATE_SERVER="$URL_AUTOUPDATE_SERVER" \
+    -DURL_COMMUNITY_SERVER="$URL_COMMUNITY_SERVER" \
     -DCMAKE_BUILD_TYPE="$CMAKE_BUILD_TYPE" \
     -DBUILD_CLIENT="$BUILD_CLIENT" \
     -DBUILD_SERVER="$BUILD_SERVER" \
@@ -641,6 +646,11 @@ Build_game_logic() {
     RECONFIGURE=1
   fi
 
+  if [ ! "$URL_COMMUNITY_SERVER" = "$CACHED_URL_COMMUNITY_SERVER" ]; then
+    CACHED_URL_COMMUNITY_SERVER="$URL_COMMUNITY_SERVER"
+    RECONFIGURE=1
+  fi
+
   if [ ! "$CMAKE_BUILD_TYPE" = "$CACHED_CMAKE_BUILD_TYPE" ]; then
     CACHED_CMAKE_BUILD_TYPE="$CMAKE_BUILD_TYPE"
     RECONFIGURE=1
@@ -714,6 +724,11 @@ Build_engine() {
 
   if [ ! "$URL_AUTOUPDATE_SERVER" = "$CACHED_URL_AUTOUPDATE_SERVER" ]; then
     CACHED_URL_AUTOUPDATE_SERVER="$URL_AUTOUPDATE_SERVER"
+    RECONFIGURE=1
+  fi
+
+  if [ ! "$URL_COMMUNITY_SERVER" = "$CACHED_URL_COMMUNITY_SERVER" ]; then
+    CACHED_URL_COMMUNITY_SERVER="$URL_COMMUNITY_SERVER"
     RECONFIGURE=1
   fi
 

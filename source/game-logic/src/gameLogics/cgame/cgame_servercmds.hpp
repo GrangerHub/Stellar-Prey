@@ -47,8 +47,7 @@ public:
     static void ConfigStringModified(void);
     static void MapRestart(void);
     static void Menu(sint menu, sint arg);
-    static void Say(sint clientNum, valueType *text);
-    static void SayTeam(sint clientNum, valueType *text);
+    static void Say(sint clientNum, saymode_t mode, const valueType *text);
     static voiceTrack_t *VoiceTrack(valueType *voice, sint cmd, sint track);
     static void ParseVoice(void);
     static void CenterPrint_f(void);

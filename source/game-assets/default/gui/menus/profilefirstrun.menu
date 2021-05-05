@@ -13,6 +13,19 @@
 	focusColor COMMON_GOLD_R COMMON_GOLD_G COMMON_GOLD_B COMMON_FULLALPHA   // Menu focus color for text and items
 	aspectBias ASPECT_NONE
 
+  itemDef
+  {
+    name window
+    rect 0 0 W H
+    style WINDOW_STYLE_FILLED
+    backcolor 0 0 0 0.9
+    visible MENU_TRUE
+    decoration
+    border WINDOW_BORDER_KCGRADIENT
+    borderSize 1.0
+    borderColor 0.5 0.5 0.5 1
+  }
+
 	CVAR( "Profile Name:", "ui_profile", 0 )
 	CVAR( "Name:", "name", 1 )
 	MULTI( "Video Quality:", "ui_glCustom", 
@@ -74,3 +87,14 @@
     }
   }
 
+  menuDef
+	{
+		name profilefirstrunloginbackground
+		fullScreen MENU_TRUE
+		rect 0 0 640 480      													// Size and position of the menu
+		visible MENU_TRUE       												// Visible on open
+		focusColor COMMON_GOLD_R COMMON_GOLD_G COMMON_GOLD_B COMMON_FULLALPHA   // Menu focus color for text and items
+		background "gui/assets/background"
+		aspectBias ASPECT_NONE
+	}
+}

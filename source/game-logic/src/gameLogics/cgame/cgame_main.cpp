@@ -1910,6 +1910,9 @@ void idCGameMain::LoadHudMenu(void) {
     cgDC.xscale = cgs.glconfig.vidWidth / 640.0f;
     cgDC.yscale = cgs.glconfig.vidHeight / 480.0f;
 
+    cgDC.smallFontScale = idCGameMain::Cvar_Get("ui_smallFont");
+    cgDC.bigFontScale = idCGameMain::Cvar_Get("ui_bigFont");
+
     cgDC.registerShaderNoMip = &trap_R_RegisterShaderNoMip;
     cgDC.setColor = &trap_R_SetColor;
     cgDC.drawHandlePic = &idCGameDrawTools::DrawPic;

@@ -310,12 +310,12 @@ void idCGameConsoleCmds::InitConsoleCommands(void) {
     // the game server will interpret these commands, which will be automatically
     // forwarded to the server after they are not recognized locally
     trap_AddCommand("kill", "description");
-    trap_AddCommand("messagemode", "description");
-    trap_AddCommand("messagemode2", "description");
-    trap_AddCommand("messagemode3", "description");
-    trap_AddCommand("messagemode4", "description");
-    trap_AddCommand("messagemode5", "description");
-    trap_AddCommand("messagemode6", "description");
+    trap_AddCommand("messagemode", "General chat");
+    trap_AddCommand("messagemode2", "Team chat");
+    trap_AddCommand("messagemode3", "Crosshair chat");
+    trap_AddCommand("messagemode4", "Area chat");
+    trap_AddCommand("messagemode5", "Admin chat");
+    trap_AddCommand("messagemode6", "Clan chat");
     trap_AddCommand("prompt", "description");
     trap_AddCommand("say", "description");
     trap_AddCommand("say_team", "description");
