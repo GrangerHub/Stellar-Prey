@@ -1561,7 +1561,7 @@ Install_Default_Paks() {
   fi
 
   echo "Installing default paks to ${1}..."
-  Generate_Default_Assets_Pak $1 pak0 ecca0fee1f2496efc7cc0d710d07b9b988401c85
+  Generate_Default_Assets_Pak $1 pak0 c3d8a47df6f0e0366ea9f670f006c10eff6b1dad
   Generate_Default_Map_Pak $1 eX-texture-pack1 eX-texture-pack1_a1 ecca0fee1f2496efc7cc0d710d07b9b988401c85
   Generate_Default_Map_Pak $1 eX-texture-pack2 eX-texture-pack2_a1 ecca0fee1f2496efc7cc0d710d07b9b988401c85
   Generate_Default_Map_Pak $1 map-eXcs map-eXcs_a1 ecca0fee1f2496efc7cc0d710d07b9b988401c85
