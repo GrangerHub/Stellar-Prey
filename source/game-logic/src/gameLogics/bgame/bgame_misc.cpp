@@ -2654,6 +2654,23 @@ void idBothGamesLocal::EvaluateTrajectory(const trajectory_t *tr,
             VectorMA(tr->trBase, deltaTime, tr->trDelta, result);
             break;
 
+        case TR_NONLINEAR_STOP:
+            if(atTime > tr->trTime + tr->trDuration) {
+                atTime = tr->trTime + tr->trDuration;
+            }
+
+            //new slow-down at end
+            if(atTime - tr->trTime > tr->trDuration || atTime - tr->trTime <= 0) {
+                deltaTime = 0;
+            } else {
+                //FIXME: maybe scale this somehow?  So that it starts out faster and stops faster?
+                deltaTime = tr->trDuration * 0.001f * ((float)cos(DEG2RAD(90.0f -
+                                                       (90.0f * ((float)atTime - tr->trTime) / (float)tr->trDuration))));
+            }
+
+            VectorMA(tr->trBase, deltaTime, tr->trDelta, result);
+            break;
+
         case TR_GRAVITY:
             deltaTime = (atTime - tr->trTime) * 0.001;   // milliseconds to seconds
             VectorMA(tr->trBase, deltaTime, tr->trDelta, result);
