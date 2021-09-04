@@ -30,7 +30,8 @@ LOGPATH="$SCRIPTPATH/chat-logs"
 SCRUBBED_LOGPATH="$LOGPATH/scrubbed"
 
 SOURCEPATH="$SCRIPTPATH/source"
-GAMELOGICPATH="$SOURCEPATH/game-logic"
+GAMELOGICPATH="$SOURCEPATH/TremZ-Gamelogic"
+GAMEDATAPATH="$SOURCEPATH/TremZ-Gamedata"
 ENGINEPATH="$SOURCEPATH/OpenWolf-Engine"
 
 RELEASEPATH="$SCRIPTPATH/release"
@@ -1084,7 +1085,7 @@ Package_Assets_Subcommand() {
           if [ $# -lt 4 ]; then
             cd $SCRIPTPATH
             WORKING_DIRECTORY=""
-            for i in "$(git status --porcelain source/game-assets/default/)"; do
+            for i in "$(git status --porcelain $GAMEDATAPATH/)"; do
               if [ ! -z $i ]; then
                 WORKING_DIRECTORY="_WD"
               fi
@@ -1112,8 +1113,8 @@ Package_Assets_Subcommand() {
             PAK_NAME="${3}_$(git rev-parse --short HEAD)$WORKING_DIRECTORY.pk3"
             cd $ENGINEPATH/src/engine/GPURenderer
             zip -r $PAK_NAME renderProgs
-            mv $PAK_NAME $SOURCEPATH/game-assets/default/
-            cd $SOURCEPATH/game-assets/default/
+            mv $PAK_NAME $GAMEDATAPATH/
+            cd $GAMEDATAPATH/
             zip -ur $PAK_NAME *
             mkdir -p $BASEPATH
             mkdir -p "$BASEPATH/main"
@@ -1128,7 +1129,7 @@ Package_Assets_Subcommand() {
               return 1
             fi
 
-            CHANGED_FILES=$(git diff --name-only --diff-filter=d $4 source/game-assets/default/)
+            CHANGED_FILES=$(git diff --name-only --diff-filter=d $4 $GAMEDATAPATH/)
 
             ENGINE_OLD_HASH=$(git rev-parse ${4}:source/OpenWolf-Engine)
             cd $ENGINEPATH
@@ -1158,7 +1159,7 @@ Package_Assets_Subcommand() {
             fi
 
             WORKING_DIRECTORY=""
-            for i in "$(git status --porcelain source/game-assets/default/)"; do
+            for i in "$(git status --porcelain $GAMEDATAPATH/)"; do
               if [ ! -z $i ]; then
                 WORKING_DIRECTORY="_WD"
               fi
@@ -1195,13 +1196,13 @@ Package_Assets_Subcommand() {
                   zip -r $PAK_NAME $j
                 fi
               done
-              mv $PAK_NAME $SOURCEPATH/game-assets/default/
+              mv $PAK_NAME $GAMEDATAPATH/
               cd $SCRIPTPATH
             fi
 
-            cd $SOURCEPATH/game-assets/default/
+            cd $GAMEDATAPATH/
             for i in $CHANGED_FILES; do
-              j=${i#source/game-assets/default/}
+              j=${i#$GAMEDATAPATH/}
               if [ -f $PAK_NAME ]; then
                 zip -ur $PAK_NAME $j
               else
@@ -1287,9 +1288,9 @@ Package_Assets_Subcommand() {
                 return 0
               fi
 
-              if [ -d "$SOURCEPATH/game-assets/$3" ]; then
+              if [ -d "$GAMEDATAPATH/$3" ]; then
                 PAK_NAME="$4.pk3"
-                cd "$SOURCEPATH/game-assets/$3"
+                cd "$GAMEDATAPATH/$3"
                 zip -r $PAK_NAME *
                 mkdir -p $HOMEPATH
                 mkdir -p $HOMEPATH_CLIENT
@@ -1306,9 +1307,9 @@ Package_Assets_Subcommand() {
                 return 1
               fi
             else
-              if [ -d "$SOURCEPATH/game-assets/$3" ]; then
+              if [ -d "$GAMEDATAPATH/$3" ]; then
                 PAK_NAME="$3.pk3"
-                cd "$SOURCEPATH/game-assets/$3"
+                cd "$GAMEDATAPATH/$3"
                 zip -r $PAK_NAME *
                 mkdir -p $HOMEPATH
                 mkdir -p $HOMEPATH_CLIENT
@@ -1331,12 +1332,12 @@ Package_Assets_Subcommand() {
             mkdir -p "$HOMEPATH_CLIENT/$FS_GAME"
             mkdir -p $HOMEPATH_GAMESERVER
             mkdir -p "$HOMEPATH_GAMESERVER/$FS_GAME"
-            for i in $SOURCEPATH/game-assets/*/; do
+            for i in $GAMEDATAPATH/*/; do
               if [ ! -d $i ]; then
                 continue
               fi
 
-              if [ $i = "$SOURCEPATH/game-assets/default/" ]; then
+              if [ $i = "$GAMEDATAPATH/default/" ]; then
                 continue
               fi
 
@@ -1469,7 +1470,8 @@ Generate_Default_Assets_Pak() {
     return 1
   fi
 
-  if [ $(git cat-file -t "${3}") != "commit" ]; then
+  cd $GAMEDATAPATH/
+  if [ "$(git cat-file -t ${3})" != "commit" ]; then
     echo "Generate_Default_Assets_Pak(): Commit hash '${3}' doesn't exist"
     echo "Generate_Default_Assets_Pak(): failed to install pak '${2}.pk3'"
     return 1
@@ -1483,7 +1485,7 @@ Generate_Default_Assets_Pak() {
     fi
 
     cd $SCRIPTPATH
-    CHANGED_FILES_PATHS=$(git diff --name-only --diff-filter=d ${4} ${3} source/game-assets/default/)
+    CHANGED_FILES_PATHS=$(git diff --name-only --diff-filter=d ${4} ${3} $GAMEDATAPATH/)
 
     if [ -z "${CHANGED_FILES_PATHS/\n/}" ]; then
       echo "Generate_Default_Assets_Pak(): Nothing changed for diff pak '${2}.pk3'"
@@ -1493,10 +1495,10 @@ Generate_Default_Assets_Pak() {
     fi
 
     echo "Generating and installing default pak '${2}.pk3'..."
-    cd $SOURCEPATH/game-assets/default/
+    cd $GAMEDATAPATH/
     CHANGED_FILES=""
     for i in $CHANGED_FILES_PATHS; do
-      CHANGED_FILES+="./${i#source/game-assets/default/} "
+      CHANGED_FILES+="./${i#$GAMEDATAPATH/} "
     done
 
     TZ='EST5EDT4' git archive --format=zip --output=${1}/${2}.pk3 ${3} $CHANGED_FILES
@@ -1505,7 +1507,6 @@ Generate_Default_Assets_Pak() {
     return 0
   fi
 
-  cd $SOURCEPATH/game-assets/default/
   echo "Generating and installing default pak '${2}.pk3'..."
   TZ='EST5EDT4' git archive --format=zip --output=${1}/${2}.pk3 ${3} ./
   cd $CURRENTPATH
@@ -1561,11 +1562,11 @@ Install_Default_Paks() {
   fi
 
   echo "Installing default paks to ${1}..."
-  Generate_Default_Assets_Pak $1 pak0 c3d8a47df6f0e0366ea9f670f006c10eff6b1dad
-  Generate_Default_Map_Pak $1 eX-texture-pack1 eX-texture-pack1_a1 ecca0fee1f2496efc7cc0d710d07b9b988401c85
-  Generate_Default_Map_Pak $1 eX-texture-pack2 eX-texture-pack2_a1 ecca0fee1f2496efc7cc0d710d07b9b988401c85
-  Generate_Default_Map_Pak $1 map-eXcs map-eXcs_a1 ecca0fee1f2496efc7cc0d710d07b9b988401c85
-  Generate_Default_Map_Pak $1 map-UTCSUD map-UTCSUD_a1 ecca0fee1f2496efc7cc0d710d07b9b988401c85
+  Generate_Default_Assets_Pak $1 pak0 60465b718b222964d57729606c0ecd65ea083e20
+  #Generate_Default_Map_Pak $1 eX-texture-pack1 eX-texture-pack1_a1 ecca0fee1f2496efc7cc0d710d07b9b988401c85
+  #Generate_Default_Map_Pak $1 eX-texture-pack2 eX-texture-pack2_a1 ecca0fee1f2496efc7cc0d710d07b9b988401c85
+  #Generate_Default_Map_Pak $1 map-eXcs map-eXcs_a1 ecca0fee1f2496efc7cc0d710d07b9b988401c85
+  #Generate_Default_Map_Pak $1 map-UTCSUD map-UTCSUD_a1 ecca0fee1f2496efc7cc0d710d07b9b988401c85
   echo "Default paks installed."
   return 0
 }
