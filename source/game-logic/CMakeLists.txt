@@ -123,11 +123,7 @@ elseif( UNIX )
 endif()
 
 # Determine arch
-if( ${CMAKE_SYSTEM_PROCESSOR} MATCHES "x86_64" )
-	set( BUILD_ARCH "AMD64" )
-else()
-	set( BUILD_ARCH ${CMAKE_SYSTEM_PROCESSOR} )
-endif()
+set( BUILD_ARCH ${CMAKE_SYSTEM_PROCESSOR} )
 
 ######################
 # Define Build Files #

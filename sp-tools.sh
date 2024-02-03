@@ -63,12 +63,7 @@ case $OSTYPE in
 esac
 
 BINPATH="$BASEPATH/bin/$PLATFORM"
-
-if [ $HOSTTYPE = "x86_64" ]; then
-  BUILD_ARCH="AMD64"
-else
-	BUILD_ARCH=$HOSTTYPE
-fi
+BUILD_ARCH=$(uname -m)
 
 Set_Config_To_Defaults() {
   if [ -f $SCRIPTPATH/config.sh ]; then
