@@ -10,7 +10,7 @@ This is the main repo for STELLAR PREY™ game and can be used to build and pack
 
 ### Linux (Fedora 39)
 
-> sudo dnf install gcc cmake-gui SDL2-devel gcc-c++ libjpeg-turbo openssl-devel libspng-devel openal-soft-devel libogg-devel libvorbis-devel openssl-devel ncurses-devel bzip2-devel GeoIP-devel freetype-devel libcurl-devel community-mysql-devel
+> sudo dnf install gcc gcc-c++ gcc-objc++ cmake-gui SDL2-devel libjpeg-turbo openssl-devel libspng-devel openal-soft-devel libogg-devel libvorbis-devel openssl-devel ncurses-devel bzip2-devel GeoIP-devel freetype-devel libcurl-devel community-mysql-devel
 
 ### Sources
 
